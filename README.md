@@ -1,4 +1,4 @@
-# MIW_AiR
+# MiW_AiR
 
 Algorytmy zwiazane z: Data mining, Big data... </br>
 Przedmiot: Metody inżynierii wiedzy </br>
