@@ -6,29 +6,29 @@ package Lab2;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transaction {
+public class Transaction extends EnumElements{
 
 	private static int idCounter = 0;
 	private int id = 0;
-	private List<String> elements;
+	private List<Element> elements;
 
 	public Transaction() {
 		idCounter++;
 		id = idCounter;
-		elements = new ArrayList<String>();
+		elements = new ArrayList<Element>();
 	}
 
-	public Transaction(ArrayList<String> newElements) {
+	public Transaction(ArrayList<Element> newElements) {
 		idCounter++;
 		id = idCounter;
-		elements = new ArrayList<String>(newElements);
+		elements = new ArrayList<Element>(newElements);
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public List<String> getElements() {
+	public List<Element> getElements() {
 		return elements;
 	}
 

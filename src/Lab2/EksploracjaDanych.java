@@ -12,13 +12,14 @@ import java.util.Scanner;
 
 public class EksploracjaDanych {
 
-	private static final List<Transaction> transactionList = new ArrayList<Transaction>();
+	private static final List<Transaction> transactionList = new ArrayList<>();
 
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
 		readDataFromFile("src/Lab2/resources/dane.txt");
 
 		//Dane częste >50%
+		showFrequentData(50);
 
 		//Obliczenie wsparcia (support) s
 
@@ -28,12 +29,16 @@ public class EksploracjaDanych {
 
 	}
 
-	public static int readDataFromFile(String dataName) {
+	private static void showFrequentData(int percentTreshold) {
+
+	}
+
+	private static int readDataFromFile(String dataName) {
 		Path path = Paths.get(dataName);
 		try {
 			Scanner in = new Scanner(path);
 			String[] parts;
-			ArrayList<String> elem = new ArrayList<String>();
+			ArrayList<EnumElements.Element> elem = new ArrayList<>();
 			Transaction singleTransaction = null;
 			String line = in.nextLine();
 			while(in.hasNextLine()) {
@@ -41,7 +46,7 @@ public class EksploracjaDanych {
 				parts = line.split("\t");
 				for(int i=1; i<parts.length; i++) {
 					if(!(parts[i].isEmpty())) {
-						elem.add(parts[i]);
+						elem.add(EnumElements.getEnumValue(parts[i]));
 					}
 				}
 				singleTransaction = new Transaction(elem);
