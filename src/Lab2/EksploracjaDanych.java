@@ -6,6 +6,7 @@ package Lab2;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -42,7 +43,7 @@ public class EksploracjaDanych {
 			Transaction singleTransaction = null;
 			String line = in.nextLine();
 			while(in.hasNextLine()) {
-				line = in.nextLine();
+				line = replacePolishCharacters(in.nextLine());
 				parts = line.split("\t");
 				for(int i=1; i<parts.length; i++) {
 					if(!(parts[i].isEmpty())) {
@@ -60,5 +61,43 @@ public class EksploracjaDanych {
 			e.printStackTrace();
 		}
 		return 1;
+	}
+
+	public static String replacePolishCharacters(String singleLine) {
+		char[] txt = singleLine.toCharArray();
+		for (int i=0; i<txt.length; i++) {
+			switch (txt[i]) {
+				case 'ą':
+					txt[i] = 'a';
+					break;
+				case 'ę':
+					txt[i] = 'e';
+					break;
+				case 'ć':
+					txt[i] = 'c';
+					break;
+				case 'ś':
+					txt[i] = 's';
+					break;
+				case 'ż':
+					txt[i] = 'z';
+					break;
+				case 'ź':
+					txt[i] = 'z';
+					break;
+				case 'ó':
+					txt[i] = 'o';
+					break;
+				case 'ł':
+					txt[i] = 'l';
+					break;
+				case 'ń':
+					txt[i] = 'n';
+					break;
+				default:
+					break;
+			}
+		}
+		return String.valueOf(txt);
 	}
 }
