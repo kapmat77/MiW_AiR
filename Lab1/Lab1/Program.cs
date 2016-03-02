@@ -38,7 +38,7 @@ namespace MetodaSasiadowK
             Console.Write("Parametr K: ");
             parameterK = Convert.ToInt32(Console.ReadLine());
 
-            //Stworzenie kolekcji Dictionary<Iris,double> zawierającej obiekty wraz z ogległościami od wprowadzonego obiektu 
+            //Stworzenie kolekcji Dictionary<Iris,double> zawierającej obiekty wraz z odległościami od wprowadzonego obiektu 
             foreach (Iris singleIris in setOfIrises)
             {
                 distances.Add(singleIris, getDistanceBeetwen(inputIris, singleIris));
@@ -105,7 +105,7 @@ namespace MetodaSasiadowK
                     while (!sReader.EndOfStream)
                     {
                         line = sReader.ReadLine();
-                        string[] parts = { "" };
+                        string[] parts;
 
                         parts = line.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries);
                         Iris newIris = new Iris(Convert.ToDouble(parts[0]), Convert.ToDouble(parts[1]), Convert.ToDouble(parts[2]), Convert.ToDouble(parts[3]), parts[4]);
