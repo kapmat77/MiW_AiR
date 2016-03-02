@@ -1,4 +1,0 @@
-leaf-length	leaf-width	petal-length	petal-width	class
-5,10	3,50	1,40	0,20	Iris-setosa
-5,60	2,70	4,20	1,30	Iris-versicolor
-5,70	2,80	4,10	1,30	Iris-versicolor
