@@ -15,6 +15,7 @@ public class EksploracjaDanych {
 	private static final List<Transaction> transactionList = new ArrayList<>();
 	private static final Map<EnumElements.Element, Integer> quantityElements = new HashMap<>();
 	private static final int PERCENTAGE_TRESHOLD = 35;
+	private static boolean addOne = false;
 
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
@@ -53,18 +54,14 @@ public class EksploracjaDanych {
 		double transationLength = transactionList.size();
 		double value,percentageValue;
 		System.out.println("\nFrequent data(" + PERCENTAGE_TRESHOLD +"% treshold):");
-		for (int i=0; i<quantityElements.size(); i++) {
-			Set<EnumElements.Element> typesOfElements = quantityElements.keySet();
-			for (Iterator<EnumElements.Element> it = typesOfElements.iterator(); it.hasNext(); ) {
-				EnumElements.Element singleElement = it.next();
-				value = quantityElements.get(singleElement);
-				percentageValue = (value/transationLength)*100;
-				if (percentageValue>(PERCENTAGE_TRESHOLD)) {
-					System.out.println(singleElement.name() + " " + Integer.valueOf((int) percentageValue) + "%");
-					roundAndCutDouble(2, percentageValue);
-				}
+		Set<EnumElements.Element> typesOfElements = quantityElements.keySet();
+		for (Iterator<EnumElements.Element> it = typesOfElements.iterator(); it.hasNext(); ) {
+			EnumElements.Element singleElement = it.next();
+			value = quantityElements.get(singleElement);
+			percentageValue = (value/transationLength)*100;
+			if (percentageValue>(PERCENTAGE_TRESHOLD)) {
+				System.out.println(singleElement.name() + " " + Integer.valueOf((int) roundAndCutDouble(2, percentageValue)) + "%");
 			}
-
 		}
 	}
 
@@ -80,14 +77,41 @@ public class EksploracjaDanych {
 		value = value*(Math.pow(10, precision+1));
 		int intValue = (int) value;
 		char[] charValue = String.valueOf(intValue).toCharArray();
-		int compare = charValue[charValue.length-1]; //TODO CZEMU 52 a nie 4 ????
-		if (charValue[charValue.length-1]>5) {
-			charValue[charValue.length-2] = (char) (charValue[charValue.length-2] + 1);
-		} else if (charValue[charValue.length-1]<5) {
-
+		addOne = false;
+		for (int i=1; i<(precision); i++) {
+			if (recursionRound(i, charValue)==-1) {
+					break;
+			}
 		}
-		value = Double.valueOf(charValue.toString())/(Math.pow(10, precision+1));
+		if (addOne) {
+			value = (Double.valueOf(1+String.valueOf(charValue)))/(Math.pow(10, 1));
+		} else {
+			value = (Double.valueOf(String.valueOf(charValue)))/(Math.pow(10, 1));
+		}
+		intValue = (int) value;
+		value = intValue;
+		value = value/(Math.pow(10, precision));
 		return value;
+	}
+
+	private static int recursionRound(int iteration, char[] charValue) {
+		String strValue = String.valueOf(charValue[charValue.length-iteration]);
+		int compare = Integer.parseInt(strValue);
+		if (compare>=5 && !(iteration==charValue.length && compare==9)) {
+			charValue[charValue.length-iteration] = '0';
+			if (charValue[charValue.length-(iteration+1)]=='9') {
+				recursionRound(iteration+1, charValue);
+			} else {
+				charValue[charValue.length-(iteration+1)] = (char) (charValue[charValue.length-(iteration+1)] + 1);
+			}
+		} else if (iteration==charValue.length && compare==9) {
+			charValue[charValue.length-iteration] = '0';
+			addOne = true;
+			return  0;
+		} else if (compare<5) {
+			return -1;
+		}
+		return 0;
 	}
 
 	private static int readDataFromFile(String dataName) {
