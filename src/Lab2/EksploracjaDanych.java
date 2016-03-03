@@ -4,33 +4,62 @@
 package Lab2;
 
 import java.io.IOException;
-import java.lang.annotation.ElementType;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.Normalizer;
 import java.util.*;
 
 public class EksploracjaDanych {
 
 	private static final List<Transaction> transactionList = new ArrayList<>();
 	private static final Map<EnumElements.Element, Integer> quantityElements = new HashMap<>();
-	private static final int PERCENTAGE_TRESHOLD = 35;
+	private static int percentageTreshold = 35;
 	private static boolean addOne = false;
 
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
 		readDataFromFile("src/Lab2/resources/dane.txt");
 
-		//Dane częste >50%
+		//Dane częste
 		countFrequentData();
-		showFrequentData();
+
+		if (mainMenu()==-1){
+			return;
+		}
 
 		//Obliczenie wsparcia (support) s
 
 		//Pewność (confidence) c
 
-		//menu bazujące na switchu
 
+
+
+	}
+
+	private static int mainMenu() {
+		while (true) {
+			System.out.println("\n########################################");
+			System.out.println("###############   MENU   ###############");
+			System.out.println("########################################");
+			System.out.println("1. Pokaż dane częste ");
+			System.out.println("2. Oblicz wsparcie");
+			System.out.println("3. Oblicz pewność ");
+			System.out.println("Wybierz opcję. Aby wyjść wciśnij i zatwierdź dowolny inny klawisz:");
+			Scanner input = new Scanner(System.in);
+			String text = input.nextLine();
+			switch (text) {
+				case "1":
+					showFrequentData();
+					break;
+				case "2":
+					showFrequentData();
+					break;
+				case "3":
+					showFrequentData();
+					break;
+				default:
+					return -1;
+			}
+		}
 	}
 
 	private static void countFrequentData() {
@@ -53,13 +82,13 @@ public class EksploracjaDanych {
 	private static void showFrequentData() {
 		double transationLength = transactionList.size();
 		double value,percentageValue;
-		System.out.println("\nFrequent data(" + PERCENTAGE_TRESHOLD +"% treshold):");
+		System.out.println("\nFrequent data(" + percentageTreshold +"% treshold):");
 		Set<EnumElements.Element> typesOfElements = quantityElements.keySet();
 		for (Iterator<EnumElements.Element> it = typesOfElements.iterator(); it.hasNext(); ) {
 			EnumElements.Element singleElement = it.next();
 			value = quantityElements.get(singleElement);
 			percentageValue = (value/transationLength)*100;
-			if (percentageValue>(PERCENTAGE_TRESHOLD)) {
+			if (percentageValue>(percentageTreshold)) {
 				System.out.println(singleElement.name() + " " + Integer.valueOf((int) roundAndCutDouble(2, percentageValue)) + "%");
 			}
 		}
@@ -132,7 +161,6 @@ public class EksploracjaDanych {
 				}
 				singleTransaction = new Transaction(elem);
 				elem.clear();
-				singleTransaction.showSingleTransaction();
 				transactionList.add(singleTransaction);
 			}
 			in.close();
