@@ -13,7 +13,8 @@ public class EksploracjaDanych {
 	private static final List<Transaction> transactionList = new ArrayList<>();
 	private static final Map<EnumElements.Element, Integer> quantityElements = new HashMap<>();
 	private static final Map<EnumElements.Element, Integer> percentageMap = new HashMap<>();
-	private static int percentageTreshold = 35;
+	private static int supportTreshold = 50;
+	private static int confidenceTreshold = 50;
 	private static boolean addOne = false;
 
 	public static void main(String[] args) {
@@ -67,16 +68,29 @@ public class EksploracjaDanych {
 	}
 
 	private static void coutAndShowAssociation() {
-		System.out.println("Wprowadz produkty!");
 		EnumElements.Element firstProduct = EnumElements.Element.NONE;
 		EnumElements.Element secondProduct = EnumElements.Element.NONE;
 		Scanner input;
 		String in;
+		//TODO zabezpieczyc
+		System.out.println("\nPodaj prog procentowy wsparcia(support):");
+		input = new Scanner(System.in);
+		in = input.nextLine();
+		supportTreshold = Integer.valueOf(in);
+		//TODO zabezpieczyc
+		System.out.println("\nPodaj prog procentowy pewności(confidence):");
+		input = new Scanner(System.in);
+		in = input.nextLine();
+		confidenceTreshold = Integer.valueOf(in);
+
+		//TODO wybór czy wszystkie możliwe komibnacje czy chcemy wybrać konkretną parę
+
+		System.out.println("Wprowadz produkty!");
 		System.out.println("Produkt pierwszy: ");
 		while (firstProduct.name().equalsIgnoreCase("none")) {
 			input = new Scanner(System.in);
 			in = input.nextLine();
-			firstProduct = EnumElements.getEnumValue(in.toUpperCase());
+			firstProduct = EnumElements.getEnumValue(replacePolishCharacters(in).toUpperCase());
 			if (firstProduct.name().equalsIgnoreCase("none")) {
 				System.out.println("Brak produktu o podanej nazwie. Wprowadz produkt ponownie.");
 			}
@@ -85,7 +99,7 @@ public class EksploracjaDanych {
 		while (secondProduct.name().equalsIgnoreCase("none")) {
 			input = new Scanner(System.in);
 			in = input.nextLine();
-			secondProduct = EnumElements.getEnumValue(in.toUpperCase());
+			secondProduct = EnumElements.getEnumValue(replacePolishCharacters(in).toUpperCase());
 			if (firstProduct.name().equalsIgnoreCase("none")) {
 				System.out.println("Brak produktu o podanej nazwie. Wprowadz produkt ponownie.");
 			}
@@ -103,10 +117,10 @@ public class EksploracjaDanych {
 			if (transactionList.get(i).isElement(firstProduct)) {
 				transactionWithProduct+=1;
 			}
-
 		}
 		double firstParameter = (freqAll*100/transactionList.size());
 		double secondParameter = (freqProduct*100/transactionWithProduct);
+		if (firstParameter>=supportTreshold && secondParameter>=confidenceTreshold)
 		System.out.println(firstProduct.name() + "->" +secondProduct.name() + " (" + firstParameter + "%, " + secondParameter + "%)");
 	}
 
@@ -151,11 +165,11 @@ public class EksploracjaDanych {
 		System.out.println("\nPodaj prog procentowy:");
 		Scanner input = new Scanner(System.in);
 		String in = input.nextLine();
-		percentageTreshold = Integer.valueOf(in);
+		supportTreshold = Integer.valueOf(in);
 		System.out.println("\nElementy częste:");
 		for (Iterator<EnumElements.Element> it = percentageMap.keySet().iterator(); it.hasNext(); ) {
 			EnumElements.Element singleElement = it.next();
-			if (percentageMap.get(singleElement)>(percentageTreshold)) {
+			if (percentageMap.get(singleElement)>(supportTreshold)) {
 				System.out.println(singleElement.name() + " " + percentageMap.get(singleElement) + "%");
 			}
 		}
