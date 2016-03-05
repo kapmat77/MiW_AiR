@@ -12,21 +12,25 @@ public class EksploracjaDanych {
 
 	private static final List<Transaction> transactionList = new ArrayList<>();
 	private static final Map<EnumElements.Element, Integer> quantityElements = new HashMap<>();
+	private static final Map<EnumElements.Element, Integer> percentageMap = new HashMap<>();
 	private static int percentageTreshold = 35;
 	private static boolean addOne = false;
 
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
-		readDataFromFile("src/Lab2/resources/dane.txt");
+		readDataFromFile("src/Lab2/resources/dane_prezentacja.txt");
+//		readDataFromFile("src/Lab2/resources/dane.txt");
 
 		//Dane częste
 		countFrequentData();
+
+		countProbability();
 
 		if (mainMenu()==-1){
 			return;
 		}
 
-		//Obliczenie wsparcia (support) s
+
 
 		//Pewność (confidence) c
 
@@ -42,23 +46,87 @@ public class EksploracjaDanych {
 			System.out.println("########################################");
 			System.out.println("1. Pokaż dane częste ");
 			System.out.println("2. Oblicz wsparcie");
-			System.out.println("3. Oblicz pewność ");
+			System.out.println("3. Reguły asocjacyjne ");
 			System.out.println("Wybierz opcję. Aby wyjść wciśnij i zatwierdź dowolny inny klawisz:");
 			Scanner input = new Scanner(System.in);
 			String text = input.nextLine();
 			switch (text) {
 				case "1":
-					showFrequentData();
+					showMostFrequentData();
 					break;
 				case "2":
-					showFrequentData();
+					showProbability();
 					break;
 				case "3":
-					showFrequentData();
+					coutAndShowAssociation();
 					break;
 				default:
 					return -1;
 			}
+		}
+	}
+
+	private static void coutAndShowAssociation() {
+		System.out.println("Wprowadz produkty!");
+		EnumElements.Element firstProduct = EnumElements.Element.NONE;
+		EnumElements.Element secondProduct = EnumElements.Element.NONE;
+		Scanner input;
+		String in;
+		System.out.println("Produkt pierwszy: ");
+		while (firstProduct.name().equalsIgnoreCase("none")) {
+			input = new Scanner(System.in);
+			in = input.nextLine();
+			firstProduct = EnumElements.getEnumValue(in.toUpperCase());
+			if (firstProduct.name().equalsIgnoreCase("none")) {
+				System.out.println("Brak produktu o podanej nazwie. Wprowadz produkt ponownie.");
+			}
+		}
+		System.out.println("Produkt drugi: ");
+		while (secondProduct.name().equalsIgnoreCase("none")) {
+			input = new Scanner(System.in);
+			in = input.nextLine();
+			secondProduct = EnumElements.getEnumValue(in.toUpperCase());
+			if (firstProduct.name().equalsIgnoreCase("none")) {
+				System.out.println("Brak produktu o podanej nazwie. Wprowadz produkt ponownie.");
+			}
+		}
+		int freqAll = 0;
+		int freqProduct = 0;
+		int transactionWithProduct = 0;
+		for (int i = 0; i<transactionList.size(); i++) {
+			if (transactionList.get(i).isElement(firstProduct) || transactionList.get(i).isElement(secondProduct)) {
+				freqAll+=1;
+			}
+			if (transactionList.get(i).isElement(firstProduct) && transactionList.get(i).isElement(secondProduct)) {
+				freqProduct+=1;
+			}
+			if (transactionList.get(i).isElement(firstProduct)) {
+				transactionWithProduct+=1;
+			}
+
+		}
+		double firstParameter = (freqAll*100/transactionList.size());
+		double secondParameter = (freqProduct*100/transactionWithProduct);
+		System.out.println(firstProduct.name() + "->" +secondProduct.name() + " (" + firstParameter + "%, " + secondParameter + "%)");
+	}
+
+	private static void countProbability() {
+		double transationLength = transactionList.size();
+		double value,percentageValue;
+		Set<EnumElements.Element> typesOfElements = quantityElements.keySet();
+		for (Iterator<EnumElements.Element> it = typesOfElements.iterator(); it.hasNext(); ) {
+			EnumElements.Element singleElement = it.next();
+			value = quantityElements.get(singleElement);
+			percentageValue = (value/transationLength)*100;
+			percentageMap.put(singleElement, Integer.valueOf((int) roundAndCutDouble(2, percentageValue)));
+		}
+	}
+
+	private static void showProbability() {
+		System.out.println("\nWsparcie:");
+		for (Iterator<EnumElements.Element> it = percentageMap.keySet().iterator(); it.hasNext(); ) {
+			EnumElements.Element singleElement = it.next();
+			System.out.println(singleElement.name() + " " + percentageMap.get(singleElement) + "%");
 		}
 	}
 
@@ -79,17 +147,16 @@ public class EksploracjaDanych {
 		}
 	}
 
-	private static void showFrequentData() {
-		double transationLength = transactionList.size();
-		double value,percentageValue;
-		System.out.println("\nFrequent data(" + percentageTreshold +"% treshold):");
-		Set<EnumElements.Element> typesOfElements = quantityElements.keySet();
-		for (Iterator<EnumElements.Element> it = typesOfElements.iterator(); it.hasNext(); ) {
+	private static void showMostFrequentData() {
+		System.out.println("\nPodaj prog procentowy:");
+		Scanner input = new Scanner(System.in);
+		String in = input.nextLine();
+		percentageTreshold = Integer.valueOf(in);
+		System.out.println("\nElementy częste:");
+		for (Iterator<EnumElements.Element> it = percentageMap.keySet().iterator(); it.hasNext(); ) {
 			EnumElements.Element singleElement = it.next();
-			value = quantityElements.get(singleElement);
-			percentageValue = (value/transationLength)*100;
-			if (percentageValue>(percentageTreshold)) {
-				System.out.println(singleElement.name() + " " + Integer.valueOf((int) roundAndCutDouble(2, percentageValue)) + "%");
+			if (percentageMap.get(singleElement)>(percentageTreshold)) {
+				System.out.println(singleElement.name() + " " + percentageMap.get(singleElement) + "%");
 			}
 		}
 	}

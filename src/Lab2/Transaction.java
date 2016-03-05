@@ -3,6 +3,7 @@
  **/
 package Lab2;
 
+import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,14 @@ public class Transaction extends EnumElements{
 		System.out.println();
 		for (int i=0; i<elements.size(); i++) {
 			System.out.print(elements.get(i) + " ");
+		}
+	}
+
+	public boolean isElement(EnumElements.Element elem) {
+		if (elements.contains(elem)) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
