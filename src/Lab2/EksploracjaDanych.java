@@ -13,31 +13,31 @@ public class EksploracjaDanych {
 	private static final List<Transaction> transactionList = new ArrayList<>();
 	private static final Map<EnumElements.Element, Integer> quantityElements = new HashMap<>();
 	private static final Map<EnumElements.Element, Integer> percentageMap = new HashMap<>();
+	private static List<Map.Entry<EnumElements.Element, Integer>> sortedMap = new ArrayList<>();
 	private static int supportTreshold = 50;
 	private static int confidenceTreshold = 50;
 	private static boolean addOne = false;
 
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
+		System.out.println("Dane wczytywane są z pliku Lab2/resources/dane.txt");
 		readDataFromFile("src/Lab2/resources/dane_prezentacja.txt");
-//		readDataFromFile("src/Lab2/resources/dane.txt");
 
-		//Dane częste
 		countFrequentData();
-
 		countProbability();
+		sortPercentageMap();
 
 		if (mainMenu()==-1){
 			return;
 		}
+	}
 
-
-
-		//Pewność (confidence) c
-
-
-
-
+	private static void sortPercentageMap() {
+		sortedMap = new ArrayList<>(percentageMap.entrySet());
+		ElementComparator comparator = new ElementComparator();
+		comparator.setSortBy(ElementComparator.Order.Key);
+		Collections.sort(sortedMap, comparator);
+		Collections.reverse(sortedMap);
 	}
 
 	private static int mainMenu() {
@@ -138,11 +138,17 @@ public class EksploracjaDanych {
 
 	private static void showProbability() {
 		System.out.println("\nWsparcie:");
-		for (Iterator<EnumElements.Element> it = percentageMap.keySet().iterator(); it.hasNext(); ) {
+/*		for (Iterator<EnumElements.Element> it = percentageMap.keySet().iterator(); it.hasNext(); ) {
 			EnumElements.Element singleElement = it.next();
 			System.out.println(singleElement.name() + " " + percentageMap.get(singleElement) + "%");
+		}	*/
+		for (int i = 0; i< sortedMap.size(); i++ ) {
+			System.out.println(sortedMap.get(i).getKey().name() + " " + sortedMap.get(i).getValue() + "%");
 		}
+		//Sort map
 	}
+
+
 
 	private static void countFrequentData() {
 		List<EnumElements.Element> keys;
@@ -167,11 +173,15 @@ public class EksploracjaDanych {
 		String in = input.nextLine();
 		supportTreshold = Integer.valueOf(in);
 		System.out.println("\nElementy częste:");
-		for (Iterator<EnumElements.Element> it = percentageMap.keySet().iterator(); it.hasNext(); ) {
-			EnumElements.Element singleElement = it.next();
-			if (percentageMap.get(singleElement)>(supportTreshold)) {
-				System.out.println(singleElement.name() + " " + percentageMap.get(singleElement) + "%");
-			}
+//		for (Iterator<EnumElements.Element> it = percentageMap.keySet().iterator(); it.hasNext(); ) {
+//			EnumElements.Element singleElement = it.next();
+//			if (percentageMap.get(singleElement)>(supportTreshold)) {
+//				System.out.println(singleElement.name() + " " + percentageMap.get(singleElement) + "%");
+//			}
+//		}
+		for (int i = 0; i< sortedMap.size(); i++ ) {
+			if (sortedMap.get(i).getValue()>(supportTreshold))
+			System.out.println(sortedMap.get(i).getKey().name() + " " + sortedMap.get(i).getValue() + "%");
 		}
 	}
 

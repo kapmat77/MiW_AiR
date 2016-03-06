@@ -1,0 +1,6 @@
+ID TRANSAKCJI	ELEMENTY TRANSAKCJI
+1	kawa	mleko	cukier	orzeszki
+2	kawa		cukier		jajka
+3	kawa		cukier			chleb	masło
+4			cukier	orzeszki	jajka			miód
+5		mleko			jajka		masło
