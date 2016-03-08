@@ -15,7 +15,7 @@ public class MetodaKNN {
 	
 	public static void main(String[] args) {
 //		choseObjectsToRead();
-		readDataFromFile();
+		readDataFromFile(new Iris());
 		setInputIris();
 //		countDistances();
 	}
@@ -32,7 +32,7 @@ public class MetodaKNN {
 		System.out.println(inputIris.toString());
 	}
 	
-	private static int readDataFromFile() {
+	private static <T> int readDataFromFile(T singleObjet) {
 		File dataFile = new File(DATA_PATH);
 		try {
 			Scanner in = new Scanner(dataFile);
@@ -43,9 +43,11 @@ public class MetodaKNN {
 				line = in.nextLine();
 				line = line.replace(",", ".");
 				parts = line.split("\t");
-				singleIris = new Iris(Double.valueOf(parts[0]), Double.valueOf(parts[1]), Double.valueOf(parts[2]),
-						Double.valueOf(parts[3]), Iris.convertStringToType(parts[4]));
-				objectsList.add(singleIris);
+//				singleObjet = new T();
+//				singleIris = new T();
+//				singleIris = new T(Double.valueOf(parts[0]), Double.valueOf(parts[1]), Double.valueOf(parts[2]),
+//						Double.valueOf(parts[3]), Iris.convertStringToType(parts[4]));
+//				objectsList.add(singleObjet);
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
