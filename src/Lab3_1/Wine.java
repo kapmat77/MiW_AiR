@@ -36,7 +36,9 @@ public class Wine {
 		this.proline = 0;
 	}
 
-	public Wine(int classType, double alcohol, double malicAcid, double ash, double alcalinityOfAshe, double magnesium, double totalPhenols, double nonflavanoidPhenols, double proanthocyanins, double colorIntensity, double hue, double od280od315OfDilutedWines, int proline) {
+	public Wine(int classType, double alcohol, double malicAcid, double ash, double alcalinityOfAshe,
+	            double magnesium, double totalPhenols, double nonflavanoidPhenols, double proanthocyanins,
+	            double colorIntensity, double hue, double od280od315OfDilutedWines, int proline) {
 		this.classType = classType;
 		this.alcohol = alcohol;
 		this.malicAcid = malicAcid;
@@ -50,6 +52,10 @@ public class Wine {
 		this.hue = hue;
 		this.od280od315OfDilutedWines = od280od315OfDilutedWines;
 		this.proline = proline;
+	}
+
+	public int getWineClassType() {
+		return this.classType;
 	}
 
 	@Override

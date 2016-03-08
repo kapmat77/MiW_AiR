@@ -4,20 +4,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class MetodaKNN {
 
-	private static final String DATA_PATH = "src/Lab3_1/resources/dataIris.txt";
-	private static List<Iris> objectsList = new ArrayList<>();
+	private static String DATA_PATH = "src/Lab3_1/resources/dataIris.txt";
+	private static List<Object> objectsList = new ArrayList<>(); //TODO ???? WTF
 	private static Iris inputIris = new Iris();
 	
 	public static void main(String[] args) {
+//		choseObjectsToRead();
 		readDataFromFile();
 		setInputIris();
 //		countDistances();
 	}
-	
+
 	private static void setInputIris() {
 		List<String> input = new ArrayList<>();
 		for (int i=0; i<4; i++) {

@@ -29,7 +29,7 @@ public class Iris {
 	}
 	
 	public IrisType getIrisType() {
-		return type;
+		return this.type;
 	}
 	
 	public static IrisType convertStringToType(String strType) {
