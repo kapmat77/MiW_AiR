@@ -27,7 +27,7 @@ public class MetodaKNN {
 		}
 		inputIris = new Iris(Double.valueOf(input.get(0)), Double.valueOf(input.get(1)), Double.valueOf(input.get(2)),
 				Double.valueOf(input.get(3)), Iris.convertStringToType("none"));
-		inputIris.showIris();
+		System.out.println(inputIris.toString());
 	}
 	
 	private static int readDataFromFile() {

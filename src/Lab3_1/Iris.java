@@ -13,27 +13,19 @@ public class Iris {
 	}
 	
 	public Iris() {
-		leafLength = 0;
-		leafWidth = 0;
-		petalLength = 0;
-		petalWidth = 0;
-		type = IrisType.NONE;
+		this.leafLength = 0;
+		this.leafWidth = 0;
+		this.petalLength = 0;
+		this.petalWidth = 0;
+		this.type = IrisType.NONE;
 	}
 	
-	public Iris(double ll, double lw, double pl, double pw, IrisType tp) {
-		leafLength = ll;
-		leafWidth = lw;
-		petalLength = pl;
-		petalWidth = pw;
-		type = tp;
-	}
-	
-	public void showIris() {
-		System.out.println("LeafLength: " + leafLength);
-		System.out.println("LeafWidth: " + leafWidth);
-		System.out.println("PetalLength: " + petalLength);
-		System.out.println("PetalWidth: " + petalWidth);
-		System.out.println("Type: " + type.name());
+	public Iris(double leafLength, double leafWidth, double petalLength, double petalWidth, IrisType type) {
+		this.leafLength = leafLength;
+		this.leafWidth = leafWidth;
+		this.petalLength = petalLength;
+		this.petalWidth = petalWidth;
+		this.type = type;
 	}
 	
 	public IrisType getIrisType() {
@@ -51,5 +43,16 @@ public class Iris {
 			default:
 				return IrisType.NONE;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Iris {" +
+				"leafLength=" + leafLength +
+				", leafWidth=" + leafWidth +
+				", petalLength=" + petalLength +
+				", petalWidth=" + petalWidth +
+				", type=" + type +
+				"}";
 	}
 }
