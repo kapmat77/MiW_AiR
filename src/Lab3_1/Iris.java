@@ -1,4 +1,10 @@
+/**
+ * Created by Kapmat on 2016-03-08.
+ **/
+
 package Lab3_1;
+
+import java.util.Scanner;
 
 public class Iris {
 	
@@ -51,6 +57,23 @@ public class Iris {
 			default:
 				return IrisType.NONE;
 		}
+	}
+
+	public static String[] getInputParameters() {
+		String setOfParameters[] = new String[5];
+		Scanner input = new Scanner(System.in);
+
+		System.out.println("leafLength: ");
+		setOfParameters[0] = input.nextLine();
+		System.out.println("leafWidth: ");
+		setOfParameters[1] = input.nextLine();
+		System.out.println("petalLength: ");
+		setOfParameters[2] = input.nextLine();
+		System.out.println("petalWidth: ");
+		setOfParameters[3] = input.nextLine();
+		setOfParameters[4] = IrisType.NONE.name();
+
+		return setOfParameters;
 	}
 
 	@Override

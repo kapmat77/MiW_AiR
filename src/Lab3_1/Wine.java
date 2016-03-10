@@ -4,6 +4,8 @@
 
 package Lab3_1;
 
+import java.util.Scanner;
+
 public class Wine {
 
 	private int classType;
@@ -79,6 +81,41 @@ public class Wine {
 		return this.classType;
 	}
 
+	public static String[] getInputParameters(){
+		String setOfParameters[] = new String[14];
+		Scanner input = new Scanner(System.in);
+
+		setOfParameters[0] = String.valueOf(0);
+		System.out.println("alcohol: ");
+		setOfParameters[1] = input.nextLine();
+		System.out.println("malicAcid: ");
+		setOfParameters[2] = input.nextLine();
+		System.out.println("ash: ");
+		setOfParameters[3] = input.nextLine();
+		System.out.println("alcalinityOfAshe: ");
+		setOfParameters[4] = input.nextLine();
+		System.out.println("magnesium: ");
+		setOfParameters[5] = input.nextLine();
+		System.out.println("totalPhenols: ");
+		setOfParameters[6] = input.nextLine();
+		System.out.println("flavanoids: ");
+		setOfParameters[7] = input.nextLine();
+		System.out.println("nonflavanoidPhenols: ");
+		setOfParameters[8] = input.nextLine();
+		System.out.println("proanthocyanins: ");
+		setOfParameters[9] = input.nextLine();
+		System.out.println("colorIntensity: ");
+		setOfParameters[10] = input.nextLine();
+		System.out.println("hue: ");
+		setOfParameters[11] = input.nextLine();
+		System.out.println("od280od315OfDilutedWines: ");
+		setOfParameters[12] = input.nextLine();
+		System.out.println("proline: ");
+		setOfParameters[13] = input.nextLine();
+
+		return setOfParameters;
+	}
+
 	@Override
 	public String toString() {
 		return "Wine {" +
@@ -91,7 +128,6 @@ public class Wine {
 				", totalPhenols=" + totalPhenols +
 				", flavanoids=" + flavanoids +
 				", nonflavanoidPhenols=" + nonflavanoidPhenols +
-				", proanthocyanins=" + proanthocyanins +
 				", proanthocyanins=" + proanthocyanins +
 				", colorIntensity=" + colorIntensity +
 				", hue=" + hue +
