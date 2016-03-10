@@ -2,11 +2,11 @@ package Lab3_1;
 
 public class Iris {
 	
-	private double leafLength = 0;
-	private double leafWidth = 0;
-	private double petalLength = 0;
-	private double petalWidth = 0;
-	private IrisType type = IrisType.NONE;
+	private double leafLength;
+	private double leafWidth;
+	private double petalLength;
+	private double petalWidth;
+	private IrisType type;
 	
 	private enum IrisType {
 		SETOSA, VERSICOLOR, VIRGINICA, NONE
@@ -27,7 +27,15 @@ public class Iris {
 		this.petalWidth = petalWidth;
 		this.type = type;
 	}
-	
+
+	public Iris(String[] parameters) {
+		this.leafLength = Double.valueOf(parameters[0]);
+		this.leafWidth = Double.valueOf(parameters[1]);
+		this.petalLength = Double.valueOf(parameters[2]);
+		this.petalWidth = Double.valueOf(parameters[3]);
+		this.type = Iris.convertStringToType(parameters[4]);
+	}
+
 	public IrisType getIrisType() {
 		return this.type;
 	}

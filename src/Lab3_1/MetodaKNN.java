@@ -9,15 +9,32 @@ import java.util.Scanner;
 
 public class MetodaKNN {
 
-	private static String DATA_PATH = "src/Lab3_1/resources/dataIris.txt";
 	private static List<Object> objectsList = new ArrayList<>(); //TODO ???? WTF
 	private static Iris inputIris = new Iris();
 	
 	public static void main(String[] args) {
-//		choseObjectsToRead();
-		readDataFromFile(new Iris());
+		String dataType = chooseType();
+		String dataPath = "src/Lab3_1/resources/data" + dataType +".txt";
+		readDataFromFile(dataPath, dataType);
 		setInputIris();
 //		countDistances();
+	}
+
+	private static String chooseType() {
+		System.out.println("Wpisz numer wczytywanego obiektu");
+		System.out.println("1.Iris");
+		System.out.println("2.Wine");
+		Scanner in = new Scanner(System.in);
+		while (true) {
+			switch (in.nextLine()) {
+				case "1":
+					return "Iris";
+				case "2":
+					return "Wine";
+				default:
+					System.out.println("Zła liczba. Wybierz ponownie.");
+			}
+		}
 	}
 
 	private static void setInputIris() {
@@ -32,22 +49,27 @@ public class MetodaKNN {
 		System.out.println(inputIris.toString());
 	}
 	
-	private static <T> int readDataFromFile(T singleObjet) {
-		File dataFile = new File(DATA_PATH);
+	private static int readDataFromFile(String path, String typeOfObject) {
+		Object singleObject = null;
+		File dataFile = new File(path);
 		try {
 			Scanner in = new Scanner(dataFile);
-			String[] parts;
-			Iris singleIris;
+			String[] parameters;
 			String line = in.nextLine();
-			while(in.hasNextLine()) {
+			while (in.hasNextLine()) {
 				line = in.nextLine();
 				line = line.replace(",", ".");
-				parts = line.split("\t");
-//				singleObjet = new T();
-//				singleIris = new T();
-//				singleIris = new T(Double.valueOf(parts[0]), Double.valueOf(parts[1]), Double.valueOf(parts[2]),
-//						Double.valueOf(parts[3]), Iris.convertStringToType(parts[4]));
-//				objectsList.add(singleObjet);
+				parameters = line.split("\t");
+				switch (typeOfObject) {
+					case "Iris":
+						singleObject = new Iris(parameters);
+						break;
+					case "Wine":
+						singleObject = new Wine(parameters);
+						break;
+				}
+				objectsList.add(singleObject);
+				System.out.println(singleObject.toString());
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
