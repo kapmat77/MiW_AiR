@@ -4,6 +4,11 @@
 
 package Lab3_1;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Wine implements InputData{
@@ -116,6 +121,29 @@ public class Wine implements InputData{
 		setOfParameters[13] = input.nextLine();
 
 		return setOfParameters;
+	}
+
+	public static List<Wine> readDataFromFile(String path) throws FileNotFoundException {
+		List<Wine> objectsList = new ArrayList<>();
+		File dataFile = new File(path);
+		try {
+			Scanner in = new Scanner(dataFile);
+			String[] parameters;
+			String line = in.nextLine();
+			while (in.hasNextLine()) {
+				Wine singleObject = new Wine();
+				line = in.nextLine();
+				line = line.replace(",", ".");
+				parameters = line.split("\t");
+				singleObject.setParamFromStringTab(parameters);
+				objectsList.add(singleObject);
+				System.out.println(singleObject.toString());
+			}
+			in.close();
+		} catch (FileNotFoundException e) {
+			throw new FileNotFoundException("Plik nie zostal wczytany poprawnie - " + e.getMessage());
+		}
+		return objectsList;
 	}
 
 	@Override

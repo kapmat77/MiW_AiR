@@ -13,28 +13,33 @@ public class MetodaKNN {
 //	private static List<Object> objectsList = new ArrayList<>(); //TODO ???? WTF
 	
 	public static void main(String[] args) throws Exception {
-		DataType dType = chooseType();
+//		DataType dType = chooseType();
+		DataType dType = DataType.IRIS;
 		String dataPath = "src/Lab3_1/resources/data" + dType.name() +".txt";
+		int parK = 5;
 
 		//Read data from txt file
 		switch (dType) {
 			case IRIS:
-				Iris irisObject = new Iris();
-				readDataFromFile(dataPath, irisObject);
-				irisObject = new Iris(Iris.getInputParameters());
-				System.out.println(irisObject.toString());
+				Iris inputIris = new Iris(Iris.getInputParameters());
+				List<Iris> irisList = Iris.readDataFromFile(dataPath);
+				Map<Iris,Double> distanceIrisMap = simpleCountDistances(inputIris, irisList);
+				//find K neighbours
+				while (parK>1) {
+					parK--;
+					findBestNeighbour(distanceIrisMap);
+				}
 				break;
 			case WINE:
-				Wine wineObject = new Wine();
-				readDataFromFile(dataPath, wineObject);
-				wineObject = new Wine(Wine.getInputParameters());
-				System.out.println(wineObject.toString());
+				Wine inputWine = new Wine(Wine.getInputParameters());
+				List<Wine> wineList = Wine.readDataFromFile(dataPath);
+				Map<Wine,Double> distanceWineMap = simpleCountDistances(inputWine, wineList);
+				//find K neighbours
+				findBestNeighbour(distanceWineMap);
 				break;
 			default:
 				System.exit(-1);
 		}
-
-//		countDistances();
 	}
 
 	private static DataType chooseType() {
@@ -54,7 +59,12 @@ public class MetodaKNN {
 		}
 	}
 
-	private static <T extends InputData> Map<T,Double> countDistances(T inputObject, List<T> objectsList) {
+	private static <T> void findBestNeighbour(Map<T,Double> distanceMap) {
+		//iterator po wszystkich elementach
+		//zwracamy dane najlepszego obiektu i go usuwamy z Mapy (tylko jak :-O)
+	}
+
+	private static <T extends InputData> Map<T,Double> simpleCountDistances(T inputObject, List<T> objectsList) {
 		Map<T,Double> distanceMap = new HashMap<>();
 		double sum = 0;
 		double dif = 0;
@@ -68,28 +78,6 @@ public class MetodaKNN {
 			distanceMap.put(singleObject, result);
 		}
 		return distanceMap;
-	}
-
-	private static <T extends InputData> List<T> readDataFromFile(String path, T singleObject) throws Exception {
-		List<T> objectsList = new ArrayList<>();
-		File dataFile = new File(path);
-		try {
-			Scanner in = new Scanner(dataFile);
-			String[] parameters;
-			String line = in.nextLine();
-			while (in.hasNextLine()) {
-				line = in.nextLine();
-				line = line.replace(",", ".");
-				parameters = line.split("\t");
-				singleObject.setParamFromStringTab(parameters);
-				objectsList.add(singleObject);
-				System.out.println(singleObject.toString());
-			}
-			in.close();
-		} catch (FileNotFoundException e) {
-			throw new FileNotFoundException("Plik nie zostal wczytany poprawnie - " + e.getMessage());
-		}
-		return objectsList;
 	}
 
 	private enum DataType {
