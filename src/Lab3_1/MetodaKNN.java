@@ -6,39 +6,38 @@ package Lab3_1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class MetodaKNN {
 
-	private static List<Object> objectsList = new ArrayList<>(); //TODO ???? WTF
-	private static Object inputObject = null;
+//	private static List<Object> objectsList = new ArrayList<>(); //TODO ???? WTF
 	
-	public static void main(String[] args) {
-		String dataType = chooseType();
-		String dataPath = "src/Lab3_1/resources/data" + dataType +".txt";
-		readDataFromFile(dataPath,dataType);
+	public static void main(String[] args) throws Exception {
+		DataType dType = chooseType();
+		String dataPath = "src/Lab3_1/resources/data" + dType.name() +".txt";
 
-		System.out.println("Wprowadz dane nowego obiektu");
-		setInputObject(dataType);
+		//Read data from txt file
+		switch (dType) {
+			case IRIS:
+				Iris irisObject = new Iris();
+				readDataFromFile(dataPath, irisObject);
+				irisObject = new Iris(Iris.getInputParameters());
+				System.out.println(irisObject.toString());
+				break;
+			case WINE:
+				Wine wineObject = new Wine();
+				readDataFromFile(dataPath, wineObject);
+				wineObject = new Wine(Wine.getInputParameters());
+				System.out.println(wineObject.toString());
+				break;
+			default:
+				System.exit(-1);
+		}
 
-		System.out.println(inputObject.toString());
 //		countDistances();
 	}
 
-	private static void setInputObject(String dataType) {
-		switch (dataType) {
-			case "Iris":
-				inputObject = new Iris(Iris.getInputParameters());
-				break;
-			case "Wine":
-				inputObject = new Wine(Wine.getInputParameters());
-				break;
-		}
-	}
-
-	private static String chooseType() {
+	private static DataType chooseType() {
 		System.out.println("Wpisz numer wczytywanego obiektu");
 		System.out.println("1.Iris");
 		System.out.println("2.Wine");
@@ -46,17 +45,33 @@ public class MetodaKNN {
 		while (true) {
 			switch (in.nextLine()) {
 				case "1":
-					return "Iris";
+					return DataType.IRIS;
 				case "2":
-					return "Wine";
+					return DataType.WINE;
 				default:
 					System.out.println("Zła liczba. Wybierz ponownie.");
 			}
 		}
 	}
-	
-	private static int readDataFromFile(String path, String typeOfObject) {
-		Object singleObject = null;
+
+	private static <T extends InputData> Map<T,Double> countDistances(T inputObject, List<T> objectsList) {
+		Map<T,Double> distanceMap = new HashMap<>();
+		double sum = 0;
+		double dif = 0;
+		double result = 0;
+		for (T singleObject: objectsList) {
+			for (int i=0; i<singleObject.numberOfParameters(); i++) {
+				dif = inputObject.getParameterById(i+1) - objectsList.get(i).getParameterById(i+1);
+				sum += Math.pow(dif,2);
+			}
+			result = Math.sqrt(sum);
+			distanceMap.put(singleObject, result);
+		}
+		return distanceMap;
+	}
+
+	private static <T extends InputData> List<T> readDataFromFile(String path, T singleObject) throws Exception {
+		List<T> objectsList = new ArrayList<>();
 		File dataFile = new File(path);
 		try {
 			Scanner in = new Scanner(dataFile);
@@ -66,23 +81,18 @@ public class MetodaKNN {
 				line = in.nextLine();
 				line = line.replace(",", ".");
 				parameters = line.split("\t");
-				switch (typeOfObject) {
-					case "Iris":
-						singleObject = new Iris(parameters);
-						break;
-					case "Wine":
-						singleObject = new Wine(parameters);
-						break;
-				}
+				singleObject.setParamFromStringTab(parameters);
 				objectsList.add(singleObject);
 				System.out.println(singleObject.toString());
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("Plik nie zostal wczytany poprawnie");
-			e.printStackTrace();
-			return -1;
+			throw new FileNotFoundException("Plik nie zostal wczytany poprawnie - " + e.getMessage());
 		}
-		return 1;
+		return objectsList;
+	}
+
+	private enum DataType {
+		IRIS, WINE
 	}
 }

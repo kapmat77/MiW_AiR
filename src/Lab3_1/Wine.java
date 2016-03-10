@@ -6,7 +6,7 @@ package Lab3_1;
 
 import java.util.Scanner;
 
-public class Wine {
+public class Wine implements InputData{
 
 	private int classType;
 	private double alcohol;
@@ -82,6 +82,8 @@ public class Wine {
 	}
 
 	public static String[] getInputParameters(){
+		System.out.println("Wprowadz parametry nowego obiektu");
+
 		String setOfParameters[] = new String[14];
 		Scanner input = new Scanner(System.in);
 
@@ -114,6 +116,63 @@ public class Wine {
 		setOfParameters[13] = input.nextLine();
 
 		return setOfParameters;
+	}
+
+	@Override
+	public double getParameterById(int id) {
+		switch (id) {
+			case 1:
+				return alcohol;
+			case 2:
+				return malicAcid;
+			case 3:
+				return ash;
+			case 4:
+				return alcalinityOfAshe;
+			case 5:
+				return magnesium;
+			case 6:
+				return totalPhenols;
+			case 7:
+				return flavanoids;
+			case 8:
+				return nonflavanoidPhenols;
+			case 9:
+				return proanthocyanins;
+			case 10:
+				return colorIntensity;
+			case 11:
+				return hue;
+			case 12:
+				return od280od315OfDilutedWines;
+			case 13:
+				return proline;
+			default:
+				return 0;
+		}
+	}
+
+	@Override
+	public void setParamFromStringTab(String[] parameters) {
+		this.classType = Integer.valueOf(parameters[0]);
+		this.alcohol = Double.valueOf(parameters[1]);
+		this.malicAcid = Double.valueOf(parameters[2]);
+		this.ash = Double.valueOf(parameters[3]);
+		this.alcalinityOfAshe = Double.valueOf(parameters[4]);
+		this.magnesium = Integer.valueOf(parameters[5]);
+		this.totalPhenols = Double.valueOf(parameters[6]);
+		this.flavanoids = Double.valueOf(parameters[7]);
+		this.nonflavanoidPhenols = Double.valueOf(parameters[8]);
+		this.proanthocyanins = Double.valueOf(parameters[9]);
+		this.colorIntensity = Double.valueOf(parameters[10]);
+		this.hue = Double.valueOf(parameters[11]);
+		this.od280od315OfDilutedWines = Double.valueOf(parameters[12]);
+		this.proline = Integer.valueOf(parameters[13]);
+	}
+
+	@Override
+	public int numberOfParameters() {
+		return 13;
 	}
 
 	@Override

@@ -6,7 +6,7 @@ package Lab3_1;
 
 import java.util.Scanner;
 
-public class Iris {
+public class Iris implements InputData{
 	
 	private double leafLength;
 	private double leafWidth;
@@ -42,8 +42,8 @@ public class Iris {
 		this.type = Iris.convertStringToType(parameters[4]);
 	}
 
-	public IrisType getIrisType() {
-		return this.type;
+	public IrisType getType() {
+		return type;
 	}
 	
 	public static IrisType convertStringToType(String strType) {
@@ -60,6 +60,8 @@ public class Iris {
 	}
 
 	public static String[] getInputParameters() {
+		System.out.println("Wprowadz parametry nowego obiektu");
+
 		String setOfParameters[] = new String[5];
 		Scanner input = new Scanner(System.in);
 
@@ -74,6 +76,36 @@ public class Iris {
 		setOfParameters[4] = IrisType.NONE.name();
 
 		return setOfParameters;
+	}
+
+	@Override
+	public double getParameterById(int id) {
+		switch (id) {
+			case 1:
+				return leafLength;
+			case 2:
+				return leafLength;
+			case 3:
+				return leafLength;
+			case 4:
+				return leafLength;
+			default:
+				return 0;
+		}
+	}
+
+	@Override
+	public void setParamFromStringTab(String[] parameters) {
+		this.leafLength = Double.valueOf(parameters[0]);
+		this.leafWidth = Double.valueOf(parameters[1]);
+		this.petalLength = Double.valueOf(parameters[2]);
+		this.petalWidth = Double.valueOf(parameters[3]);
+		this.type = Iris.convertStringToType(parameters[4]);
+	}
+
+	@Override
+	public int numberOfParameters() {
+		return 4;
 	}
 
 	@Override
