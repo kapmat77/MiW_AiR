@@ -100,7 +100,7 @@ public class Wine implements InputData{
 	}
 
 	public static String[] getInputParameters(){
-		System.out.println("Wprowadz parametry nowego obiektu");
+		System.out.println("\nWprowadz parametry nowego obiektu");
 
 		String setOfParameters[] = new String[14];
 		Scanner input = new Scanner(System.in);
