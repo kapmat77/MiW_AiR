@@ -8,18 +8,24 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 public class MetodaKNN {
-	
+
+	private static final int MAX_K = 10;
+
 	public static void main(String[] args) throws Exception {
 		DataType dType = chooseType();
 		String dataPath = "src/Lab3_1/resources/data" + dType.name() +".txt";
 		System.out.println("1.Prosta metoda KNN z podaną wartością K");
 		System.out.println("2.Prosta metoda KNN porównująca wyniki dla różnych K ");
-		Integer numberOfOperation = 2;
-		executeProgram(numberOfOperation, dType, dataPath);
+		int numberOfOperation = 2;
+		System.out.println();
+		System.out.println("1.Zwykłe odległości");
+		System.out.println("2.Ważone odległości");
+		int distanceImportanceType = 2;
+		executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
 	}
 
-	private static void executeProgram(Integer numberOfOperation, DataType dType,  String dataPath) throws FileNotFoundException {
-		Integer parK = 10;
+	private static void executeProgram(Integer numberOfOperation, DataType dType,  String dataPath, int distanceImportanceType) throws FileNotFoundException {
+		Integer parK = MAX_K;
 		List<String> types;
 		Map<String,Integer> countBestAssign = new HashMap<>();
 		switch (dType) {
@@ -30,12 +36,12 @@ public class MetodaKNN {
 				switch (numberOfOperation) {
 					case 1:
 						parK = getK();
-						types = findAssignmentIris(parK, dataPath, inputIris);
+						types = findAssignmentIris(parK, dataPath, inputIris, distanceImportanceType);
 						System.out.println("Typ obiektu: " + types.toString());
 						break;
 					case 2:
 						while (parK>0) {
-							types = findAssignmentIris(parK, dataPath, inputIris);
+							types = findAssignmentIris(parK, dataPath, inputIris, distanceImportanceType);
 							parK--;
 							for (String type : types) {
 								if (!countBestAssign.containsKey(type)) {
@@ -64,12 +70,12 @@ public class MetodaKNN {
 				switch (numberOfOperation) {
 					case 1:
 						parK = getK();
-						types = findAssignmentWine(parK, dataPath, inputWine);
+						types = findAssignmentWine(parK, dataPath, inputWine, distanceImportanceType);
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
 						while (parK>0) {
-							types = findAssignmentWine(parK, dataPath, inputWine);
+							types = findAssignmentWine(parK, dataPath, inputWine, distanceImportanceType);
 							parK--;
 							for (String type : types) {
 								if (!countBestAssign.containsKey(type)) {
@@ -96,9 +102,9 @@ public class MetodaKNN {
 		}
 	}
 
-	private static List<String> findAssignmentIris(int parK, String dataPath, Iris inputIris) throws FileNotFoundException {
+	private static List<String> findAssignmentIris(int parK, String dataPath, Iris inputIris, int distanceImportanceType) throws FileNotFoundException {
 		List<Iris> irisList = Iris.readDataFromFile(dataPath);
-		Map<Iris,Double> distanceIrisMap = createSimpleDistanceMap(inputIris, irisList);
+		Map<Iris,Double> distanceIrisMap = createDistanceMap(inputIris, irisList);
 
 		ArrayList<Iris> bestIrisNeighbours = new ArrayList<>();
 
@@ -115,12 +121,21 @@ public class MetodaKNN {
 			System.out.println(singleIris.toString() + " " + countSingleDistance(inputIris, singleIris));
 		}
 
-		return assignInputObject(bestIrisNeighbours, parK);
+		switch (distanceImportanceType) {
+			case 1:
+				return simpleAssignInputObject(bestIrisNeighbours, parK);
+			case 2:
+				return importanceAssignInputObject(bestIrisNeighbours, parK);
+			default:
+				System.exit(-1);
+		}
+		System.exit(-1);
+		return null;
 	}
 
-	private static List<String> findAssignmentWine(int parK, String dataPath, Wine inputWine) throws FileNotFoundException {
+	private static List<String> findAssignmentWine(int parK, String dataPath, Wine inputWine, int distanceImportanceType) throws FileNotFoundException {
 		List<Wine> wineList = Wine.readDataFromFile(dataPath);
-		Map<Wine,Double> distanceWineMap = createSimpleDistanceMap(inputWine, wineList);
+		Map<Wine,Double> distanceWineMap = createDistanceMap(inputWine, wineList);
 
 		ArrayList<Wine> bestWineNeighbours = new ArrayList<>();
 
@@ -137,10 +152,19 @@ public class MetodaKNN {
 			System.out.println(singleWine.toString() + " " + countSingleDistance(inputWine, singleWine));
 		}
 
-		return assignInputObject(bestWineNeighbours, parK);
+		switch (distanceImportanceType) {
+			case 1:
+				return simpleAssignInputObject(bestWineNeighbours, parK);
+			case 2:
+				return importanceAssignInputObject(bestWineNeighbours, parK);
+			default:
+				System.exit(-1);
+		}
+		System.exit(-1);
+		return null;
 	}
 
-	private static <T extends InputData> List<String> assignInputObject(List<T> bestObjectList, int parK) {
+	private static <T extends InputData> List<String> simpleAssignInputObject(List<T> bestObjectList, int parK) {
 		Map<String,Integer> counterMap = new HashMap<>();
 		String type;
 		for (T singleBestObject: bestObjectList) {
@@ -166,6 +190,24 @@ public class MetodaKNN {
 		System.out.println("\n");
 
 		return returnTypes;
+	}
+
+	private static <T extends InputData> List<String> importanceAssignInputObject(List<T> bestObjectList, int parK) {
+		//Zliczyć dystans dla wszystkich obiektów tego samego typu i podzielić przez ilość obiektów
+		//Najmniejsza wartość oznacza przyporządkowanie !
+
+//		Map<String,Integer> counterMap = new HashMap<>();
+//		Map<String,Integer> sumMap = new HashMap<>();
+//		String type;
+//		for (T singleBestObject: bestObjectList) {
+//			type = singleBestObject.getObjectType();
+//			if (!counterMap.containsKey(type)) {
+//				counterMap.put(type,1);
+//			} else {
+//				counterMap.replace(type, counterMap.get(type),
+//						counterMap.get(type)+1);
+//			}
+//		}
 	}
 
 	private static DataType chooseType() {
@@ -196,7 +238,7 @@ public class MetodaKNN {
 		return null;
 	}
 
-	private static <T extends InputData> Map<T,Double> createSimpleDistanceMap(T inputObject, List<T> objectsList) {
+	private static <T extends InputData> Map<T,Double> createDistanceMap(T inputObject, List<T> objectsList) {
 		Map<T,Double> distanceMap = new HashMap<>();
 		double sum = 0;
 		double dif = 0;
