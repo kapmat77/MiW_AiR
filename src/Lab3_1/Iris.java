@@ -47,8 +47,12 @@ public class Iris implements InputData{
 		this.type = Iris.convertStringToType(parameters[4]);
 	}
 
-	public IrisType getType() {
-		return type;
+	public Iris(Iris anotherIris) {
+		this.leafLength = anotherIris.leafLength;
+		this.leafWidth = anotherIris.leafWidth;
+		this.petalLength = anotherIris.petalLength;
+		this.petalWidth = anotherIris.petalWidth;
+		this.type = anotherIris.type;
 	}
 	
 	public static IrisType convertStringToType(String strType) {
@@ -97,7 +101,7 @@ public class Iris implements InputData{
 				parameters = line.split("\t");
 				singleObject.setParamFromStringTab(parameters);
 				objectsList.add(singleObject);
-				System.out.println(singleObject.toString());
+//				System.out.println(singleObject.toString());
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
@@ -112,11 +116,11 @@ public class Iris implements InputData{
 			case 1:
 				return leafLength;
 			case 2:
-				return leafLength;
+				return leafWidth;
 			case 3:
-				return leafLength;
+				return petalLength;
 			case 4:
-				return leafLength;
+				return petalWidth;
 			default:
 				return 0;
 		}
@@ -129,6 +133,11 @@ public class Iris implements InputData{
 		this.petalLength = Double.valueOf(parameters[2]);
 		this.petalWidth = Double.valueOf(parameters[3]);
 		this.type = Iris.convertStringToType(parameters[4]);
+	}
+
+	@Override
+	public String getObjectType() {
+		return type.name();
 	}
 
 	@Override

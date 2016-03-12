@@ -4,8 +4,6 @@
 
 package Lab3_1;
 
-import java.util.Map;
-
 public interface InputData {
 
 	double getParameterById(int id);
@@ -13,4 +11,6 @@ public interface InputData {
 	int numberOfParameters();
 
 	void setParamFromStringTab(String[] parameters);
+
+	String getObjectType();
 }

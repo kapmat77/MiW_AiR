@@ -82,8 +82,21 @@ public class Wine implements InputData{
 		this.proline = Integer.valueOf(parameters[13]);
 	}
 
-	public int getWineClassType() {
-		return this.classType;
+	public Wine(Wine anotherWine) {
+		this.classType = anotherWine.classType;
+		this.alcohol = anotherWine.alcohol;
+		this.malicAcid = anotherWine.malicAcid;
+		this.ash = anotherWine.ash;
+		this.alcalinityOfAshe = anotherWine.alcalinityOfAshe;
+		this.magnesium = anotherWine.magnesium;
+		this.totalPhenols = anotherWine.totalPhenols;
+		this.flavanoids = anotherWine.flavanoids;
+		this.nonflavanoidPhenols = anotherWine.nonflavanoidPhenols;
+		this.proanthocyanins = anotherWine.proanthocyanins;
+		this.colorIntensity = anotherWine.colorIntensity;
+		this.hue = anotherWine.hue;
+		this.od280od315OfDilutedWines = anotherWine.od280od315OfDilutedWines;
+		this.proline = anotherWine.proline;
 	}
 
 	public static String[] getInputParameters(){
@@ -137,7 +150,7 @@ public class Wine implements InputData{
 				parameters = line.split("\t");
 				singleObject.setParamFromStringTab(parameters);
 				objectsList.add(singleObject);
-				System.out.println(singleObject.toString());
+//				System.out.println(singleObject.toString());
 			}
 			in.close();
 		} catch (FileNotFoundException e) {
@@ -196,6 +209,11 @@ public class Wine implements InputData{
 		this.hue = Double.valueOf(parameters[11]);
 		this.od280od315OfDilutedWines = Double.valueOf(parameters[12]);
 		this.proline = Integer.valueOf(parameters[13]);
+	}
+
+	@Override
+	public String getObjectType() {
+		return String.valueOf(classType);
 	}
 
 	@Override
