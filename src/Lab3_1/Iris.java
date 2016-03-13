@@ -18,6 +18,8 @@ public class Iris implements InputData{
 	private double petalLength;
 	private double petalWidth;
 	private IrisType type;
+
+	private boolean learning  = false;
 	
 	private enum IrisType {
 		SETOSA, VERSICOLOR, VIRGINICA, NONE
@@ -29,6 +31,7 @@ public class Iris implements InputData{
 		this.petalLength = 0;
 		this.petalWidth = 0;
 		this.type = IrisType.NONE;
+		this.learning = false;
 	}
 	
 	public Iris(double leafLength, double leafWidth, double petalLength, double petalWidth, IrisType type) {

@@ -28,6 +28,8 @@ public class Wine implements InputData{
 	private double od280od315OfDilutedWines;
 	private int proline;
 
+	private boolean learning  = false;
+
 	public Wine() {
 		this.classType = 0;
 		this.alcohol = 0;

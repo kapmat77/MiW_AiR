@@ -16,7 +16,7 @@ public class MetodaKNN {
 		String dataPath = "src/Lab3_1/resources/data" + dType.name() +".txt";
 		System.out.println("1.Prosta metoda KNN z podaną wartością K");
 		System.out.println("2.Prosta metoda KNN porównująca wyniki dla różnych K ");
-		int numberOfOperation = 2;
+		int numberOfOperation = 1;
 		System.out.println();
 		System.out.println("1.Zwykłe odległości");
 		System.out.println("2.Ważone odległości");
@@ -39,7 +39,7 @@ public class MetodaKNN {
 					case 1:
 						parK = getK();
 						types = findAssignment(parK, distanceImportanceType, distanceIrisMap);
-						System.out.println("Typ obiektu: " + types.toString());
+						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
 						while (parK>0) {
@@ -129,6 +129,7 @@ public class MetodaKNN {
 			case 1:
 				return simpleAssignInputObject(bestIrisNeighbours, parK);
 			case 2:
+				countVotingCoefficient(bestIrisNeighbours);
 //				return importanceAssignInputObject(bestIrisNeighbours, parK);
 			default:
 				System.exit(-1);
@@ -137,10 +138,10 @@ public class MetodaKNN {
 		return null;
 	}
 
-	private static <T extends InputData> List<String> simpleAssignInputObject(Map<T,Double> bestObjectList, int parK) {
+	private static <T extends InputData> List<String> simpleAssignInputObject(Map<T,Double> bestObjectMap, int parK) {
 		Map<String,Integer> counterMap = new HashMap<>();
 		String type;
-		for (Map.Entry<T,Double> singleBestObject: bestObjectList.entrySet()) {
+		for (Map.Entry<T,Double> singleBestObject: bestObjectMap.entrySet()) {
 			type = singleBestObject.getKey().getObjectType();
 			if (!counterMap.containsKey(type)) {
 				counterMap.put(type,1);
@@ -165,23 +166,26 @@ public class MetodaKNN {
 		return returnTypes;
 	}
 
-//	private static <T extends InputData> List<String> importanceAssignInputObject(List<T> bestObjectList, int parK) {
-//		//Zliczyć dystans dla wszystkich obiektów tego samego typu i podzielić przez ilość obiektów
-//		//Najmniejsza wartość oznacza przyporządkowanie !
-//
-//		Map<String,Integer> counterMap = new HashMap<>();
-//		Map<String,Integer> sumMap = new HashMap<>();
-//		String type;
-//		for (T singleBestObject: bestObjectList) {
-//			type = singleBestObject.getObjectType();
-//			if (!counterMap.containsKey(type)) {
-//				counterMap.put(type,1);
-//			} else {
-//				counterMap.replace(type, counterMap.get(type),
-//						counterMap.get(type)+1);
-//			}
-//		}
-//	}
+	private static <T extends InputData> Map<String, Double> countVotingCoefficient(Map<T,Double> bestObjectList) {
+		Map<String,Integer> numbersOfObjectMap = new HashMap<>();
+		Map<String,Double> votingCoefficientMap = new HashMap<>();
+		for (Map.Entry<T,Double> entry: bestObjectList.entrySet()) {
+			if (!votingCoefficientMap.containsKey(entry.getKey().getObjectType())) {
+				numbersOfObjectMap.put(entry.getKey().getObjectType(), 1);
+				votingCoefficientMap.put(entry.getKey().getObjectType(), entry.getValue());
+			} else {
+				numbersOfObjectMap.replace(entry.getKey().getObjectType(), numbersOfObjectMap.get(entry.getKey().getObjectType()),
+						numbersOfObjectMap.get(entry.getKey().getObjectType()) + 1);
+				votingCoefficientMap.replace(entry.getKey().getObjectType(), votingCoefficientMap.get(entry.getKey().getObjectType()),
+						votingCoefficientMap.get(entry.getKey().getObjectType()) + entry.getValue());
+			}
+		}
+		for (Map.Entry<String,Integer> entry: numbersOfObjectMap.entrySet()) {
+			votingCoefficientMap.replace(entry.getKey(), votingCoefficientMap.get(entry.getKey()), votingCoefficientMap.get(entry.getKey())/entry.getValue());
+		}
+
+		return votingCoefficientMap;
+	}
 
 	private static DataType chooseType() {
 		System.out.println("Wpisz numer wczytywanego obiektu");
