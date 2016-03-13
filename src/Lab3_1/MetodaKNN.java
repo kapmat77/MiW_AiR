@@ -20,7 +20,7 @@ public class MetodaKNN {
 		System.out.println();
 		System.out.println("1.Zwykłe odległości");
 		System.out.println("2.Ważone odległości");
-		int distanceImportanceType = 2;
+		int distanceImportanceType = 1;
 		executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
 	}
 
@@ -33,15 +33,17 @@ public class MetodaKNN {
 				Iris inputIris = new Iris(Iris.getInputParameters());
 				System.out.println("Input Iris:");
 				System.out.println(inputIris.toString() + "\n");
+				List<Iris> irisList = Iris.readDataFromFile(dataPath);
+				Map<Iris,Double> distanceIrisMap = createDistanceMap(inputIris, irisList);
 				switch (numberOfOperation) {
 					case 1:
 						parK = getK();
-						types = findAssignmentIris(parK, dataPath, inputIris, distanceImportanceType);
+						types = findAssignment(parK, distanceImportanceType, distanceIrisMap);
 						System.out.println("Typ obiektu: " + types.toString());
 						break;
 					case 2:
 						while (parK>0) {
-							types = findAssignmentIris(parK, dataPath, inputIris, distanceImportanceType);
+							types = findAssignment(parK, distanceImportanceType, distanceIrisMap);
 							parK--;
 							for (String type : types) {
 								if (!countBestAssign.containsKey(type)) {
@@ -67,15 +69,17 @@ public class MetodaKNN {
 				Wine inputWine = new Wine(Wine.getInputParameters());
 				System.out.println("Input Wine:");
 				System.out.println(inputWine.toString() + "\n");
+				List<Wine> wineList = Wine.readDataFromFile(dataPath);
+				Map<Wine,Double> distanceWineMap = createDistanceMap(inputWine, wineList);
 				switch (numberOfOperation) {
 					case 1:
 						parK = getK();
-						types = findAssignmentWine(parK, dataPath, inputWine, distanceImportanceType);
+						types = findAssignment(parK, distanceImportanceType, distanceWineMap);
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
 						while (parK>0) {
-							types = findAssignmentWine(parK, dataPath, inputWine, distanceImportanceType);
+							types = findAssignment(parK, distanceImportanceType, distanceWineMap);
 							parK--;
 							for (String type : types) {
 								if (!countBestAssign.containsKey(type)) {
@@ -102,30 +106,30 @@ public class MetodaKNN {
 		}
 	}
 
-	private static List<String> findAssignmentIris(int parK, String dataPath, Iris inputIris, int distanceImportanceType) throws FileNotFoundException {
-		List<Iris> irisList = Iris.readDataFromFile(dataPath);
-		Map<Iris,Double> distanceIrisMap = createDistanceMap(inputIris, irisList);
+	private static <T extends InputData> List<String> findAssignment(int parK, int distanceImportanceType,
+	                                               Map<T,Double> distanceIrisMap) throws FileNotFoundException {
 
-		ArrayList<Iris> bestIrisNeighbours = new ArrayList<>();
+		Map<T,Double> bestIrisNeighbours = new HashMap<>();
 
 		int loopNumber = parK;
 		while (loopNumber>0) {
 			loopNumber--;
-			Iris bestIris = findBestNeighbour(distanceIrisMap);
-			distanceIrisMap.remove(findBestNeighbour(distanceIrisMap));
-			bestIrisNeighbours.add(bestIris);
+			findBestNeighbour(distanceIrisMap);
+			Map.Entry<T, Double> neighbour = findBestNeighbour(distanceIrisMap);
+			distanceIrisMap.remove(neighbour.getKey());
+			bestIrisNeighbours.put(neighbour.getKey(), neighbour.getValue());
 		}
 
 		System.out.println("Best neighbours:");
-		for (Iris singleIris: bestIrisNeighbours) {
-			System.out.println(singleIris.toString() + " " + countSingleDistance(inputIris, singleIris));
+		for (Map.Entry<T, Double> entry: bestIrisNeighbours.entrySet()) {
+			System.out.println(entry.getKey().toString() + " " + entry.getValue().toString());
 		}
 
 		switch (distanceImportanceType) {
 			case 1:
 				return simpleAssignInputObject(bestIrisNeighbours, parK);
 			case 2:
-				return importanceAssignInputObject(bestIrisNeighbours, parK);
+//				return importanceAssignInputObject(bestIrisNeighbours, parK);
 			default:
 				System.exit(-1);
 		}
@@ -133,42 +137,11 @@ public class MetodaKNN {
 		return null;
 	}
 
-	private static List<String> findAssignmentWine(int parK, String dataPath, Wine inputWine, int distanceImportanceType) throws FileNotFoundException {
-		List<Wine> wineList = Wine.readDataFromFile(dataPath);
-		Map<Wine,Double> distanceWineMap = createDistanceMap(inputWine, wineList);
-
-		ArrayList<Wine> bestWineNeighbours = new ArrayList<>();
-
-		int loopNumber = parK;
-		while (loopNumber>0) {
-			loopNumber--;
-			Wine bestWine = findBestNeighbour(distanceWineMap);
-			distanceWineMap.remove(findBestNeighbour(distanceWineMap));
-			bestWineNeighbours.add(bestWine);
-		}
-
-		System.out.println("Best neighbours:");
-		for (Wine singleWine: bestWineNeighbours) {
-			System.out.println(singleWine.toString() + " " + countSingleDistance(inputWine, singleWine));
-		}
-
-		switch (distanceImportanceType) {
-			case 1:
-				return simpleAssignInputObject(bestWineNeighbours, parK);
-			case 2:
-				return importanceAssignInputObject(bestWineNeighbours, parK);
-			default:
-				System.exit(-1);
-		}
-		System.exit(-1);
-		return null;
-	}
-
-	private static <T extends InputData> List<String> simpleAssignInputObject(List<T> bestObjectList, int parK) {
+	private static <T extends InputData> List<String> simpleAssignInputObject(Map<T,Double> bestObjectList, int parK) {
 		Map<String,Integer> counterMap = new HashMap<>();
 		String type;
-		for (T singleBestObject: bestObjectList) {
-			type = singleBestObject.getObjectType();
+		for (Map.Entry<T,Double> singleBestObject: bestObjectList.entrySet()) {
+			type = singleBestObject.getKey().getObjectType();
 			if (!counterMap.containsKey(type)) {
 				counterMap.put(type,1);
 			} else {
@@ -192,10 +165,10 @@ public class MetodaKNN {
 		return returnTypes;
 	}
 
-	private static <T extends InputData> List<String> importanceAssignInputObject(List<T> bestObjectList, int parK) {
-		//Zliczyć dystans dla wszystkich obiektów tego samego typu i podzielić przez ilość obiektów
-		//Najmniejsza wartość oznacza przyporządkowanie !
-
+//	private static <T extends InputData> List<String> importanceAssignInputObject(List<T> bestObjectList, int parK) {
+//		//Zliczyć dystans dla wszystkich obiektów tego samego typu i podzielić przez ilość obiektów
+//		//Najmniejsza wartość oznacza przyporządkowanie !
+//
 //		Map<String,Integer> counterMap = new HashMap<>();
 //		Map<String,Integer> sumMap = new HashMap<>();
 //		String type;
@@ -208,7 +181,7 @@ public class MetodaKNN {
 //						counterMap.get(type)+1);
 //			}
 //		}
-	}
+//	}
 
 	private static DataType chooseType() {
 		System.out.println("Wpisz numer wczytywanego obiektu");
@@ -227,11 +200,11 @@ public class MetodaKNN {
 		}
 	}
 
-	private static <T extends InputData> T findBestNeighbour(Map<T,Double> distanceMap) {
+	private static <T extends InputData> Map.Entry<T, Double> findBestNeighbour(Map<T,Double> distanceMap) {
 		Double min = Collections.min(distanceMap.values());
 		for (Map.Entry<T, Double> entry: distanceMap.entrySet()) {
 			if (entry.getValue().equals(min)) {
-				return entry.getKey();
+				return entry;
 			}
 		}
 		System.exit(-1);
