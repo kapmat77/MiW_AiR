@@ -16,11 +16,11 @@ public class MetodaKNN {
 		String dataPath = "src/Lab3_1/resources/data" + dType.name() +".txt";
 		System.out.println("1.Prosta metoda KNN z podaną wartością K");
 		System.out.println("2.Prosta metoda KNN porównująca wyniki dla różnych K ");
-		int numberOfOperation = 1;
+		int numberOfOperation = 2;
 		System.out.println();
 		System.out.println("1.Zwykłe odległości");
 		System.out.println("2.Ważone odległości");
-		int distanceImportanceType = 1;
+		int distanceImportanceType = 2;
 		executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
 	}
 
@@ -28,6 +28,8 @@ public class MetodaKNN {
 		Integer parK = MAX_K;
 		List<String> types;
 		Map<String,Integer> countBestAssign = new HashMap<>();
+		Map<WrapperKey,Double> votCoefExtendMap = new HashMap<>();
+		WrapperKey<Integer,String> newWrap = new WrapperKey<>(0,"NONE");
 		switch (dType) {
 			case IRIS:
 				Iris inputIris = new Iris(Iris.getInputParameters());
@@ -38,12 +40,12 @@ public class MetodaKNN {
 				switch (numberOfOperation) {
 					case 1:
 						parK = getK();
-						types = findAssignment(parK, distanceImportanceType, distanceIrisMap);
+						types = findAssignment(parK, distanceImportanceType, distanceIrisMap, votCoefExtendMap);
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
 						while (parK>0) {
-							types = findAssignment(parK, distanceImportanceType, distanceIrisMap);
+							types = findAssignment(parK, distanceImportanceType, distanceIrisMap, votCoefExtendMap);
 							parK--;
 							for (String type : types) {
 								if (!countBestAssign.containsKey(type)) {
@@ -74,12 +76,12 @@ public class MetodaKNN {
 				switch (numberOfOperation) {
 					case 1:
 						parK = getK();
-						types = findAssignment(parK, distanceImportanceType, distanceWineMap);
+						types = findAssignment(parK, distanceImportanceType, distanceWineMap, votCoefExtendMap);
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
 						while (parK>0) {
-							types = findAssignment(parK, distanceImportanceType, distanceWineMap);
+							types = findAssignment(parK, distanceImportanceType, distanceWineMap, votCoefExtendMap);
 							parK--;
 							for (String type : types) {
 								if (!countBestAssign.containsKey(type)) {
@@ -107,7 +109,7 @@ public class MetodaKNN {
 	}
 
 	private static <T extends InputData> List<String> findAssignment(int parK, int distanceImportanceType,
-	                                               Map<T,Double> distanceIrisMap) throws FileNotFoundException {
+	                                               Map<T,Double> distanceIrisMap, Map<WrapperKey,Double> votCoefExtendMap) throws FileNotFoundException {
 
 		Map<T,Double> bestIrisNeighbours = new HashMap<>();
 
@@ -129,8 +131,25 @@ public class MetodaKNN {
 			case 1:
 				return simpleAssignInputObject(bestIrisNeighbours, parK);
 			case 2:
-				countVotingCoefficient(bestIrisNeighbours);
-//				return importanceAssignInputObject(bestIrisNeighbours, parK);
+				WrapperKey<Integer,String> wrapKey;
+				Map<String,Double> votCoefMap = countVotingCoefficient(bestIrisNeighbours);
+				for (Map.Entry<String,Double> entry: votCoefMap.entrySet()) {
+					wrapKey = new WrapperKey<>(parK, entry.getKey());
+					votCoefExtendMap.put(wrapKey,entry.getValue());
+				}
+
+				Double minAverageDistance = Collections.min(votCoefMap.values());
+
+				List<String> returnTypes = new ArrayList<>();
+				System.out.println("Wprowadzony obiekt dla K=" + parK + " jest typu:");
+				for (Map.Entry<String,Double> entry: votCoefMap.entrySet()) {
+					if (entry.getValue().equals(minAverageDistance)) {
+						System.out.print(entry.getKey() + " ");
+						returnTypes.add(entry.getKey());
+					}
+				}
+				System.out.println("\n");
+				return returnTypes;
 			default:
 				System.exit(-1);
 		}
@@ -183,7 +202,6 @@ public class MetodaKNN {
 		for (Map.Entry<String,Integer> entry: numbersOfObjectMap.entrySet()) {
 			votingCoefficientMap.replace(entry.getKey(), votingCoefficientMap.get(entry.getKey()), votingCoefficientMap.get(entry.getKey())/entry.getValue());
 		}
-
 		return votingCoefficientMap;
 	}
 

@@ -9,9 +9,33 @@ public class WrapperKey<T,K> {
 	private T firstKey;
 	private K secondKey;
 
+	public T getFirstKey() {
+		return firstKey;
+	}
+
+	public K getSecondKey() {
+		return secondKey;
+	}
+
 	public WrapperKey(T firstKey, K secondKey) {
 		this.firstKey = firstKey;
 		this.secondKey = secondKey;
+	}
+
+	public WrapperKey put(T firstKey, K secondKey) {
+		this.firstKey = firstKey;
+		this.secondKey = secondKey;
+		return this;
+	}
+
+	public WrapperKey putFirst(T firstKey) {
+		this.firstKey = firstKey;
+		return this;
+	}
+
+	public WrapperKey putSecond( K secondKey) {
+		this.secondKey = secondKey;
+		return this;
 	}
 
 	@Override
