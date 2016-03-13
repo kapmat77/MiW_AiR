@@ -19,7 +19,7 @@ public class Iris implements InputData{
 	private double petalWidth;
 	private IrisType type;
 
-	private boolean learning  = false;
+	private boolean isValidation  = false;
 	
 	private enum IrisType {
 		SETOSA, VERSICOLOR, VIRGINICA, NONE
@@ -31,7 +31,6 @@ public class Iris implements InputData{
 		this.petalLength = 0;
 		this.petalWidth = 0;
 		this.type = IrisType.NONE;
-		this.learning = false;
 	}
 	
 	public Iris(double leafLength, double leafWidth, double petalLength, double petalWidth, IrisType type) {
@@ -141,6 +140,16 @@ public class Iris implements InputData{
 	@Override
 	public String getObjectType() {
 		return type.name();
+	}
+
+	@Override
+	public void setValidation(boolean b) {
+		isValidation = b;
+	}
+
+	@Override
+	public boolean getValidation() {
+		return isValidation;
 	}
 
 	@Override

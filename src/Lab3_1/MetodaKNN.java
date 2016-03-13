@@ -10,6 +10,7 @@ import java.util.*;
 public class MetodaKNN {
 
 	private static final int MAX_K = 10;
+	private static final int MIN_K = 3;
 
 	public static void main(String[] args) throws Exception {
 		DataType dType = chooseType();
@@ -29,22 +30,25 @@ public class MetodaKNN {
 		List<String> types;
 		Map<String,Integer> countBestAssign = new HashMap<>();
 		Map<WrapperKey,Double> votCoefExtendMap = new HashMap<>();
-		WrapperKey<Integer,String> newWrap = new WrapperKey<>(0,"NONE");
+//		WrapperKey<Integer,String> newWrap = new WrapperKey<>(0,"NONE");
 		switch (dType) {
 			case IRIS:
 				Iris inputIris = new Iris(Iris.getInputParameters());
 				System.out.println("Input Iris:");
 				System.out.println(inputIris.toString() + "\n");
 				List<Iris> irisList = Iris.readDataFromFile(dataPath);
-				Map<Iris,Double> distanceIrisMap = createDistanceMap(inputIris, irisList);
+				Map<Iris,Double> distanceIrisMap = createDistanceMap(inputIris, irisList, false);
 				switch (numberOfOperation) {
 					case 1:
-						parK = getK();
+						parK = inputK();
 						types = findAssignment(parK, distanceImportanceType, distanceIrisMap, votCoefExtendMap);
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
-						while (parK>0) {
+						while (parK>MIN_K-1) {
+							assignToLearningOrValidation(irisList,1,parK);
+							Map<Iris,Double> distanceIrisMapValidation = createDistanceMap(inputIris, irisList, true);
+							Map<Iris,Double> distanceIrisMapLearning = createDistanceMap(inputIris, irisList, false);
 							types = findAssignment(parK, distanceImportanceType, distanceIrisMap, votCoefExtendMap);
 							parK--;
 							for (String type : types) {
@@ -72,15 +76,18 @@ public class MetodaKNN {
 				System.out.println("Input Wine:");
 				System.out.println(inputWine.toString() + "\n");
 				List<Wine> wineList = Wine.readDataFromFile(dataPath);
-				Map<Wine,Double> distanceWineMap = createDistanceMap(inputWine, wineList);
+				Map<Wine,Double> distanceWineMap = createDistanceMap(inputWine, wineList, false);
 				switch (numberOfOperation) {
 					case 1:
-						parK = getK();
+						parK = inputK();
 						types = findAssignment(parK, distanceImportanceType, distanceWineMap, votCoefExtendMap);
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
-						while (parK>0) {
+						while (parK>MIN_K-1) {
+							assignToLearningOrValidation(wineList,1,parK);
+							Map<Wine,Double> distanceWineMapValidation = createDistanceMap(inputWine, wineList, true);
+							Map<Wine,Double> distanceWineMapLearning = createDistanceMap(inputWine, wineList, false);
 							types = findAssignment(parK, distanceImportanceType, distanceWineMap, votCoefExtendMap);
 							parK--;
 							for (String type : types) {
@@ -205,6 +212,90 @@ public class MetodaKNN {
 		return votingCoefficientMap;
 	}
 
+	private static <T extends InputData> Map.Entry<T,Double> findBestNeighbour(Map<T,Double> distanceMap) {
+		Double min = Collections.min(distanceMap.values());
+		for (Map.Entry<T, Double> entry: distanceMap.entrySet()) {
+			if (entry.getValue().equals(min)) {
+				return entry;
+			}
+		}
+		System.exit(-1);
+		return null;
+	}
+
+	private static <T extends InputData> Map<T,Double> createDistanceMap(T inputObject, List<T> objectsList, boolean validation) {
+		Map<T,Double> distanceMap = new HashMap<>();
+		double sum = 0;
+		double dif = 0;
+		double result = 0;
+		for (T singleObject: objectsList) {
+			if (singleObject.getValidation()==validation) {
+				for (int i=0; i<singleObject.numberOfParameters(); i++) {
+					dif = inputObject.getParameterById(i+1) - singleObject.getParameterById(i+1);
+					sum += Math.pow(dif,2);
+				}
+				result = Math.sqrt(sum);
+				sum = 0;
+				distanceMap.put(singleObject, result);
+			}
+		}
+		return distanceMap;
+	}
+
+	private static <T extends InputData> double countSingleDistance(T inputObject, T singleObject) {
+		double sum = 0;
+		double dif = 0;
+		double result = 0;
+		for (int i=0; i<singleObject.numberOfParameters(); i++) {
+			dif = inputObject.getParameterById(i+1) - singleObject.getParameterById(i+1);
+			sum += Math.pow(dif,2);
+		}
+		result = Math.sqrt(sum);
+		return result;
+	}
+
+	private static <T extends InputData> void assignToLearningOrValidation(List<T> dataFromFile, int type, int part) {
+		Map<String,Integer> typesMap = new HashMap<>();
+		for (T singleObject: dataFromFile) {
+			if (!typesMap.containsKey(singleObject.getObjectType())) {
+				typesMap.put(singleObject.getObjectType(),1);
+			} else {
+				typesMap.replace(singleObject.getObjectType(), typesMap.get(singleObject.getObjectType())+1);
+			}
+		}
+		int amountOfLearners;
+		boolean first;
+		int lastIndex = 0;
+		int firstIndex = 0;
+
+		//assing all object to learning
+		for (int i = 0; i < dataFromFile.size(); i++) {
+			dataFromFile.get(i).setValidation(false);
+		}
+
+		switch (type) {
+			//proporcjonalnie
+			case 1:
+				for (Map.Entry<String, Integer> entry : typesMap.entrySet()) {
+					amountOfLearners = (int) (entry.getValue() / MAX_K);
+					first = true;
+					for (int i = 0; i < dataFromFile.size(); i++) {
+						if (entry.getKey().equals(dataFromFile.get(i).getObjectType())) {
+							if (first) {
+								firstIndex = i + amountOfLearners * (part - 1);
+								lastIndex = firstIndex + amountOfLearners;
+								first = false;
+							}
+							if (i >= firstIndex && i < lastIndex) {
+								dataFromFile.get(i).setValidation(true);
+							}
+						}
+					}
+				}
+				break;
+		}
+	}
+
 	private static DataType chooseType() {
 		System.out.println("Wpisz numer wczytywanego obiektu");
 		System.out.println("1.Iris");
@@ -222,47 +313,7 @@ public class MetodaKNN {
 		}
 	}
 
-	private static <T extends InputData> Map.Entry<T, Double> findBestNeighbour(Map<T,Double> distanceMap) {
-		Double min = Collections.min(distanceMap.values());
-		for (Map.Entry<T, Double> entry: distanceMap.entrySet()) {
-			if (entry.getValue().equals(min)) {
-				return entry;
-			}
-		}
-		System.exit(-1);
-		return null;
-	}
-
-	private static <T extends InputData> Map<T,Double> createDistanceMap(T inputObject, List<T> objectsList) {
-		Map<T,Double> distanceMap = new HashMap<>();
-		double sum = 0;
-		double dif = 0;
-		double result = 0;
-		for (T singleObject: objectsList) {
-			for (int i=0; i<singleObject.numberOfParameters(); i++) {
-				dif = inputObject.getParameterById(i+1) - singleObject.getParameterById(i+1);
-				sum += Math.pow(dif,2);
-			}
-			result = Math.sqrt(sum);
-			sum = 0;
-			distanceMap.put(singleObject, result);
-		}
-		return distanceMap;
-	}
-
-	private static <T extends InputData> double countSingleDistance(T inputObject, T singleObject) {
-		double sum = 0;
-		double dif = 0;
-		double result = 0;
-		for (int i=0; i<singleObject.numberOfParameters(); i++) {
-			dif = inputObject.getParameterById(i+1) - singleObject.getParameterById(i+1);
-			sum += Math.pow(dif,2);
-		}
-		result = Math.sqrt(sum);
-		return result;
-	}
-
-	public static int getK() {
+	private static int inputK() {
 		int parK = 0;
 		System.out.println("Wprowadz K:");
 		while (parK==0) {

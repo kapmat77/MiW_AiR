@@ -28,7 +28,7 @@ public class Wine implements InputData{
 	private double od280od315OfDilutedWines;
 	private int proline;
 
-	private boolean learning  = false;
+	private boolean isValidation  = false;
 
 	public Wine() {
 		this.classType = 0;
@@ -216,6 +216,16 @@ public class Wine implements InputData{
 	@Override
 	public String getObjectType() {
 		return String.valueOf(classType);
+	}
+
+	@Override
+	public void setValidation(boolean b) {
+		isValidation = b;
+	}
+
+	@Override
+	public boolean getValidation() {
+		return isValidation;
 	}
 
 	@Override

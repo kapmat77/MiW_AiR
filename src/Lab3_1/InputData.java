@@ -13,4 +13,8 @@ public interface InputData {
 	void setParamFromStringTab(String[] parameters);
 
 	String getObjectType();
+
+	void setValidation(boolean b);
+
+	boolean getValidation();
 }
