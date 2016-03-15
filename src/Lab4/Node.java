@@ -5,14 +5,15 @@
 package Lab4;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Node <T> {
 
 	private Level level;
 	private T value;
 
-	private ArrayList<Node> children;
-	private ArrayList<Node> parents;
+	private List<Node> children;
+	private List<Node> parents;
 
 	public enum Level {
 		PARAM, KIND_OF_PARAM, VALUE_OF_PARAM, INDEX, TYPE_OF_OBJECT, CLASS_OF_OBJECT, NONE
@@ -24,7 +25,7 @@ public class Node <T> {
 		parents = new ArrayList<>();
 	}
 
-	public Node(Level level, ArrayList<Node> children, ArrayList<Node> parents) {
+	public Node(Level level, List<Node> children, List<Node> parents) {
 		this.level = level;
 		this.children = children;
 		this.parents = parents;
@@ -35,19 +36,19 @@ public class Node <T> {
 		this.value = value;
 	}
 
-	public void setChildren(ArrayList<Node> children) {
+	public void setChildren(List<Node> children) {
 		this.children = children;
 	}
 
-	public void setParents(ArrayList<Node> parents) {
+	public void setParents(List<Node> parents) {
 		this.parents = parents;
 	}
 
-	public ArrayList<Node> getChildren() {
+	public List<Node> getChildren() {
 		return this.children;
 	}
 
-	public ArrayList<Node> getParents() {
+	public List<Node> getParents() {
 		return this.parents;
 	}
 

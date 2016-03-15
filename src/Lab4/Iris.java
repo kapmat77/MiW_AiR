@@ -108,7 +108,7 @@ public class Iris implements InputData{
 				parameters = line.split("\t");
 				singleObject.setParamFromStringTab(parameters);
 				objectsList.add(singleObject);
-				System.out.println(singleObject.toString());
+//				System.out.println(singleObject.toString());
 			}
 			in.close();
 		} catch (FileNotFoundException e) {

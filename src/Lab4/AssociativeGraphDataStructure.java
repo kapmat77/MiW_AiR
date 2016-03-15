@@ -12,7 +12,8 @@ import java.util.Scanner;
 public class AssociativeGraphDataStructure {
 
 	public static void main(String[] args) throws FileNotFoundException {
-		DataType dType = chooseType();
+//		DataType dType = chooseType();
+		DataType dType = DataType.IRIS;
 		String dataPath = "src/Lab4/resources/data" + dType.name() +".txt";
 		buildGraphAGDS(dataPath);
 	}
@@ -44,19 +45,25 @@ public class AssociativeGraphDataStructure {
 
 		//Create INDEX nodes
 		List<Node> indexNodes = new ArrayList<>();
-		int i = 0;
-		for (Iris singleIris: listOfIris) {
+		for (int i = 0; i<listOfIris.size(); i++) {
 			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i);
 			indexNodes.add(singleIndex);
-			i++;
 		}
 
 		//Create VALUE_OF_PARAM nodes
 
 
-		ArrayList<Node> parentsParam = new ArrayList<>();
+		//Set PARAM parent
+		List<Node> parentsParam = new ArrayList<>();
 		parentsParam.add(classNode);
 		paramNode.setParents(parentsParam);
+
+		//Set PARAM children
+
+		//Set CLASS_OF_OBJECT parent
+
+
+
 	}
 
 	private static DataType chooseType() {
