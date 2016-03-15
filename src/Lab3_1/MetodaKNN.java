@@ -34,7 +34,6 @@ public class MetodaKNN {
 		Map<String,Integer> countBestAssign = new HashMap<>();
 		Map<String,Integer> countBestAssignLearning = new HashMap<>();
 		Map<WrapperKey,Double> votCoefExtendMap = new HashMap<>();
-//		WrapperKey<Integer,String> newWrap = new WrapperKey<>(0,"NONE");
 		switch (dType) {
 			case IRIS:
 				Iris inputIris = new Iris(Iris.getInputParameters());
@@ -90,13 +89,6 @@ public class MetodaKNN {
 							System.out.println();
 							System.out.println();
 						}
-//						Integer maxNeighbours = Collections.max(countBestAssign.values());
-//						System.out.println("Wprowadzony obiekt jest typu:");
-//						for (Map.Entry<String,Integer> entry: countBestAssign.entrySet()) {
-//							if (entry.getValue().equals(maxNeighbours)) {
-//								System.out.print(entry.getKey() + " ");
-//							}
-//						}
 					default:
 						break;
 				}
