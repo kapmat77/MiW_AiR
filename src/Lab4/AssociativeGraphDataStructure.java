@@ -4,6 +4,8 @@
 
 package Lab4;
 
+import DataClass.Iris;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class AssociativeGraphDataStructure {
 	public static void main(String[] args) throws FileNotFoundException {
 //		DataType dType = chooseType();
 		DataType dType = DataType.IRIS;
-		String dataPath = "src/Lab4/resources/data" + dType.name() +".txt";
+		String dataPath = "src/Resources/data" + dType.name() +".txt";
 
 		//Create PARAM node - main node
 		Node<String> paramNode = new Node<>(Node.Level.PARAM, Node.Level.PARAM.name());

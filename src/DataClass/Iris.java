@@ -2,16 +2,17 @@
  * Created by Kapmat on 2016-03-08.
  **/
 
-package Lab3_1;
+package DataClass;
+
+import Interf.InputData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
-public class Iris implements InputData{
+public class Iris implements InputData {
 	
 	private double leafLength;
 	private double leafWidth;
@@ -21,8 +22,12 @@ public class Iris implements InputData{
 
 	private boolean isValidation  = false;
 	
-	private enum IrisType {
+	public enum IrisType {
 		SETOSA, VERSICOLOR, VIRGINICA, NONE
+	}
+
+	public enum KindOfParam {
+		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH
 	}
 	
 	public Iris() {
@@ -110,6 +115,21 @@ public class Iris implements InputData{
 			throw new FileNotFoundException("Plik nie zostal wczytany poprawnie - " + e.getMessage());
 		}
 		return objectsList;
+	}
+
+	public double getParameterByEnum(KindOfParam kind) {
+		switch (kind) {
+			case LEAF_LENGTH:
+				return leafLength;
+			case LEAF_WIDTH:
+				return leafWidth;
+			case PETAL_LENGTH:
+				return petalLength;
+			case PETAL_WIDTH:
+				return petalWidth;
+			default:
+				return 0.0;
+		}
 	}
 
 	@Override
