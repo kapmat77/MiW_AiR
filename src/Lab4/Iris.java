@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Iris implements InputData{
+public class Iris implements Interf.InputData{
 	
 	private double leafLength;
 	private double leafWidth;
@@ -115,6 +115,21 @@ public class Iris implements InputData{
 			throw new FileNotFoundException("Plik nie zostal wczytany poprawnie - " + e.getMessage());
 		}
 		return objectsList;
+	}
+
+	public double getParameterByEnum(KindOfParam kind) {
+		switch (kind) {
+			case LEAF_LENGTH:
+				return leafLength;
+			case LEAF_WIDTH:
+				return leafWidth;
+			case PETAL_LENGTH:
+				return petalLength;
+			case PETAL_WIDTH:
+				return petalWidth;
+			default:
+				return 0.0;
+		}
 	}
 
 	@Override

@@ -36,6 +36,10 @@ public class Node <T> {
 		this.value = value;
 	}
 
+	public T getValue(){
+		return value;
+	}
+
 	public void setChildren(List<Node> children) {
 		this.children = children;
 	}
