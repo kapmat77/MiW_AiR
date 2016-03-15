@@ -21,6 +21,17 @@ public class AssociativeGraphDataStructure {
 
 		buildGraphAGDS(dataPath, paramNode);
 
+		//TODO wstawienie wzorca
+		Iris pattern = new Iris(1.1, 2.2, 3.3, 4.4, Iris.IrisType.SETOSA);
+		//TODO Google Guice timer ?
+		findPatternsInGraph(pattern);
+
+		findPatternsInGraphWithFilter();
+
+		findPatternsInTable();
+
+		findPatternsInTableWithFilter();
+
 	}
 
 	private static void buildGraphAGDS(String dataPath, Node<String> paramNode) throws FileNotFoundException {
@@ -224,6 +235,22 @@ public class AssociativeGraphDataStructure {
 		Collections.sort(valueLWNodes);
 		Collections.sort(valuePLNodes);
 		Collections.sort(valuePWNodes);
+	}
+
+	private static void findPatternsInGraph(Iris pattern) {
+
+	}
+
+	private static void findPatternsInGraphWithFilter() {
+
+	}
+
+	private static void findPatternsInTable() {
+
+	}
+
+	private static void findPatternsInTableWithFilter() {
+
 	}
 
 	private static DataType chooseType() {
