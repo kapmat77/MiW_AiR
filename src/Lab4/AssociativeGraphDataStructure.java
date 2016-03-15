@@ -7,9 +7,7 @@ package Lab4;
 import DataClass.Iris;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class AssociativeGraphDataStructure {
 
@@ -220,6 +218,12 @@ public class AssociativeGraphDataStructure {
 			singleIndexNode.setChildren(childrenIndex);
 			k++;
 		}
+
+		//Sort date
+		Collections.sort(valueLLNodes);
+		Collections.sort(valueLWNodes);
+		Collections.sort(valuePLNodes);
+		Collections.sort(valuePWNodes);
 	}
 
 	private static DataType chooseType() {

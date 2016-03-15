@@ -7,7 +7,7 @@ package Lab4;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node <T> {
+public class Node <T> implements Comparable<T>{
 
 	private Level level;
 	private T value;
@@ -56,6 +56,23 @@ public class Node <T> {
 		return this.parents;
 	}
 
+	@Override
+	public int compareTo(T secondValue) {
+		Double second;
+		Double first;
+		if (secondValue instanceof Node) {
+			second = (Double) this.getValue();
+			first = (Double) ((Node) secondValue).getValue();
+			if (second < first) {
+				return -1;
+			} else if (second > first) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		return 0;
+	}
 }
 
 
