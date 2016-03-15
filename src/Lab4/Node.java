@@ -8,33 +8,29 @@ import java.util.ArrayList;
 
 public class Node <T> {
 
-	/*    Level
-	 * 1 - param - String
-	 * 2 - nameOfParam - String
-	 * 3 - valueOfParam - Double
-	 * 4 - index - Integer
-	 * 5 - nameOfType - String
-	 * 6 - valueOfType - String
-	 */
-	private int level;
+	private Level level;
 	private T value;
 
 	private ArrayList<Node> children;
 	private ArrayList<Node> parents;
 
+	public enum Level {
+		PARAM, KIND_OF_PARAM, VALUE_OF_PARAM, INDEX, TYPE_OF_OBJECT, CLASS_OF_OBJECT, NONE
+	}
+
 	public Node() {
-		level = 0;
+		level = Level.NONE;
 		children = new ArrayList<>();
 		parents = new ArrayList<>();
 	}
 
-	public Node(int level, ArrayList<Node> children, ArrayList<Node> parents) {
+	public Node(Level level, ArrayList<Node> children, ArrayList<Node> parents) {
 		this.level = level;
 		this.children = children;
 		this.parents = parents;
 	}
 
-	public Node(int level,T value) {
+	public Node(Level level,T value) {
 		this.level = level;
 		this.value = value;
 	}
