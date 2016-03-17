@@ -5,6 +5,7 @@
 package Lab4;
 
 import DataClass.Iris;
+import HelpfulClasses.WrapperKey;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -16,6 +17,11 @@ public class AssociativeGraphDataStructure {
 		DataType dType = DataType.IRIS;
 		String dataPath = "src/Resources/data" + dType.name() +".txt";
 
+		Long startTime;
+		Long endTime;
+
+		startTime = System.nanoTime();
+
 		//Create PARAM node - main node
 		Node<String> paramNode = new Node<>(Node.Level.PARAM, Node.Level.PARAM.name());
 
@@ -23,10 +29,9 @@ public class AssociativeGraphDataStructure {
 
 		List<Node> fitNodes = new ArrayList<>();
 
-		//TODO wstawienie wzorca
-		Iris pattern = new Iris(1.1, 2.2, 3.3, 4.4, Iris.IrisType.SETOSA);
 
-		findPatternsInGraph(pattern);
+
+		findPatternsInGraph(paramNode);
 
 		fitNodes = findPatternsInGraphWithFilter(paramNode);
 
@@ -35,8 +40,10 @@ public class AssociativeGraphDataStructure {
 		findPatternsInTableWithFilter();
 
 		// Input - only INDEX list nodes
-		showPatterns(fitNodes);
+//		showPatterns(fitNodes);
 
+		endTime = System.nanoTime();
+		System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 	}
 
 	private static void buildGraphAGDS(String dataPath, Node<String> paramNode) throws FileNotFoundException {
@@ -255,8 +262,78 @@ public class AssociativeGraphDataStructure {
 		}
 	}
 
-	private static void findPatternsInGraph(Iris pattern) {
+	private static void findPatternsInGraph(Node<String> paramNode) {
+		//TODO wstawienie wzorca
+		Iris pattern = new Iris(7.2, 3.2, 6.0, 1.8, Iris.IrisType.VIRGINICA);
+		Double leafL = pattern.getLeafLength();
+		Double leafW = pattern.getLeafWidth();
+		Double petalL = pattern.getPetalLength();
+		Double petalW = pattern.getPetalWidth();
 
+		Map<WrapperKey<Iris.KindOfParam,Double>, Double> similarityMap = new HashMap<>();
+
+		//Get KIND_OF_PARAM nodes with CLASS_OF_OBJECT node
+		List<Node> childrenParam = paramNode.getChildren();
+
+		Double factor;
+		Double actualValue;
+		for (Node kindOfParam: childrenParam) {
+			if (kindOfParam.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
+				List<Node> childrenKind = kindOfParam.getChildren();
+				WrapperKey<Iris.KindOfParam,Double> wrapperKey = new WrapperKey<>();
+				switch ((String) kindOfParam.getValue()) {
+					case "LEAF_LENGTH":
+						for (Node singleValue: childrenKind) {
+							actualValue = (Double) singleValue.getValue();
+							factor = 1.0 - (Math.abs(leafL-actualValue))/kindOfParam.getRange();
+							//TODO BIG DECIMAL !!!!!!!!!!!!!!!!!!!!!!!!!!!! range
+							wrapperKey.put(Iris.KindOfParam.LEAF_LENGTH, actualValue);
+							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
+							if (factor < 0.01) {
+								factor = 0.0;
+							}
+							similarityMap.put(wrapperKey, factor);
+						}
+						break;
+					case "LEAF_WIDTH":
+						for (Node singleValue: childrenKind) {
+							actualValue = (Double) singleValue.getValue();
+							factor = 1.0 - (Math.abs(leafW-actualValue))/kindOfParam.getRange();
+							wrapperKey.put(Iris.KindOfParam.LEAF_WIDTH, actualValue);
+							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
+							if (factor < 0.01) {
+								factor = 0.0;
+							}
+							similarityMap.put(wrapperKey, factor);
+						}
+						break;
+					case "PETAL_LENGTH":
+						for (Node singleValue: childrenKind) {
+							actualValue = (Double) singleValue.getValue();
+							factor = 1.0 - (Math.abs(petalL-actualValue))/kindOfParam.getRange();
+							wrapperKey.put(Iris.KindOfParam.PETAL_LENGTH, actualValue);
+							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
+							if (factor < 0.01) {
+								factor = 0.0;
+							}
+							similarityMap.put(wrapperKey, factor);
+						}
+						break;
+					case "PETAL_WIDTH":
+						for (Node singleValue: childrenKind) {
+							actualValue = (Double) singleValue.getValue();
+							factor = 1.0 - (Math.abs(petalW-actualValue))/kindOfParam.getRange();
+							wrapperKey.put(Iris.KindOfParam.PETAL_WIDTH, actualValue);
+							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
+							if (factor < 0.01) {
+								factor = 0.0;
+							}
+							similarityMap.put(wrapperKey, factor);
+						}
+						break;
+				}
+			}
+		}
 	}
 
 	private static List<Node> findPatternsInGraphWithFilter(Node<String> paramNode) {

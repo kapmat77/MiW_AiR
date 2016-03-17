@@ -4,6 +4,7 @@
 
 package Lab3_1;
 
+import HelpfulClasses.WrapperKey;
 import Interf.InputData;
 import DataClass.Iris;
 import DataClass.Wine;

@@ -117,6 +117,26 @@ public class Iris implements InputData {
 		return objectsList;
 	}
 
+	public double getLeafLength() {
+		return leafLength;
+	}
+
+	public double getLeafWidth() {
+		return leafWidth;
+	}
+
+	public double getPetalLength() {
+		return petalLength;
+	}
+
+	public double getPetalWidth() {
+		return petalWidth;
+	}
+
+	public IrisType getType() {
+		return type;
+	}
+
 	public double getParameterByEnum(KindOfParam kind) {
 		switch (kind) {
 			case LEAF_LENGTH:
