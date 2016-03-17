@@ -21,16 +21,20 @@ public class AssociativeGraphDataStructure {
 
 		buildGraphAGDS(dataPath, paramNode);
 
+		List<Node> fitNodes = new ArrayList<>();
+
 		//TODO wstawienie wzorca
 		Iris pattern = new Iris(1.1, 2.2, 3.3, 4.4, Iris.IrisType.SETOSA);
 
 		findPatternsInGraph(pattern);
 
-		List<Node> fitNodes = findPatternsInGraphWithFilter(paramNode);
+		fitNodes = findPatternsInGraphWithFilter(paramNode);
 
 		findPatternsInTable();
 
 		findPatternsInTableWithFilter();
+
+		showPatterns(fitNodes);
 
 	}
 
@@ -244,6 +248,7 @@ public class AssociativeGraphDataStructure {
 	private static List<Node> findPatternsInGraphWithFilter(Node<String> paramNode) {
 		//Set filter
 		//Zakresy wartości
+		//Jeśli warości mają być dowolne dla parametru wpisz -1
 		Double lowestLL = 4.9;
 		Double highestLL = 5.5;
 		Double lowestLW = 3.0;
@@ -324,6 +329,21 @@ public class AssociativeGraphDataStructure {
 
 	private static void findPatternsInTableWithFilter() {
 
+	}
+
+	private static void showPatterns(List<Node> nodes) {
+		if (nodes.get(0).getLevel().equals(Node.Level.INDEX)) {
+			for (Node singleNode: nodes) {
+				List<Node> values = singleNode.getParents();
+				List<Node> type = singleNode.getChildren();
+				System.out.print(singleNode.getValue() + ". ");
+				for (int i=0; i<values.size(); i++) {
+					System.out.print(((Node)values.get(i).getParents().get(0)).getValue() + ":" +
+							values.get(i).getValue() + " | ");
+				}
+				System.out.println(type.get(0).getValue());
+			}
+		}
 	}
 
 	private static DataType chooseType() {
