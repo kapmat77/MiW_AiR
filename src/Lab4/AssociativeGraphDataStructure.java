@@ -34,6 +34,7 @@ public class AssociativeGraphDataStructure {
 
 		findPatternsInTableWithFilter();
 
+		// Input - only INDEX list nodes
 		showPatterns(fitNodes);
 
 	}
@@ -239,6 +240,19 @@ public class AssociativeGraphDataStructure {
 		Collections.sort(valueLWNodes);
 		Collections.sort(valuePLNodes);
 		Collections.sort(valuePWNodes);
+
+		//Set MIN, MAX, RANGE
+		setAdditionalParam(childrenParam);
+	}
+
+	private static void setAdditionalParam(List<Node> nodes) {
+		for (Node singleNode: nodes) {
+			if (singleNode.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
+				singleNode.setMinValue((Double) ((Node) singleNode.getChildren().get(0)).getValue());
+				singleNode.setMaxValue((Double) ((Node) singleNode.getChildren().get(singleNode.getChildren().size()-1)).getValue());
+				singleNode.setRange(singleNode.getMaxValue()-singleNode.getMinValue());
+			}
+		}
 	}
 
 	private static void findPatternsInGraph(Iris pattern) {
@@ -331,6 +345,9 @@ public class AssociativeGraphDataStructure {
 
 	}
 
+	/**
+	 * Input - only INDEX list nodes
+	 **/
 	private static void showPatterns(List<Node> nodes) {
 		if (nodes.get(0).getLevel().equals(Node.Level.INDEX)) {
 			for (Node singleNode: nodes) {
