@@ -40,6 +40,10 @@ public class Node <T> implements Comparable<T>{
 		return value;
 	}
 
+	public Level getLevel(){
+		return this.level;
+	}
+
 	public void setChildren(List<Node> children) {
 		this.children = children;
 	}

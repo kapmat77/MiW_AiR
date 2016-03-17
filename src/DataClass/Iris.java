@@ -27,7 +27,7 @@ public class Iris implements InputData {
 	}
 
 	public enum KindOfParam {
-		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH
+		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH;
 	}
 	
 	public Iris() {

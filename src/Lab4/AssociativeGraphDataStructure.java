@@ -23,10 +23,10 @@ public class AssociativeGraphDataStructure {
 
 		//TODO wstawienie wzorca
 		Iris pattern = new Iris(1.1, 2.2, 3.3, 4.4, Iris.IrisType.SETOSA);
-		//TODO Google Guice timer ?
+
 		findPatternsInGraph(pattern);
 
-		findPatternsInGraphWithFilter();
+		List<Node> fitNodes = findPatternsInGraphWithFilter(paramNode);
 
 		findPatternsInTable();
 
@@ -241,8 +241,81 @@ public class AssociativeGraphDataStructure {
 
 	}
 
-	private static void findPatternsInGraphWithFilter() {
+	private static List<Node> findPatternsInGraphWithFilter(Node<String> paramNode) {
+		//Set filter
+		//Zakresy wartości
+		Double lowestLL = 4.9;
+		Double highestLL = 5.5;
+		Double lowestLW = 3.0;
+		Double highestLW = 3.6;
+		Double lowestPL = 1.2;
+		Double highestPL = 5.0;
+		Double lowestPW = 0.0;
+		Double highestPW = 2.0;
+		Iris.IrisType type = Iris.IrisType.SETOSA;
 
+		//Get class node
+		List<Node> childrenParam = paramNode.getChildren();
+		Node classNode = new Node();
+		for (Node singleChild: childrenParam) {
+			if (singleChild.getLevel().equals(Node.Level.CLASS_OF_OBJECT)) {
+				classNode = singleChild;
+			}
+		}
+
+		//Create list of all patterns
+		List<Node> allIndexNodes = new ArrayList<>();
+		List<Node> types = classNode.getChildren();
+		for (Node singleTypes: types) {
+			List<Node> childrenTypes = singleTypes.getChildren();
+			for (Node singleChild: childrenTypes) {
+				allIndexNodes.add(singleChild);
+			}
+		}
+
+		//Find fit nodes
+		List<Node> fitNodes = new ArrayList<>();
+		int counter;
+		boolean correctType;
+		for (Node singleNode: allIndexNodes) {
+			counter = 0;
+			correctType = false;
+			for (int i = 0; i<singleNode.getParents().size(); i++) {
+				Node singleValue = (Node) singleNode.getParents().get(i);
+				Double actualValue = (Double) singleValue.getValue();
+				Node nameOfParam = (Node) singleValue.getParents().get(0);
+				switch ((String) nameOfParam.getValue()) {
+					case "LEAF_LENGTH":
+						if (actualValue >= lowestLL && actualValue <= highestLL) {
+							counter++;
+						}
+						break;
+					case "LEAF_WIDTH":
+						if (actualValue >= lowestLW && actualValue <= highestLW) {
+							counter++;
+						}
+						break;
+					case "PETAL_LENGTH":
+						if (actualValue >= lowestPL && actualValue <= highestPL) {
+							counter++;
+						}
+						break;
+					case "PETAL_WIDTH":
+						if (actualValue >= lowestPW && actualValue <= highestPW) {
+							counter++;
+						}
+						break;
+				}
+				Node typeOfPattern = (Node) singleNode.getChildren().get(0);
+				if ((typeOfPattern.getValue()).equals(type)) {
+					correctType = true;
+				}
+				if (counter == 4 && correctType) {
+					fitNodes.add(singleNode);
+				}
+			}
+		}
+		return fitNodes;
 	}
 
 	private static void findPatternsInTable() {
