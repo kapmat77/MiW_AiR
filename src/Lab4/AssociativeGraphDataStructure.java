@@ -6,8 +6,10 @@ package Lab4;
 
 import DataClass.Iris;
 import HelpfulClasses.NodesBox;
+import Interf.InputData;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class AssociativeGraphDataStructure{
@@ -76,22 +78,37 @@ public class AssociativeGraphDataStructure{
 		List<Node> valueLWNodes = new ArrayList<>();
 		List<Node> valuePLNodes = new ArrayList<>();
 		List<Node> valuePWNodes = new ArrayList<>();
+		List<double[]> valuelist = new ArrayList<>();
+		boolean eq = false;
 		for (Iris singleIris: listOfIris) {
-			Node<Double> singleValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+			Node<Double> llValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
-			valueLLNodes.add(singleValue);
 
-			singleValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+			Node<Double> lwValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_WIDTH));
-			valueLWNodes.add(singleValue);
 
-			singleValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+			Node<Double> plValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.PETAL_LENGTH));
-			valuePLNodes.add(singleValue);
 
-			singleValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+			Node<Double> pwValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-			valuePWNodes.add(singleValue);
+
+//			double[] tabDouble = {llValue.getValue(), lwValue.getValue(), plValue.getValue(), pwValue.getValue()};
+//
+//			for (double[] values: valuelist) {
+//				if (Arrays.equals(values, tabDouble)) {
+//					eq = true;
+//				}
+//			}
+//			if (!eq) {
+//
+//				valuelist.add(tabDouble);
+				valueLLNodes.add(llValue);
+				valueLWNodes.add(lwValue);
+				valuePLNodes.add(plValue);
+				valuePWNodes.add(pwValue);
+//			}
+//			eq = false;
 		}
 
 		//Set PARAM children
@@ -210,7 +227,28 @@ public class AssociativeGraphDataStructure{
 			parentsValue.add(pWidth);
 			singleValueNode.setParents(parentsValue);
 		}
+//		for (Node singleValueNode: valueLLNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(lLength);
+//			singleValueNode.setParents(parentsValue);
+//		}
+//		for (Node singleValueNode: valueLWNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(lWidth);
+//			singleValueNode.setParents(parentsValue);
+//		}
+//		for (Node singleValueNode: valuePLNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(pLength);
+//			singleValueNode.setParents(parentsValue);
+//		}
+//		for (Node singleValueNode: valuePWNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(pWidth);
+//			singleValueNode.setParents(parentsValue);
+//		}
 
+		//TODO
 		//Set INDEX parents
 		int j = 0;
 		for (Node singleIndexNode: indexNodes) {
@@ -222,6 +260,16 @@ public class AssociativeGraphDataStructure{
 			singleIndexNode.setParents(parentsIndex);
 			j++;
 		}
+//		int j = 0;
+//		for (Node singleIndexNode: indexNodes) {
+//			List<Node> parentsIndex = new ArrayList<>();
+//			parentsIndex.add(valueLLNodes.get(j));
+//			parentsIndex.add(valueLWNodes.get(j));
+//			parentsIndex.add(valuePLNodes.get(j));
+//			parentsIndex.add(valuePWNodes.get(j));
+//			singleIndexNode.setParents(parentsIndex);
+//			j++;
+//		}
 
 		//Set INDEX children
 		int k = 0;
@@ -250,7 +298,7 @@ public class AssociativeGraphDataStructure{
 		Collections.sort(valuePWNodes);
 
 		//Set MIN, MAX, RANGE
-		setAdditionalParam(childrenParam);
+		setAdditionalParam(NodesBox.getKindOfParamNodes());
 
 		deleteRedundantNodes();
 	}
@@ -258,10 +306,28 @@ public class AssociativeGraphDataStructure{
 	private static void deleteRedundantNodes() {
 		//TODO
 		// usuwamy niepotrzebne VALUE nodes i powtarzające się INDEX nodes
+		List<Node> kindOfParam = NodesBox.getKindOfParamNodes();
+		for (Node singleNode: kindOfParam) {
+//			switch ((InputData.KindOfParam)singleNode.getValue()) {
+//				case LEAF_LENGTH:
+//					break;
+//				case LEAF_WIDTH:
+//					break;
+//				case PETAL_LENGTH:
+//					break;
+//				case PETAL_WIDTH:
+//					break;
+//				case ALCOHOL:
+//					break;
+//				case MALIC_ACID:
+//					break;
+//			}
+		}
+
 	}
 
-	private static void setAdditionalParam(List<Node> kindOfParam) {
-		for (Node singleNode: NodesBox.getKindOfParamNodes()) {
+	private static void setAdditionalParam(List<Node> nodes) {
+		for (Node singleNode: nodes) {
 			if (singleNode.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
 				singleNode.setMinValue((Double) ((Node) singleNode.getChildren().get(0)).getValue());
 				singleNode.setMaxValue((Double) ((Node) singleNode.getChildren().get(singleNode.getChildren().size()-1)).getValue());

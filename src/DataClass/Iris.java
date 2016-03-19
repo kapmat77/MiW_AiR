@@ -26,9 +26,9 @@ public class Iris implements InputData {
 		SETOSA, VERSICOLOR, VIRGINICA, NONE
 	}
 
-	public enum KindOfParam {
-		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH;
-	}
+//	public enum KindOfParam {
+//		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH
+//	}
 	
 	public Iris() {
 		this.leafLength = 0;
