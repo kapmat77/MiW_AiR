@@ -6,21 +6,16 @@ package Lab4;
 
 import DataClass.Iris;
 import HelpfulClasses.NodesBox;
-import Interf.InputData;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class AssociativeGraphDataStructure{
-
-//	private static final Node<String> PARAM_NODE = new Node<>(Node.Level.PARAM, Node.Level.PARAM.name());
 
 	public static void main(String[] args) throws FileNotFoundException {
 //		DataType dType = chooseType();
 		DataType dType = DataType.IRIS;
 		String dataPath = "src/Resources/data" + dType.name() +".txt";
-
 		Long startTime;
 		Long endTime;
 
@@ -28,25 +23,46 @@ public class AssociativeGraphDataStructure{
 
 		buildGraphAGDS(dataPath);
 
-		List<Node> fitNodes = new ArrayList<>();
+		List<Node> fitNodes;
 
+		while (true) {
+			System.out.println("\n##################################################");
+			System.out.println("####################   MENU   ####################");
+			System.out.println("##################################################");
+			System.out.println("1. Find patterns in graph (similarity)");
+			System.out.println("2. Find patterns in graph (filter)");
+			System.out.println("3. Find patterns in table (similarity)");
+			System.out.println("4. Find patterns in table (filter)");
+			System.out.println("0. EXIT");
+			Scanner in = new Scanner(System.in);
+			switch (in.nextLine()) {
+				case "1":
+					fitNodes = findPatternsInGraph();
+					showPatterns(fitNodes,ShowType.WITH_SIMILARITY);
+					break;
+				case "2":
+					fitNodes = findPatternsInGraphWithFilter();
+					showPatterns(fitNodes,ShowType.WITHOUT_SIMILARITY);
+					break;
+				case "3":
+					findPatternsInTable();
+					break;
+				case "4":
+					findPatternsInTableWithFilter();
+					break;
+				case "0":
+					return;
+				default:
+					System.out.println("Wrong number. Try again!");
+			}
+		}
 
-		double similarityThreshold = 0;
-		fitNodes = findPatternsInGraph(similarityThreshold);
-
-		NodesBox.getParamNode();
-
-		fitNodes = findPatternsInGraphWithFilter();
-
-		findPatternsInTable();
-
-		findPatternsInTableWithFilter();
 
 		// Input - only INDEX list nodes
-		showPatterns(fitNodes,ShowType.WITHOUT_SIMILARITY);
+//		showPatterns(fitNodes,ShowType.WITHOUT_SIMILARITY);
 
-		endTime = System.nanoTime();
-		System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
+//		endTime = System.nanoTime();
+//		System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 	}
 
 	private static void buildGraphAGDS(String dataPath) throws FileNotFoundException {
@@ -260,45 +276,16 @@ public class AssociativeGraphDataStructure{
 
 	}
 
-	private static void deleteRedundantNodes(List<Iris> listOfIris) {
-		List<Iris> additionalList = new ArrayList<>();
-		List<Integer> redundantIndex = new ArrayList<>();
+	private static List<Node> findPatternsInGraph() {
+		String[] param = Iris.getInputParameters();
+		double leafL = Double.valueOf(param[0]);
+		double leafW = Double.valueOf(param[1]);
+		double petalL = Double.valueOf(param[2]);
+		double petalW = Double.valueOf(param[3]);
 
-		int index = 0;
-		for (Iris singleIris: listOfIris) {
-			for (Iris iris: additionalList) {
-				if (singleIris.compare(iris)) {
-					redundantIndex.add(index);
-					break;
-				}
-			}
-			additionalList.add(singleIris);
-			index += 1;
-		}
-
-		Collections.reverse(redundantIndex);
-		for (int num: redundantIndex) {
-			listOfIris.remove(num);
-		}
-	}
-
-	private static void setAdditionalParam(List<Node> nodes) {
-		for (Node singleNode: nodes) {
-			if (singleNode.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
-				singleNode.setMinValue((Double) ((Node) singleNode.getChildren().get(0)).getValue());
-				singleNode.setMaxValue((Double) ((Node) singleNode.getChildren().get(singleNode.getChildren().size()-1)).getValue());
-				singleNode.setRange(roundDouble(singleNode.getMaxValue()-singleNode.getMinValue(), 2));
-			}
-		}
-	}
-
-	private static List<Node> findPatternsInGraph(double similarityThreshold) {
-		//TODO wstawienie wzorca
-		Iris pattern = new Iris(7.2, 3.2, 6.0, 1.8, Iris.IrisType.NONE);
-		Double leafL = pattern.getLeafLength();
-		Double leafW = pattern.getLeafWidth();
-		Double petalL = pattern.getPetalLength();
-		Double petalW = pattern.getPetalWidth();
+		System.out.println("Podaj współczynnik prawdopodobienstwa(1.0-0.0):");
+		Scanner input = new Scanner(System.in);
+		double similarityThreshold = Double.valueOf(input.nextLine());
 
 		//Get KIND_OF_PARAM nodes with CLASS_OF_OBJECT node
 		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
@@ -326,6 +313,9 @@ public class AssociativeGraphDataStructure{
 						default:
 							factor = -1.0;
 					}
+					if (factor <= 0.001) {
+						factor = 0.0;
+					}
 					singleValue.setFactor(factor);
 				}
 			}
@@ -348,26 +338,58 @@ public class AssociativeGraphDataStructure{
 		for (Node singleIndex: allIndexNodes) {
 			if (similarityThreshold <= singleIndex.getFactor()) {
 				showList.add(singleIndex);
-//				showPatterns(showList);
-//				showList.clear();
 			}
 		}
 		return showList;
 	}
 
 	private static List<Node> findPatternsInGraphWithFilter() {
-		//Set filter
-		//Zakresy wartości
-		//Jeśli warości mają być dowolne dla parametru wpisz -1
-		Double lowestLL = 4.9;
-		Double highestLL = 5.5;
-		Double lowestLW = 3.0;
-		Double highestLW = 3.6;
-		Double lowestPL = 1.2;
-		Double highestPL = 5.0;
-		Double lowestPW = 0.0;
-		Double highestPW = 2.0;
-		Iris.IrisType type = Iris.IrisType.SETOSA;
+		System.out.println("\nWprowadz zakresy parametrów.");
+
+		System.out.println("MIN Leaf-Length:");
+		Scanner input = new Scanner(System.in);
+		Double lowestLL = Double.valueOf(input.nextLine());
+		System.out.println("MAX Leaf-Length:");
+		input = new Scanner(System.in);
+		Double highestLL = Double.valueOf(input.nextLine());
+		System.out.println("MIN Leaf-Width:");
+		input = new Scanner(System.in);
+		Double lowestLW = Double.valueOf(input.nextLine());
+		System.out.println("MAX Leaf-Width:");
+		input = new Scanner(System.in);
+		Double highestLW = Double.valueOf(input.nextLine());
+		System.out.println("MIN Petal-Length:");
+		input = new Scanner(System.in);
+		Double lowestPL = Double.valueOf(input.nextLine());
+		System.out.println("MAX Petal-Length:");
+		input = new Scanner(System.in);
+		Double highestPL = Double.valueOf(input.nextLine());
+		System.out.println("MIN Petal-Width:");
+		input = new Scanner(System.in);
+		Double lowestPW = Double.valueOf(input.nextLine());
+		System.out.println("MAX Petal-Width:");
+		input = new Scanner(System.in);
+		Double highestPW = Double.valueOf(input.nextLine());
+		System.out.println("\n1.Setosa");
+		System.out.println("2.Versicolor ");
+		System.out.println("3.Virginica");
+		System.out.println("4.Wszystkie");
+		System.out.println("Numer typu:");
+		Iris.IrisType type = Iris.IrisType.NONE;
+		input = new Scanner(System.in);
+		switch (input.nextLine()) {
+			case "1":
+				type = Iris.IrisType.SETOSA;
+				break;
+			case "2":
+				type = Iris.IrisType.VERSICOLOR;
+				break;
+			case "3":
+				type = Iris.IrisType.VIRGINICA;
+				break;
+			case "4":
+				type = Iris.IrisType.NONE;
+		}
 
 		//Get class node
 		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
@@ -422,7 +444,7 @@ public class AssociativeGraphDataStructure{
 						break;
 				}
 				Node typeOfPattern = (Node) singleNode.getChildren().get(0);
-				if ((typeOfPattern.getValue()).equals(type)) {
+				if ((typeOfPattern.getValue()).equals(type) || type.equals(Iris.IrisType.NONE)) {
 					correctType = true;
 				}
 				if (counter == 4 && correctType) {
@@ -441,16 +463,67 @@ public class AssociativeGraphDataStructure{
 
 	}
 
+	private static void deleteRedundantNodes(List<Iris> listOfIris) {
+		List<Iris> additionalList = new ArrayList<>();
+		List<Integer> redundantIndex = new ArrayList<>();
+
+		int index = 0;
+		for (Iris singleIris: listOfIris) {
+			for (Iris iris: additionalList) {
+				if (singleIris.compare(iris)) {
+					redundantIndex.add(index);
+					break;
+				}
+			}
+			additionalList.add(singleIris);
+			index += 1;
+		}
+
+		Collections.reverse(redundantIndex);
+		for (int num: redundantIndex) {
+			listOfIris.remove(num);
+		}
+	}
+
+	private static void setAdditionalParam(List<Node> nodes) {
+		for (Node singleNode: nodes) {
+			if (singleNode.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
+				singleNode.setMinValue((Double) ((Node) singleNode.getChildren().get(0)).getValue());
+				singleNode.setMaxValue((Double) ((Node) singleNode.getChildren().get(singleNode.getChildren().size()-1)).getValue());
+				singleNode.setRange(roundDouble(singleNode.getMaxValue()-singleNode.getMinValue(), 2));
+			}
+		}
+	}
+
 	/**
 	 * Input - only INDEX list nodes
 	 **/
 	private static void showPatterns(List<Node> nodes, ShowType st) {
-		if (nodes.get(0).getLevel().equals(Node.Level.INDEX)) {
+		if (nodes.size() == 0 && st.equals(ShowType.WITH_SIMILARITY)) {
+			System.out.println("\nŻaden wzorzec nie jest podobny z takim prawdopodobienstwem!");
+		} else if (nodes.size() == 0 && st.equals(ShowType.WITHOUT_SIMILARITY)) {
+			System.out.println("\nŻaden wzorzec nie znajduje się w podanych zakresach!");
+		} else if (nodes.get(0).getLevel().equals(Node.Level.INDEX)) {
+			boolean first = true;
+			double maxSimilarity = 0.0;
+			double currentSimilarity;
+
+			//Get MAX similarity
+			for (Node singleNode: nodes) {
+				if (first) {
+					maxSimilarity = roundDouble(singleNode.getFactor(), 4);
+					first = false;
+				}
+				currentSimilarity = roundDouble(singleNode.getFactor(), 4);
+				if (currentSimilarity > maxSimilarity) {
+					maxSimilarity = roundDouble(singleNode.getFactor(), 4);
+				}
+			}
 			for (Node singleNode: nodes) {
 				List<Node> values = singleNode.getParents();
 				List<Node> type = singleNode.getChildren();
 
-				if ((roundDouble(singleNode.getFactor(), 4)) == 1.0) {
+				if ((roundDouble(singleNode.getFactor(), 4)) == maxSimilarity && st.equals(ShowType.WITH_SIMILARITY)) {
 					System.out.println();
 				}
 
@@ -482,7 +555,7 @@ public class AssociativeGraphDataStructure{
 				}
 
 
-				if ((roundDouble(singleNode.getFactor(), 4)) == 1.0) {
+				if ((roundDouble(singleNode.getFactor(), 4)) == maxSimilarity && st.equals(ShowType.WITH_SIMILARITY)) {
 					System.out.println();
 				}
 			}
