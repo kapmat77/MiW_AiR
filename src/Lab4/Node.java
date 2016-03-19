@@ -16,9 +16,12 @@ public class Node <T> implements Comparable<T>{
 	private List<Node> parents;
 
 	//Only for KIND_OF_PARAM nodes
-	private Double minValue = 0.0;
-	private Double maxValue = 0.0;
-	private Double range = 0.0;
+	private double minValue = 0.0;
+	private double maxValue = 0.0;
+	private double range = 0.0;
+
+	//Only for VALUE_OF_PARAM & INDEX nodes
+	private double factor = 0.0;
 
 	public enum Level {
 		PARAM, KIND_OF_PARAM, VALUE_OF_PARAM, INDEX, TYPE_OF_OBJECT, CLASS_OF_OBJECT, NONE
@@ -57,28 +60,36 @@ public class Node <T> implements Comparable<T>{
 		this.parents = parents;
 	}
 
-	public Double getMinValue() {
+	public double getMinValue() {
 		return minValue;
 	}
 
-	public void setMinValue(Double minValue) {
+	public void setMinValue(double minValue) {
 		this.minValue = minValue;
 	}
 
-	public Double getMaxValue() {
+	public double getMaxValue() {
 		return maxValue;
 	}
 
-	public void setMaxValue(Double maxValue) {
+	public void setMaxValue(double maxValue) {
 		this.maxValue = maxValue;
 	}
 
-	public Double getRange() {
+	public double getRange() {
 		return range;
 	}
 
-	public void setRange(Double range) {
+	public void setRange(double range) {
 		this.range = range;
+	}
+
+	public double getFactor() {
+		return factor;
+	}
+
+	public void setFactor(double factor) {
+		this.factor = factor;
 	}
 
 	public List<Node> getChildren() {

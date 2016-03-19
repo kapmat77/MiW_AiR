@@ -5,12 +5,14 @@
 package Lab4;
 
 import DataClass.Iris;
-import HelpfulClasses.WrapperKey;
+import HelpfulClasses.NodesBox;
 
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class AssociativeGraphDataStructure {
+public class AssociativeGraphDataStructure{
+
+//	private static final Node<String> PARAM_NODE = new Node<>(Node.Level.PARAM, Node.Level.PARAM.name());
 
 	public static void main(String[] args) throws FileNotFoundException {
 //		DataType dType = chooseType();
@@ -22,18 +24,17 @@ public class AssociativeGraphDataStructure {
 
 		startTime = System.nanoTime();
 
-		//Create PARAM node - main node
-		Node<String> paramNode = new Node<>(Node.Level.PARAM, Node.Level.PARAM.name());
-
-		buildGraphAGDS(dataPath, paramNode);
+		buildGraphAGDS(dataPath);
 
 		List<Node> fitNodes = new ArrayList<>();
 
 
+		double similarityThreshold = 0.9;
+		findPatternsInGraph(similarityThreshold);
 
-		findPatternsInGraph(paramNode);
+		NodesBox.getParamNode();
 
-		fitNodes = findPatternsInGraphWithFilter(paramNode);
+		fitNodes = findPatternsInGraphWithFilter();
 
 		findPatternsInTable();
 
@@ -46,7 +47,7 @@ public class AssociativeGraphDataStructure {
 		System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 	}
 
-	private static void buildGraphAGDS(String dataPath, Node<String> paramNode) throws FileNotFoundException {
+	private static void buildGraphAGDS(String dataPath) throws FileNotFoundException {
 		List<Iris> listOfIris = Iris.readDataFromFile(dataPath);
 
 		//Create CLASS_OF_OBJECT node
@@ -100,11 +101,11 @@ public class AssociativeGraphDataStructure {
 		childrenParam.add(pLength);
 		childrenParam.add(pWidth);
 		childrenParam.add(classNode);
-		paramNode.setChildren(childrenParam);
+		NodesBox.getParamNode().setChildren(childrenParam);
 
 		//Set CLASS_OF_OBJECT parent
 		List<Node> parentClass = new ArrayList<>();
-		parentClass.add(paramNode);
+		parentClass.add(NodesBox.getParamNode());
 		classNode.setParents(parentClass);
 
 		//Set CLASS_OF_OBJECT children
@@ -116,7 +117,7 @@ public class AssociativeGraphDataStructure {
 
 		//Set KIND_OF_PARAM parent
 		List<Node> kindParent = new ArrayList<>();
-		kindParent.add(paramNode);
+		kindParent.add(NodesBox.getParamNode());
 		lLength.setParents(kindParent);
 		lWidth.setParents(kindParent);
 		pLength.setParents(kindParent);
@@ -250,93 +251,88 @@ public class AssociativeGraphDataStructure {
 
 		//Set MIN, MAX, RANGE
 		setAdditionalParam(childrenParam);
+
+		deleteRedundantNodes();
 	}
 
-	private static void setAdditionalParam(List<Node> nodes) {
-		for (Node singleNode: nodes) {
+	private static void deleteRedundantNodes() {
+		//TODO
+		// usuwamy niepotrzebne VALUE nodes i powtarzające się INDEX nodes
+	}
+
+	private static void setAdditionalParam(List<Node> kindOfParam) {
+		for (Node singleNode: NodesBox.getKindOfParamNodes()) {
 			if (singleNode.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
 				singleNode.setMinValue((Double) ((Node) singleNode.getChildren().get(0)).getValue());
 				singleNode.setMaxValue((Double) ((Node) singleNode.getChildren().get(singleNode.getChildren().size()-1)).getValue());
-				singleNode.setRange(singleNode.getMaxValue()-singleNode.getMinValue());
+				singleNode.setRange(roundDouble(singleNode.getMaxValue()-singleNode.getMinValue(), 2));
 			}
 		}
 	}
 
-	private static void findPatternsInGraph(Node<String> paramNode) {
+	private static void findPatternsInGraph(double similarityThreshold) {
 		//TODO wstawienie wzorca
-		Iris pattern = new Iris(7.2, 3.2, 6.0, 1.8, Iris.IrisType.VIRGINICA);
+		Iris pattern = new Iris(7.2, 3.2, 6.0, 1.8, Iris.IrisType.NONE);
 		Double leafL = pattern.getLeafLength();
 		Double leafW = pattern.getLeafWidth();
 		Double petalL = pattern.getPetalLength();
 		Double petalW = pattern.getPetalWidth();
 
-		Map<WrapperKey<Iris.KindOfParam,Double>, Double> similarityMap = new HashMap<>();
-
 		//Get KIND_OF_PARAM nodes with CLASS_OF_OBJECT node
-		List<Node> childrenParam = paramNode.getChildren();
+		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
 
 		Double factor;
-		Double actualValue;
+		Double actualValue = 0.0;
 		for (Node kindOfParam: childrenParam) {
 			if (kindOfParam.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
 				List<Node> childrenKind = kindOfParam.getChildren();
-				WrapperKey<Iris.KindOfParam,Double> wrapperKey = new WrapperKey<>();
-				switch ((String) kindOfParam.getValue()) {
-					case "LEAF_LENGTH":
-						for (Node singleValue: childrenKind) {
-							actualValue = (Double) singleValue.getValue();
-							factor = 1.0 - (Math.abs(leafL-actualValue))/kindOfParam.getRange();
-							//TODO BIG DECIMAL !!!!!!!!!!!!!!!!!!!!!!!!!!!! range
-							wrapperKey.put(Iris.KindOfParam.LEAF_LENGTH, actualValue);
-							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
-							if (factor < 0.01) {
-								factor = 0.0;
-							}
-							similarityMap.put(wrapperKey, factor);
-						}
-						break;
-					case "LEAF_WIDTH":
-						for (Node singleValue: childrenKind) {
-							actualValue = (Double) singleValue.getValue();
-							factor = 1.0 - (Math.abs(leafW-actualValue))/kindOfParam.getRange();
-							wrapperKey.put(Iris.KindOfParam.LEAF_WIDTH, actualValue);
-							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
-							if (factor < 0.01) {
-								factor = 0.0;
-							}
-							similarityMap.put(wrapperKey, factor);
-						}
-						break;
-					case "PETAL_LENGTH":
-						for (Node singleValue: childrenKind) {
-							actualValue = (Double) singleValue.getValue();
-							factor = 1.0 - (Math.abs(petalL-actualValue))/kindOfParam.getRange();
-							wrapperKey.put(Iris.KindOfParam.PETAL_LENGTH, actualValue);
-							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
-							if (factor < 0.01) {
-								factor = 0.0;
-							}
-							similarityMap.put(wrapperKey, factor);
-						}
-						break;
-					case "PETAL_WIDTH":
-						for (Node singleValue: childrenKind) {
-							actualValue = (Double) singleValue.getValue();
-							factor = 1.0 - (Math.abs(petalW-actualValue))/kindOfParam.getRange();
-							wrapperKey.put(Iris.KindOfParam.PETAL_WIDTH, actualValue);
-							//Dla współczynnika mniejszego od 0.01 przyjmujemy podobienstwo równe 0
-							if (factor < 0.01) {
-								factor = 0.0;
-							}
-							similarityMap.put(wrapperKey, factor);
-						}
-						break;
+				for (Node singleValue : childrenKind) {
+					actualValue = (Double) singleValue.getValue();
+					switch ((String) kindOfParam.getValue()) {
+						case "LEAF_LENGTH":
+							factor = 1.0 - (roundDouble(Math.abs(leafL - actualValue), 2)) / kindOfParam.getRange();
+							break;
+						case "LEAF_WIDTH":
+							factor = 1.0 - (roundDouble(Math.abs(leafW - actualValue), 2)) / kindOfParam.getRange();
+							break;
+						case "PETAL_LENGTH":
+							factor = 1.0 - (roundDouble(Math.abs(petalL - actualValue), 2)) / kindOfParam.getRange();
+							break;
+						case "PETAL_WIDTH":
+							factor = 1.0 - (roundDouble(Math.abs(petalW - actualValue), 2)) / kindOfParam.getRange();
+							break;
+						default:
+							factor = -1.0;
+					}
+					singleValue.setFactor(factor);
 				}
+			}
+		}
+
+		//Get list of all patterns
+		List<Node> allIndexNodes = NodesBox.getIndexNodes();
+
+		double endFactor;
+		for (Node singleIndex: allIndexNodes) {
+			List<Node> parentsIndex = singleIndex.getParents();
+			endFactor = 0.0;
+			for (Node singleValue: parentsIndex) {
+				endFactor += singleValue.getFactor();
+			}
+			singleIndex.setFactor(endFactor/4);
+		}
+
+		List<Node> showList = new ArrayList<>();
+		for (Node singleIndex: allIndexNodes) {
+			if (similarityThreshold <= singleIndex.getFactor()) {
+				showList.add(singleIndex);
+				showPatterns(showList);
+				showList.clear();
 			}
 		}
 	}
 
-	private static List<Node> findPatternsInGraphWithFilter(Node<String> paramNode) {
+	private static List<Node> findPatternsInGraphWithFilter() {
 		//Set filter
 		//Zakresy wartości
 		//Jeśli warości mają być dowolne dla parametru wpisz -1
@@ -351,7 +347,7 @@ public class AssociativeGraphDataStructure {
 		Iris.IrisType type = Iris.IrisType.SETOSA;
 
 		//Get class node
-		List<Node> childrenParam = paramNode.getChildren();
+		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
 		Node classNode = new Node();
 		for (Node singleChild: childrenParam) {
 			if (singleChild.getLevel().equals(Node.Level.CLASS_OF_OBJECT)) {
@@ -430,14 +426,35 @@ public class AssociativeGraphDataStructure {
 			for (Node singleNode: nodes) {
 				List<Node> values = singleNode.getParents();
 				List<Node> type = singleNode.getChildren();
-				System.out.print(singleNode.getValue() + ". ");
+				if ((int)singleNode.getValue() < 10) {
+					System.out.print("  " + singleNode.getValue() + ". ");
+				} else if ((int)singleNode.getValue() < 100) {
+					System.out.print(" " + singleNode.getValue() + ". ");
+				} else {
+					System.out.print(singleNode.getValue() + ". ");
+				}
+
 				for (int i=0; i<values.size(); i++) {
 					System.out.print(((Node)values.get(i).getParents().get(0)).getValue() + ":" +
 							values.get(i).getValue() + " | ");
 				}
-				System.out.println(type.get(0).getValue());
+
+				if (((String)type.get(0).getValue().toString()).equals("SETOSA")) {
+					System.out.println(type.get(0).getValue() + "     | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+				} else if (((String)type.get(0).getValue().toString()).equals("VERSICOLOR")) {
+					System.out.println(type.get(0).getValue() + " | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+				} else if (((String)type.get(0).getValue().toString()).equals("VIRGINICA")) {
+					System.out.println(type.get(0).getValue() + "  | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+				}
 			}
 		}
+	}
+
+	private static double roundDouble(double value, int n) {
+		long factor = (long) Math.pow(10, n);
+		value = value * factor;
+		long tmp = Math.round(value);
+		return (double) tmp / factor;
 	}
 
 	private static DataType chooseType() {
