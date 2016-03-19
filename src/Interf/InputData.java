@@ -4,7 +4,7 @@
 
 package Interf;
 
-public interface InputData {
+public interface  InputData<T> {
 
 	double getParameterById(int id);
 
@@ -17,6 +17,8 @@ public interface InputData {
 	void setValidation(boolean b);
 
 	boolean getValidation();
+
+	boolean compare(T obj);
 
 	/**
 	 * Enum for IRIS, WINE

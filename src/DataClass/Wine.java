@@ -230,6 +230,12 @@ public class Wine implements InputData {
 	}
 
 	@Override
+	public boolean compare(Object obj) {
+		return false;
+		//TODO add implementation
+	}
+
+	@Override
 	public int numberOfParameters() {
 		return 13;
 	}

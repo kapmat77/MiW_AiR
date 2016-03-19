@@ -6,6 +6,7 @@ package Lab4;
 
 import DataClass.Iris;
 import HelpfulClasses.NodesBox;
+import Interf.InputData;
 
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -38,11 +39,11 @@ public class AssociativeGraphDataStructure{
 			switch (in.nextLine()) {
 				case "1":
 					fitNodes = findPatternsInGraph();
-					showPatterns(fitNodes,ShowType.WITH_SIMILARITY);
+					showPatterns(fitNodes, ShowType.WITH_SIMILARITY, dType);
 					break;
 				case "2":
 					fitNodes = findPatternsInGraphWithFilter();
-					showPatterns(fitNodes,ShowType.WITHOUT_SIMILARITY);
+					showPatterns(fitNodes, ShowType.WITHOUT_SIMILARITY, dType);
 					break;
 				case "3":
 					findPatternsInTable();
@@ -56,7 +57,6 @@ public class AssociativeGraphDataStructure{
 					System.out.println("Wrong number. Try again!");
 			}
 		}
-
 
 		// Input - only INDEX list nodes
 //		showPatterns(fitNodes,ShowType.WITHOUT_SIMILARITY);
@@ -272,8 +272,6 @@ public class AssociativeGraphDataStructure{
 
 		//Set MIN, MAX, RANGE
 		setAdditionalParam(NodesBox.getKindOfParamNodes());
-
-
 	}
 
 	private static List<Node> findPatternsInGraph() {
@@ -463,19 +461,19 @@ public class AssociativeGraphDataStructure{
 
 	}
 
-	private static void deleteRedundantNodes(List<Iris> listOfIris) {
-		List<Iris> additionalList = new ArrayList<>();
+	private static <T extends InputData> void deleteRedundantNodes(List<T> listOfIris) {
+		List<T> additionalList = new ArrayList<>();
 		List<Integer> redundantIndex = new ArrayList<>();
 
 		int index = 0;
-		for (Iris singleIris: listOfIris) {
-			for (Iris iris: additionalList) {
-				if (singleIris.compare(iris)) {
+		for (T singleObject: listOfIris) {
+			for (T additionalObject: additionalList) {
+				if (singleObject.compare(additionalObject)) {
 					redundantIndex.add(index);
 					break;
 				}
 			}
-			additionalList.add(singleIris);
+			additionalList.add(singleObject);
 			index += 1;
 		}
 
@@ -498,10 +496,10 @@ public class AssociativeGraphDataStructure{
 	/**
 	 * Input - only INDEX list nodes
 	 **/
-	private static void showPatterns(List<Node> nodes, ShowType st) {
-		if (nodes.size() == 0 && st.equals(ShowType.WITH_SIMILARITY)) {
+	private static void showPatterns(List<Node> nodes, ShowType showType, DataType dType) {
+		if (nodes.size() == 0 && showType.equals(ShowType.WITH_SIMILARITY)) {
 			System.out.println("\nŻaden wzorzec nie jest podobny z takim prawdopodobienstwem!");
-		} else if (nodes.size() == 0 && st.equals(ShowType.WITHOUT_SIMILARITY)) {
+		} else if (nodes.size() == 0 && showType.equals(ShowType.WITHOUT_SIMILARITY)) {
 			System.out.println("\nŻaden wzorzec nie znajduje się w podanych zakresach!");
 		} else if (nodes.get(0).getLevel().equals(Node.Level.INDEX)) {
 			boolean first = true;
@@ -523,7 +521,7 @@ public class AssociativeGraphDataStructure{
 				List<Node> values = singleNode.getParents();
 				List<Node> type = singleNode.getChildren();
 
-				if ((roundDouble(singleNode.getFactor(), 4)) == maxSimilarity && st.equals(ShowType.WITH_SIMILARITY)) {
+				if ((roundDouble(singleNode.getFactor(), 4)) == maxSimilarity && showType.equals(ShowType.WITH_SIMILARITY)) {
 					System.out.println();
 				}
 
@@ -539,14 +537,18 @@ public class AssociativeGraphDataStructure{
 					System.out.print(((Node)values.get(i).getParents().get(0)).getValue() + ":" +
 							values.get(i).getValue() + " | ");
 				}
-				switch (st) {
+				switch (showType) {
 					case WITH_SIMILARITY:
-						if (((String)type.get(0).getValue().toString()).equals("SETOSA")) {
-							System.out.println(type.get(0).getValue() + "     | Similarity: " + roundDouble(singleNode.getFactor(), 4));
-						} else if (((String)type.get(0).getValue().toString()).equals("VERSICOLOR")) {
+						if (dType.equals(DataType.IRIS)) {
+							if (((String)type.get(0).getValue().toString()).equals("SETOSA")) {
+								System.out.println(type.get(0).getValue() + "     | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+							} else if (((String)type.get(0).getValue().toString()).equals("VERSICOLOR")) {
+								System.out.println(type.get(0).getValue() + " | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+							} else if (((String)type.get(0).getValue().toString()).equals("VIRGINICA")) {
+								System.out.println(type.get(0).getValue() + "  | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+							}
+						} else if (dType.equals(DataType.WINE)) {
 							System.out.println(type.get(0).getValue() + " | Similarity: " + roundDouble(singleNode.getFactor(), 4));
-						} else if (((String)type.get(0).getValue().toString()).equals("VIRGINICA")) {
-							System.out.println(type.get(0).getValue() + "  | Similarity: " + roundDouble(singleNode.getFactor(), 4));
 						}
 						break;
 					case WITHOUT_SIMILARITY:
@@ -555,7 +557,7 @@ public class AssociativeGraphDataStructure{
 				}
 
 
-				if ((roundDouble(singleNode.getFactor(), 4)) == maxSimilarity && st.equals(ShowType.WITH_SIMILARITY)) {
+				if ((roundDouble(singleNode.getFactor(), 4)) == maxSimilarity && showType.equals(ShowType.WITH_SIMILARITY)) {
 					System.out.println();
 				}
 			}

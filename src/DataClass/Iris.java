@@ -152,7 +152,9 @@ public class Iris implements InputData {
 		}
 	}
 
-	public boolean compare(Iris iris) {
+	@Override
+	public boolean compare(Object obj) {
+		Iris iris = (Iris) obj;
 		if (this.leafLength==iris.leafLength && this.leafWidth==iris.leafWidth &&
 				this.petalLength==iris.petalLength && this.petalWidth==iris.petalWidth) {
 			return true;
@@ -199,6 +201,8 @@ public class Iris implements InputData {
 	public boolean getValidation() {
 		return isValidation;
 	}
+
+
 
 	@Override
 	public int numberOfParameters() {
