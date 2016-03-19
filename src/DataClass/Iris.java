@@ -152,6 +152,14 @@ public class Iris implements InputData {
 		}
 	}
 
+	public boolean compare(Iris iris) {
+		if (this.leafLength==iris.leafLength && this.leafWidth==iris.leafWidth &&
+				this.petalLength==iris.petalLength && this.petalWidth==iris.petalWidth) {
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public double getParameterById(int id) {
 		switch (id) {

@@ -31,7 +31,7 @@ public class AssociativeGraphDataStructure{
 		List<Node> fitNodes = new ArrayList<>();
 
 
-		double similarityThreshold = 0.9;
+		double similarityThreshold = 0;
 		findPatternsInGraph(similarityThreshold);
 
 		NodesBox.getParamNode();
@@ -51,6 +51,8 @@ public class AssociativeGraphDataStructure{
 
 	private static void buildGraphAGDS(String dataPath) throws FileNotFoundException {
 		List<Iris> listOfIris = Iris.readDataFromFile(dataPath);
+
+		deleteRedundantNodes(listOfIris);
 
 		//Create CLASS_OF_OBJECT node
 		Node<String> classNode = new Node<>(Node.Level.CLASS_OF_OBJECT, Node.Level.CLASS_OF_OBJECT.name());
@@ -78,8 +80,6 @@ public class AssociativeGraphDataStructure{
 		List<Node> valueLWNodes = new ArrayList<>();
 		List<Node> valuePLNodes = new ArrayList<>();
 		List<Node> valuePWNodes = new ArrayList<>();
-		List<double[]> valuelist = new ArrayList<>();
-		boolean eq = false;
 		for (Iris singleIris: listOfIris) {
 			Node<Double> llValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
@@ -93,22 +93,10 @@ public class AssociativeGraphDataStructure{
 			Node<Double> pwValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
 
-//			double[] tabDouble = {llValue.getValue(), lwValue.getValue(), plValue.getValue(), pwValue.getValue()};
-//
-//			for (double[] values: valuelist) {
-//				if (Arrays.equals(values, tabDouble)) {
-//					eq = true;
-//				}
-//			}
-//			if (!eq) {
-//
-//				valuelist.add(tabDouble);
-				valueLLNodes.add(llValue);
-				valueLWNodes.add(lwValue);
-				valuePLNodes.add(plValue);
-				valuePWNodes.add(pwValue);
-//			}
-//			eq = false;
+			valueLLNodes.add(llValue);
+			valueLWNodes.add(lwValue);
+			valuePLNodes.add(plValue);
+			valuePWNodes.add(pwValue);
 		}
 
 		//Set PARAM children
@@ -227,28 +215,7 @@ public class AssociativeGraphDataStructure{
 			parentsValue.add(pWidth);
 			singleValueNode.setParents(parentsValue);
 		}
-//		for (Node singleValueNode: valueLLNodes) {
-//			List<Node> parentsValue = new ArrayList<>();
-//			parentsValue.add(lLength);
-//			singleValueNode.setParents(parentsValue);
-//		}
-//		for (Node singleValueNode: valueLWNodes) {
-//			List<Node> parentsValue = new ArrayList<>();
-//			parentsValue.add(lWidth);
-//			singleValueNode.setParents(parentsValue);
-//		}
-//		for (Node singleValueNode: valuePLNodes) {
-//			List<Node> parentsValue = new ArrayList<>();
-//			parentsValue.add(pLength);
-//			singleValueNode.setParents(parentsValue);
-//		}
-//		for (Node singleValueNode: valuePWNodes) {
-//			List<Node> parentsValue = new ArrayList<>();
-//			parentsValue.add(pWidth);
-//			singleValueNode.setParents(parentsValue);
-//		}
 
-		//TODO
 		//Set INDEX parents
 		int j = 0;
 		for (Node singleIndexNode: indexNodes) {
@@ -260,16 +227,6 @@ public class AssociativeGraphDataStructure{
 			singleIndexNode.setParents(parentsIndex);
 			j++;
 		}
-//		int j = 0;
-//		for (Node singleIndexNode: indexNodes) {
-//			List<Node> parentsIndex = new ArrayList<>();
-//			parentsIndex.add(valueLLNodes.get(j));
-//			parentsIndex.add(valueLWNodes.get(j));
-//			parentsIndex.add(valuePLNodes.get(j));
-//			parentsIndex.add(valuePWNodes.get(j));
-//			singleIndexNode.setParents(parentsIndex);
-//			j++;
-//		}
 
 		//Set INDEX children
 		int k = 0;
@@ -300,30 +257,29 @@ public class AssociativeGraphDataStructure{
 		//Set MIN, MAX, RANGE
 		setAdditionalParam(NodesBox.getKindOfParamNodes());
 
-		deleteRedundantNodes();
+
 	}
 
-	private static void deleteRedundantNodes() {
-		//TODO
-		// usuwamy niepotrzebne VALUE nodes i powtarzające się INDEX nodes
-		List<Node> kindOfParam = NodesBox.getKindOfParamNodes();
-		for (Node singleNode: kindOfParam) {
-//			switch ((InputData.KindOfParam)singleNode.getValue()) {
-//				case LEAF_LENGTH:
-//					break;
-//				case LEAF_WIDTH:
-//					break;
-//				case PETAL_LENGTH:
-//					break;
-//				case PETAL_WIDTH:
-//					break;
-//				case ALCOHOL:
-//					break;
-//				case MALIC_ACID:
-//					break;
-//			}
+	private static void deleteRedundantNodes(List<Iris> listOfIris) {
+		List<Iris> additionalList = new ArrayList<>();
+		List<Integer> redundantIndex = new ArrayList<>();
+
+		int index = 0;
+		for (Iris singleIris: listOfIris) {
+			for (Iris iris: additionalList) {
+				if (singleIris.compare(iris)) {
+					redundantIndex.add(index);
+					break;
+				}
+			}
+			additionalList.add(singleIris);
+			index += 1;
 		}
 
+		Collections.reverse(redundantIndex);
+		for (int num: redundantIndex) {
+			listOfIris.remove(num);
+		}
 	}
 
 	private static void setAdditionalParam(List<Node> nodes) {
@@ -492,6 +448,11 @@ public class AssociativeGraphDataStructure{
 			for (Node singleNode: nodes) {
 				List<Node> values = singleNode.getParents();
 				List<Node> type = singleNode.getChildren();
+
+				if ((roundDouble(singleNode.getFactor(), 4)) == 1.0) {
+					System.out.println();
+				}
+
 				if ((int)singleNode.getValue() < 10) {
 					System.out.print("  " + singleNode.getValue() + ". ");
 				} else if ((int)singleNode.getValue() < 100) {
@@ -511,6 +472,10 @@ public class AssociativeGraphDataStructure{
 					System.out.println(type.get(0).getValue() + " | Similarity: " + roundDouble(singleNode.getFactor(), 4));
 				} else if (((String)type.get(0).getValue().toString()).equals("VIRGINICA")) {
 					System.out.println(type.get(0).getValue() + "  | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+				}
+
+				if ((roundDouble(singleNode.getFactor(), 4)) == 1.0) {
+					System.out.println();
 				}
 			}
 		}
