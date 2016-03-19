@@ -32,7 +32,7 @@ public class AssociativeGraphDataStructure{
 
 
 		double similarityThreshold = 0;
-		findPatternsInGraph(similarityThreshold);
+		fitNodes = findPatternsInGraph(similarityThreshold);
 
 		NodesBox.getParamNode();
 
@@ -43,7 +43,7 @@ public class AssociativeGraphDataStructure{
 		findPatternsInTableWithFilter();
 
 		// Input - only INDEX list nodes
-//		showPatterns(fitNodes);
+		showPatterns(fitNodes,ShowType.WITHOUT_SIMILARITY);
 
 		endTime = System.nanoTime();
 		System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
@@ -292,7 +292,7 @@ public class AssociativeGraphDataStructure{
 		}
 	}
 
-	private static void findPatternsInGraph(double similarityThreshold) {
+	private static List<Node> findPatternsInGraph(double similarityThreshold) {
 		//TODO wstawienie wzorca
 		Iris pattern = new Iris(7.2, 3.2, 6.0, 1.8, Iris.IrisType.NONE);
 		Double leafL = pattern.getLeafLength();
@@ -304,7 +304,7 @@ public class AssociativeGraphDataStructure{
 		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
 
 		Double factor;
-		Double actualValue = 0.0;
+		Double actualValue;
 		for (Node kindOfParam: childrenParam) {
 			if (kindOfParam.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
 				List<Node> childrenKind = kindOfParam.getChildren();
@@ -348,10 +348,11 @@ public class AssociativeGraphDataStructure{
 		for (Node singleIndex: allIndexNodes) {
 			if (similarityThreshold <= singleIndex.getFactor()) {
 				showList.add(singleIndex);
-				showPatterns(showList);
-				showList.clear();
+//				showPatterns(showList);
+//				showList.clear();
 			}
 		}
+		return showList;
 	}
 
 	private static List<Node> findPatternsInGraphWithFilter() {
@@ -443,7 +444,7 @@ public class AssociativeGraphDataStructure{
 	/**
 	 * Input - only INDEX list nodes
 	 **/
-	private static void showPatterns(List<Node> nodes) {
+	private static void showPatterns(List<Node> nodes, ShowType st) {
 		if (nodes.get(0).getLevel().equals(Node.Level.INDEX)) {
 			for (Node singleNode: nodes) {
 				List<Node> values = singleNode.getParents();
@@ -465,14 +466,21 @@ public class AssociativeGraphDataStructure{
 					System.out.print(((Node)values.get(i).getParents().get(0)).getValue() + ":" +
 							values.get(i).getValue() + " | ");
 				}
-
-				if (((String)type.get(0).getValue().toString()).equals("SETOSA")) {
-					System.out.println(type.get(0).getValue() + "     | Similarity: " + roundDouble(singleNode.getFactor(), 4));
-				} else if (((String)type.get(0).getValue().toString()).equals("VERSICOLOR")) {
-					System.out.println(type.get(0).getValue() + " | Similarity: " + roundDouble(singleNode.getFactor(), 4));
-				} else if (((String)type.get(0).getValue().toString()).equals("VIRGINICA")) {
-					System.out.println(type.get(0).getValue() + "  | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+				switch (st) {
+					case WITH_SIMILARITY:
+						if (((String)type.get(0).getValue().toString()).equals("SETOSA")) {
+							System.out.println(type.get(0).getValue() + "     | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+						} else if (((String)type.get(0).getValue().toString()).equals("VERSICOLOR")) {
+							System.out.println(type.get(0).getValue() + " | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+						} else if (((String)type.get(0).getValue().toString()).equals("VIRGINICA")) {
+							System.out.println(type.get(0).getValue() + "  | Similarity: " + roundDouble(singleNode.getFactor(), 4));
+						}
+						break;
+					case WITHOUT_SIMILARITY:
+						System.out.println(type.get(0).getValue());
+						break;
 				}
+
 
 				if ((roundDouble(singleNode.getFactor(), 4)) == 1.0) {
 					System.out.println();
@@ -507,5 +515,9 @@ public class AssociativeGraphDataStructure{
 
 	private enum DataType {
 		IRIS, WINE
+	}
+
+	private enum ShowType {
+		WITH_SIMILARITY, WITHOUT_SIMILARITY
 	}
 }
