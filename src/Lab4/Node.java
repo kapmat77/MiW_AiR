@@ -5,56 +5,118 @@
 package Lab4;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Node <T> {
+public class Node <T> implements Comparable<T>{
 
-	/*    Level
-	 * 1 - param - String
-	 * 2 - nameOfParam - String
-	 * 3 - valueOfParam - Double
-	 * 4 - index - Integer
-	 * 5 - nameOfType - String
-	 * 6 - valueOfType - String
-	 */
-	private int level;
+	private Level level;
 	private T value;
 
-	private ArrayList<Node> children;
-	private ArrayList<Node> parents;
+	private List<Node> children;
+	private List<Node> parents;
+
+	//Only for KIND_OF_PARAM nodes
+	private double minValue = 0.0;
+	private double maxValue = 0.0;
+	private double range = 0.0;
+
+	//Only for VALUE_OF_PARAM & INDEX nodes
+	private double factor = 0.0;
+
+	public enum Level {
+		PARAM, KIND_OF_PARAM, VALUE_OF_PARAM, INDEX, TYPE_OF_OBJECT, CLASS_OF_OBJECT, NONE
+	}
 
 	public Node() {
-		level = 0;
+		level = Level.NONE;
 		children = new ArrayList<>();
 		parents = new ArrayList<>();
 	}
 
-	public Node(int level, ArrayList<Node> children, ArrayList<Node> parents) {
+	public Node(Level level, List<Node> children, List<Node> parents) {
 		this.level = level;
 		this.children = children;
 		this.parents = parents;
 	}
 
-	public Node(int level,T value) {
+	public Node(Level level,T value) {
 		this.level = level;
 		this.value = value;
 	}
 
-	public void setChildren(ArrayList<Node> children) {
+	public T getValue(){
+		return value;
+	}
+
+	public Level getLevel(){
+		return this.level;
+	}
+
+	public void setChildren(List<Node> children) {
 		this.children = children;
 	}
 
-	public void setParents(ArrayList<Node> parents) {
+	public void setParents(List<Node> parents) {
 		this.parents = parents;
 	}
 
-	public ArrayList<Node> getChildren() {
+	public double getMinValue() {
+		return minValue;
+	}
+
+	public void setMinValue(double minValue) {
+		this.minValue = minValue;
+	}
+
+	public double getMaxValue() {
+		return maxValue;
+	}
+
+	public void setMaxValue(double maxValue) {
+		this.maxValue = maxValue;
+	}
+
+	public double getRange() {
+		return range;
+	}
+
+	public void setRange(double range) {
+		this.range = range;
+	}
+
+	public double getFactor() {
+		return factor;
+	}
+
+	public void setFactor(double factor) {
+		this.factor = factor;
+	}
+
+	public List<Node> getChildren() {
 		return this.children;
 	}
 
-	public ArrayList<Node> getParents() {
+	public List<Node> getParents() {
 		return this.parents;
 	}
 
+	@Override
+	public int compareTo(T secondValue) {
+		Double second;
+		Double first;
+		if (secondValue instanceof Node) {
+			second = (Double) this.getValue();
+			first = (Double) ((Node) secondValue).getValue();
+			if (second < first) {
+				return -1;
+			} else if (second > first) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		return 0;
+	}
 }
 
 

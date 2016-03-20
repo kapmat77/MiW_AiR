@@ -2,12 +2,22 @@
  * Created by Kapmat on 2016-03-13.
  **/
 
-package Lab3_1;
+package HelpfulClasses;
 
 public class WrapperKey<T,K> {
 
 	private T firstKey;
 	private K secondKey;
+
+	public WrapperKey() {
+		this.firstKey = null;
+		this.secondKey = null;
+	}
+
+	public WrapperKey(T firstKey, K secondKey) {
+		this.firstKey = firstKey;
+		this.secondKey = secondKey;
+	}
 
 	public T getFirstKey() {
 		return firstKey;
@@ -15,11 +25,6 @@ public class WrapperKey<T,K> {
 
 	public K getSecondKey() {
 		return secondKey;
-	}
-
-	public WrapperKey(T firstKey, K secondKey) {
-		this.firstKey = firstKey;
-		this.secondKey = secondKey;
 	}
 
 	public WrapperKey put(T firstKey, K secondKey) {

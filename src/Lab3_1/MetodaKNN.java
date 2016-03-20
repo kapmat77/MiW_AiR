@@ -4,6 +4,11 @@
 
 package Lab3_1;
 
+import HelpfulClasses.WrapperKey;
+import Interf.InputData;
+import DataClass.Iris;
+import DataClass.Wine;
+
 import java.io.FileNotFoundException;
 import java.util.*;
 
@@ -14,7 +19,7 @@ public class MetodaKNN {
 
 	public static void main(String[] args) throws Exception {
 		DataType dType = chooseType();
-		String dataPath = "src/Lab3_1/resources/data" + dType.name() +".txt";
+		String dataPath = "src/Resources/data" + dType.name() +".txt";
 		System.out.println("1.Prosta metoda KNN z podaną wartością K");
 		System.out.println("2.Metoda KNN z walidacją krzyżową");
 		Scanner input = new Scanner(System.in);

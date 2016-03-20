@@ -2,16 +2,17 @@
  * Created by Kapmat on 2016-03-08.
  **/
 
-package Lab3_1;
+package DataClass;
+
+import Interf.InputData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
-public class Iris implements InputData{
+public class Iris implements InputData {
 	
 	private double leafLength;
 	private double leafWidth;
@@ -21,9 +22,13 @@ public class Iris implements InputData{
 
 	private boolean isValidation  = false;
 	
-	private enum IrisType {
+	public enum IrisType {
 		SETOSA, VERSICOLOR, VIRGINICA, NONE
 	}
+
+//	public enum KindOfParam {
+//		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH
+//	}
 	
 	public Iris() {
 		this.leafLength = 0;
@@ -72,7 +77,8 @@ public class Iris implements InputData{
 
 	public static String[] getInputParameters() {
 		System.out.println("\nWprowadz parametry nowego obiektu");
-
+		System.out.println("(Liczby z maksymalnie jednym miejscem po przecinku,");
+		System.out.println("większa ilość miejsc po przecinku jest zaokrąglana)");
 		String setOfParameters[] = new String[5];
 		Scanner input = new Scanner(System.in);
 
@@ -110,6 +116,51 @@ public class Iris implements InputData{
 			throw new FileNotFoundException("Plik nie zostal wczytany poprawnie - " + e.getMessage());
 		}
 		return objectsList;
+	}
+
+	public double getLeafLength() {
+		return leafLength;
+	}
+
+	public double getLeafWidth() {
+		return leafWidth;
+	}
+
+	public double getPetalLength() {
+		return petalLength;
+	}
+
+	public double getPetalWidth() {
+		return petalWidth;
+	}
+
+	public IrisType getType() {
+		return type;
+	}
+
+	public double getParameterByEnum(KindOfParam kind) {
+		switch (kind) {
+			case LEAF_LENGTH:
+				return leafLength;
+			case LEAF_WIDTH:
+				return leafWidth;
+			case PETAL_LENGTH:
+				return petalLength;
+			case PETAL_WIDTH:
+				return petalWidth;
+			default:
+				return 0.0;
+		}
+	}
+
+	@Override
+	public boolean compare(Object obj) {
+		Iris iris = (Iris) obj;
+		if (this.leafLength==iris.leafLength && this.leafWidth==iris.leafWidth &&
+				this.petalLength==iris.petalLength && this.petalWidth==iris.petalWidth) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

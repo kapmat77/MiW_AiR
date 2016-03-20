@@ -20,8 +20,8 @@ public class EksploracjaDanych {
 
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
-		System.out.println("Dane wczytywane są z pliku Lab2/resources/dane.txt");
-		readDataFromFile("src/Lab2/resources/dane_prezentacja.txt");
+		System.out.println("Dane wczytywane są z pliku Lab2/resources/dane_lab2.txt");
+		readDataFromFile("src/Resources/dane_prezentacja_lab2.txt");
 
 		countFrequentData();
 		countProbability();

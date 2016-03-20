@@ -2,16 +2,17 @@
  * Created by Kapmat on 2016-03-08.
  **/
 
-package Lab3_1;
+package DataClass;
+
+import Interf.InputData;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
-public class Wine implements InputData{
+public class Wine implements InputData {
 
 	private int classType;
 	private double alcohol;
@@ -226,6 +227,12 @@ public class Wine implements InputData{
 	@Override
 	public boolean getValidation() {
 		return isValidation;
+	}
+
+	@Override
+	public boolean compare(Object obj) {
+		return false;
+		//TODO add implementation
 	}
 
 	@Override
