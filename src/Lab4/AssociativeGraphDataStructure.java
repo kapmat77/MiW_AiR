@@ -5,6 +5,7 @@
 package Lab4;
 
 import DataClass.Iris;
+import DataClass.Wine;
 import HelpfulClasses.NodesBox;
 import Interf.InputData;
 
@@ -14,17 +15,26 @@ import java.util.*;
 public class AssociativeGraphDataStructure{
 
 	public static void main(String[] args) throws FileNotFoundException {
-//		DataType dType = chooseType();
-		DataType dType = DataType.IRIS;
+		DataType dType = chooseType();
 		String dataPath = "src/Resources/data" + dType.name() +".txt";
 		Long startTime;
 		Long endTime;
 
-		startTime = System.nanoTime();
-
-		buildGraphAGDS(dataPath);
+		switch (dType) {
+			case IRIS:
+				List<Iris> listOfIrises = Iris.readDataFromFile(dataPath);
+				buildGraphAGDS(listOfIrises);
+				buildTable(listOfIrises);
+				break;
+			case WINE:
+				List<Wine> listOfWines = Wine.readDataFromFile(dataPath);
+				buildGraphAGDS(listOfWines);
+				buildTable(listOfWines);
+				break;
+		}
 
 		List<Node> fitNodes;
+		List<Objects> fitPatterns;
 
 		while (true) {
 			System.out.println("\n##################################################");
@@ -38,18 +48,32 @@ public class AssociativeGraphDataStructure{
 			Scanner in = new Scanner(System.in);
 			switch (in.nextLine()) {
 				case "1":
+					startTime = System.nanoTime();
 					fitNodes = findPatternsInGraph();
-					showPatterns(fitNodes, ShowType.WITH_SIMILARITY, dType);
+					endTime = System.nanoTime();
+					showPatternsFromNodes(fitNodes, ShowType.WITH_SIMILARITY, dType);
+					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 					break;
 				case "2":
+					startTime = System.nanoTime();
 					fitNodes = findPatternsInGraphWithFilter();
-					showPatterns(fitNodes, ShowType.WITHOUT_SIMILARITY, dType);
+					endTime = System.nanoTime();
+					showPatternsFromNodes(fitNodes, ShowType.WITHOUT_SIMILARITY, dType);
+					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 					break;
 				case "3":
-					findPatternsInTable();
+					startTime = System.nanoTime();
+					fitPatterns = findPatternsInTable();
+					endTime = System.nanoTime();
+					showPatternsFromTable(fitPatterns);
+					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 					break;
 				case "4":
-					findPatternsInTableWithFilter();
+					startTime = System.nanoTime();
+					fitPatterns = findPatternsInTableWithFilter();
+					endTime = System.nanoTime();
+					showPatternsFromTable(fitPatterns);
+					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 					break;
 				case "0":
 					return;
@@ -57,18 +81,56 @@ public class AssociativeGraphDataStructure{
 					System.out.println("Wrong number. Try again!");
 			}
 		}
-
-		// Input - only INDEX list nodes
-//		showPatterns(fitNodes,ShowType.WITHOUT_SIMILARITY);
-
-//		endTime = System.nanoTime();
-//		System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 	}
 
-	private static void buildGraphAGDS(String dataPath) throws FileNotFoundException {
-		List<Iris> listOfIris = Iris.readDataFromFile(dataPath);
+	private static  <T extends InputData> Object[][] buildTable(List<T> listOfObjects) throws FileNotFoundException {
 
-		deleteRedundantNodes(listOfIris);
+		int numOfCol = listOfObjects.get(0).numberOfParameters()+2;
+		Object[][] objTable = new Object[listOfObjects.size()+1][numOfCol];
+
+		int j = 0;
+		for (T obj: listOfObjects) {
+			if (j == 0 && obj instanceof Iris) {
+				objTable[j][0] = "PARAM";
+				objTable[j][1] = "LEAF_LENGTH";
+				objTable[j][2] = "LEAF_WIDTH";
+				objTable[j][3] = "PETAL_LENGTH";
+				objTable[j][4] = "PETAL_WIDTH";
+				objTable[j][5] = "CLASS";
+				j++;
+			} else if (j == 0 && obj instanceof Wine) {
+				objTable[j][0] = "PARAM";
+				objTable[j][1] = "ALCOHOL";
+				objTable[j][2] = "MALIC_ACID";
+				objTable[j][3] = "ASH";
+				objTable[j][4] = "ALCALINITY_OF_ASHE";
+				objTable[j][5] = "MAGNESIUM";
+				objTable[j][6] = "TOTAL_PHENOLS";
+				objTable[j][7] = "FLAVANOIDS";
+				objTable[j][8] = "NONFLAVANOID_PHENOLS";
+				objTable[j][9] = "PROANTHOCYANINS";
+				objTable[j][10] = "COLOR_INTENSITY";
+				objTable[j][11] = "HUE";
+				objTable[j][12] = "OD280OD315_OF_DILUTED_WINES";
+				objTable[j][13] = "PROFLINE";
+				objTable[j][14] = "CLASS";
+				j++;
+			}
+			objTable[j][0] = j;
+			for (int i = 1; i<numOfCol-1; i++) {
+				objTable[j][i] = obj.getParameterById(i);
+			}
+			objTable[j][numOfCol-1] = obj.getObjectType();
+			j++;
+		}
+		return objTable;
+	}
+
+	private static <T> void buildGraphAGDS(List<T> listOfObjects) throws FileNotFoundException {
+
+		List<Iris> listOfIrises = (List<Iris>) listOfObjects;
+
+		deleteRedundantNodes(listOfIrises);
 
 		//Create CLASS_OF_OBJECT node
 		Node<String> classNode = new Node<>(Node.Level.CLASS_OF_OBJECT, Node.Level.CLASS_OF_OBJECT.name());
@@ -86,7 +148,7 @@ public class AssociativeGraphDataStructure{
 
 		//Create INDEX nodes
 		List<Node> indexNodes = new ArrayList<>();
-		for (int i = 0; i<listOfIris.size(); i++) {
+		for (int i = 0; i<listOfIrises.size(); i++) {
 			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i+1);
 			indexNodes.add(singleIndex);
 		}
@@ -96,7 +158,7 @@ public class AssociativeGraphDataStructure{
 		List<Node> valueLWNodes = new ArrayList<>();
 		List<Node> valuePLNodes = new ArrayList<>();
 		List<Node> valuePWNodes = new ArrayList<>();
-		for (Iris singleIris: listOfIris) {
+		for (Iris singleIris: listOfIrises) {
 			Node<Double> llValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
 
@@ -162,7 +224,7 @@ public class AssociativeGraphDataStructure{
 		List<Node> childrenSetosaType = new ArrayList<>();
 		List<Node> childrenVersicolorType = new ArrayList<>();
 		List<Node> childrenVirginicaType = new ArrayList<>();
-		for (Iris singleIris: listOfIris) {
+		for (Iris singleIris: listOfIrises) {
 			switch (singleIris.getObjectType()) {
 				case "SETOSA":
 					childrenSetosaType.add(indexNodes.get(l));
@@ -247,7 +309,7 @@ public class AssociativeGraphDataStructure{
 		//Set INDEX children
 		int k = 0;
 		for (Node singleIndexNode: indexNodes) {
-			Iris singleIris = listOfIris.get(k);
+			Iris singleIris = listOfIrises.get(k);
 			List<Node> childrenIndex = new ArrayList<>();
 			switch (singleIris.getObjectType()) {
 				case "SETOSA":
@@ -275,11 +337,12 @@ public class AssociativeGraphDataStructure{
 	}
 
 	private static List<Node> findPatternsInGraph() {
+		System.out.println();
 		String[] param = Iris.getInputParameters();
-		double leafL = Double.valueOf(param[0]);
-		double leafW = Double.valueOf(param[1]);
-		double petalL = Double.valueOf(param[2]);
-		double petalW = Double.valueOf(param[3]);
+		double leafL = roundDouble(Double.valueOf(param[0]), 2);
+		double leafW = roundDouble(Double.valueOf(param[1]), 2);
+		double petalL = roundDouble(Double.valueOf(param[2]), 2);
+		double petalW = roundDouble(Double.valueOf(param[3]), 2);
 
 		System.out.println("Podaj współczynnik prawdopodobienstwa(1.0-0.0):");
 		Scanner input = new Scanner(System.in);
@@ -290,31 +353,37 @@ public class AssociativeGraphDataStructure{
 
 		Double factor;
 		Double actualValue;
+		double similarity;
 		for (Node kindOfParam: childrenParam) {
 			if (kindOfParam.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
 				List<Node> childrenKind = kindOfParam.getChildren();
 				for (Node singleValue : childrenKind) {
+					factor = 1.0 - (0.1/kindOfParam.getRange());
 					actualValue = (Double) singleValue.getValue();
 					switch ((String) kindOfParam.getValue()) {
 						case "LEAF_LENGTH":
-							factor = 1.0 - (roundDouble(Math.abs(leafL - actualValue), 2)) / kindOfParam.getRange();
+//							factor = 1.0 - (roundDouble(Math.abs(leafL - actualValue), 2)) / kindOfParam.getRange();
+							similarity = Math.pow(factor,(Math.abs(leafL - actualValue)*10));
 							break;
 						case "LEAF_WIDTH":
-							factor = 1.0 - (roundDouble(Math.abs(leafW - actualValue), 2)) / kindOfParam.getRange();
+//							factor = 1.0 - (roundDouble(Math.abs(leafW - actualValue), 2)) / kindOfParam.getRange();
+							similarity = Math.pow(factor,(Math.abs(leafW - actualValue)*10));
 							break;
 						case "PETAL_LENGTH":
-							factor = 1.0 - (roundDouble(Math.abs(petalL - actualValue), 2)) / kindOfParam.getRange();
+//							factor = 1.0 - (roundDouble(Math.abs(petalL - actualValue), 2)) / kindOfParam.getRange();
+							similarity = Math.pow(factor,(Math.abs(petalL - actualValue)*10));
 							break;
 						case "PETAL_WIDTH":
-							factor = 1.0 - (roundDouble(Math.abs(petalW - actualValue), 2)) / kindOfParam.getRange();
+//							factor = 1.0 - (roundDouble(Math.abs(petalW - actualValue), 2)) / kindOfParam.getRange();
+							similarity = Math.pow(factor,(Math.abs(petalW - actualValue)*10));
 							break;
 						default:
-							factor = -1.0;
+							similarity = -1.0;
 					}
-					if (factor <= 0.001) {
-						factor = 0.0;
+					if (similarity <= 0.001) {
+						similarity = 0.0;
 					}
-					singleValue.setFactor(factor);
+					singleValue.setFactor(similarity);
 				}
 			}
 		}
@@ -453,12 +522,13 @@ public class AssociativeGraphDataStructure{
 		return fitNodes;
 	}
 
-	private static void findPatternsInTable() {
+	private static <T> List<T> findPatternsInTable() {
 
+		return null;
 	}
 
-	private static void findPatternsInTableWithFilter() {
-
+	private static <T> List<T> findPatternsInTableWithFilter() {
+		return null;
 	}
 
 	private static <T extends InputData> void deleteRedundantNodes(List<T> listOfIris) {
@@ -496,7 +566,7 @@ public class AssociativeGraphDataStructure{
 	/**
 	 * Input - only INDEX list nodes
 	 **/
-	private static void showPatterns(List<Node> nodes, ShowType showType, DataType dType) {
+	private static void showPatternsFromNodes(List<Node> nodes, ShowType showType, DataType dType) {
 		if (nodes.size() == 0 && showType.equals(ShowType.WITH_SIMILARITY)) {
 			System.out.println("\nŻaden wzorzec nie jest podobny z takim prawdopodobienstwem!");
 		} else if (nodes.size() == 0 && showType.equals(ShowType.WITHOUT_SIMILARITY)) {
@@ -562,6 +632,10 @@ public class AssociativeGraphDataStructure{
 				}
 			}
 		}
+	}
+
+	private static <T> void showPatternsFromTable(List<T> patterns) {
+
 	}
 
 	private static double roundDouble(double value, int n) {

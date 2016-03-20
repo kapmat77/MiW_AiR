@@ -77,7 +77,8 @@ public class Iris implements InputData {
 
 	public static String[] getInputParameters() {
 		System.out.println("\nWprowadz parametry nowego obiektu");
-
+		System.out.println("(Liczby z maksymalnie jednym miejscem po przecinku,");
+		System.out.println("większa ilość miejsc po przecinku jest zaokrąglana)");
 		String setOfParameters[] = new String[5];
 		Scanner input = new Scanner(System.in);
 
@@ -201,8 +202,6 @@ public class Iris implements InputData {
 	public boolean getValidation() {
 		return isValidation;
 	}
-
-
 
 	@Override
 	public int numberOfParameters() {
