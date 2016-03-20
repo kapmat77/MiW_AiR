@@ -15,26 +15,29 @@ import java.util.*;
 public class AssociativeGraphDataStructure{
 
 	public static void main(String[] args) throws FileNotFoundException {
-		DataType dType = chooseType();
+//		DataType dType = chooseType();
+		DataType dType = DataType.IRIS;
 		String dataPath = "src/Resources/data" + dType.name() +".txt";
 		Long startTime;
 		Long endTime;
+
+		Object[][] objTable = new Object[0][];
 
 		switch (dType) {
 			case IRIS:
 				List<Iris> listOfIrises = Iris.readDataFromFile(dataPath);
 				buildGraphAGDS(listOfIrises);
-				buildTable(listOfIrises);
+				objTable = buildTable(listOfIrises);
 				break;
 			case WINE:
 				List<Wine> listOfWines = Wine.readDataFromFile(dataPath);
 				buildGraphAGDS(listOfWines);
-				buildTable(listOfWines);
+				objTable = buildTable(listOfWines);
 				break;
 		}
 
 		List<Node> fitNodes;
-		List<Objects> fitPatterns;
+		List<Integer> fitIndexes;
 
 		while (true) {
 			System.out.println("\n##################################################");
@@ -63,16 +66,16 @@ public class AssociativeGraphDataStructure{
 					break;
 				case "3":
 					startTime = System.nanoTime();
-					fitPatterns = findPatternsInTable();
+					fitIndexes = findPatternsInTable(objTable);
 					endTime = System.nanoTime();
-					showPatternsFromTable(fitPatterns);
+					showPatternsFromTable(fitIndexes, objTable, ShowType.WITH_SIMILARITY);
 					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 					break;
 				case "4":
 					startTime = System.nanoTime();
-					fitPatterns = findPatternsInTableWithFilter();
+					fitIndexes = findPatternsInTableWithFilter(objTable);
 					endTime = System.nanoTime();
-					showPatternsFromTable(fitPatterns);
+					showPatternsFromTable(fitIndexes, objTable, ShowType.WITHOUT_SIMILARITY);
 					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
 					break;
 				case "0":
@@ -85,7 +88,7 @@ public class AssociativeGraphDataStructure{
 
 	private static  <T extends InputData> Object[][] buildTable(List<T> listOfObjects) throws FileNotFoundException {
 
-		int numOfCol = listOfObjects.get(0).numberOfParameters()+2;
+		int numOfCol = listOfObjects.get(0).numberOfParameters()+2+1;
 		Object[][] objTable = new Object[listOfObjects.size()+1][numOfCol];
 
 		int j = 0;
@@ -97,6 +100,7 @@ public class AssociativeGraphDataStructure{
 				objTable[j][3] = "PETAL_LENGTH";
 				objTable[j][4] = "PETAL_WIDTH";
 				objTable[j][5] = "CLASS";
+				objTable[j][6] = "SIMILARITY";
 				j++;
 			} else if (j == 0 && obj instanceof Wine) {
 				objTable[j][0] = "PARAM";
@@ -114,13 +118,15 @@ public class AssociativeGraphDataStructure{
 				objTable[j][12] = "OD280OD315_OF_DILUTED_WINES";
 				objTable[j][13] = "PROFLINE";
 				objTable[j][14] = "CLASS";
+				objTable[j][15] = "SIMILARITY";
 				j++;
 			}
 			objTable[j][0] = j;
 			for (int i = 1; i<numOfCol-1; i++) {
 				objTable[j][i] = obj.getParameterById(i);
 			}
-			objTable[j][numOfCol-1] = obj.getObjectType();
+			objTable[j][numOfCol-2] = obj.getObjectType();
+			objTable[j][numOfCol-1] = 0.0;
 			j++;
 		}
 		return objTable;
@@ -522,13 +528,152 @@ public class AssociativeGraphDataStructure{
 		return fitNodes;
 	}
 
-	private static <T> List<T> findPatternsInTable() {
+	private static List<Integer> findPatternsInTable(Object[][] objTable) {
+		List<Integer> fitIndexList = new ArrayList<>();
 
-		return null;
+		System.out.println();
+		String[] param = Iris.getInputParameters();
+		double leafL = roundDouble(Double.valueOf(param[0]), 2);
+		double leafW = roundDouble(Double.valueOf(param[1]), 2);
+		double petalL = roundDouble(Double.valueOf(param[2]), 2);
+		double petalW = roundDouble(Double.valueOf(param[3]), 2);
+
+		System.out.println("Podaj współczynnik prawdopodobienstwa(1.0-0.0):");
+		Scanner input = new Scanner(System.in);
+		double similarityThreshold = Double.valueOf(input.nextLine());
+
+		double llRange = roundDouble(getMaxFromTable(objTable,1) - getMinFromTable(objTable,1), 2);
+		double lwRange = roundDouble(getMaxFromTable(objTable,2) - getMinFromTable(objTable,2), 2);
+		double plRange = roundDouble(getMaxFromTable(objTable,3) - getMinFromTable(objTable,3), 2);
+		double pwRange = roundDouble(getMaxFromTable(objTable,4) - getMinFromTable(objTable,4), 2);
+
+		double similarity;
+
+		double llFactor = 1.0 - (0.1/llRange);
+		double lwFactor = 1.0 - (0.1/lwRange);
+		double plFactor = 1.0 - (0.1/plRange);
+		double pwFactor = 1.0 - (0.1/pwRange);
+
+		for (int i = 1; i<objTable.length; i++) {
+			similarity = Math.pow(llFactor,(Math.abs(leafL - (double) objTable[i][1])*10));
+			similarity += Math.pow(lwFactor,(Math.abs(leafW - (double) objTable[i][2])*10));
+			similarity += Math.pow(plFactor,(Math.abs(petalL - (double) objTable[i][3])*10));
+			similarity += Math.pow(pwFactor,(Math.abs(petalW - (double) objTable[i][4])*10));
+			objTable[i][6] = roundDouble(similarity/4, 4);
+			if (similarity/4 >= similarityThreshold) {
+				fitIndexList.add(i);
+			}
+		}
+		return fitIndexList;
 	}
 
-	private static <T> List<T> findPatternsInTableWithFilter() {
-		return null;
+	private static double getMinFromTable(Object[][] objTable, int col) {
+		double min = 0.0;
+		boolean first = true;
+		for (int i = 1; i<objTable.length; i++) {
+			if (first) {
+				min = (double) objTable[i][col];
+				first = false;
+			} else {
+				if ((double) objTable[i][col] < min) {
+					min = (double) objTable[i][col];
+				}
+			}
+		}
+		return min;
+	}
+
+	private static double getMaxFromTable(Object[][] objTable, int col) {
+		double max = 0.0;
+		boolean first = true;
+		for (int i = 1; i<objTable.length; i++) {
+			if (first) {
+				max = (double) objTable[i][col];
+				first = false;
+			} else {
+				if ((double) objTable[i][col] > max) {
+					max = (double) objTable[i][col];
+				}
+			}
+		}
+		return max;
+	}
+
+	private static <T> List<Integer> findPatternsInTableWithFilter(Object[][] objTable) {
+		System.out.println("\nWprowadz zakresy parametrów.");
+
+		System.out.println("MIN Leaf-Length:");
+		Scanner input = new Scanner(System.in);
+		Double lowestLL = Double.valueOf(input.nextLine());
+		System.out.println("MAX Leaf-Length:");
+		input = new Scanner(System.in);
+		Double highestLL = Double.valueOf(input.nextLine());
+		System.out.println("MIN Leaf-Width:");
+		input = new Scanner(System.in);
+		Double lowestLW = Double.valueOf(input.nextLine());
+		System.out.println("MAX Leaf-Width:");
+		input = new Scanner(System.in);
+		Double highestLW = Double.valueOf(input.nextLine());
+		System.out.println("MIN Petal-Length:");
+		input = new Scanner(System.in);
+		Double lowestPL = Double.valueOf(input.nextLine());
+		System.out.println("MAX Petal-Length:");
+		input = new Scanner(System.in);
+		Double highestPL = Double.valueOf(input.nextLine());
+		System.out.println("MIN Petal-Width:");
+		input = new Scanner(System.in);
+		Double lowestPW = Double.valueOf(input.nextLine());
+		System.out.println("MAX Petal-Width:");
+		input = new Scanner(System.in);
+		Double highestPW = Double.valueOf(input.nextLine());
+		System.out.println("\n1.Setosa");
+		System.out.println("2.Versicolor ");
+		System.out.println("3.Virginica");
+		System.out.println("4.Wszystkie");
+		System.out.println("Numer typu:");
+		Iris.IrisType type = Iris.IrisType.NONE;
+		input = new Scanner(System.in);
+		switch (input.nextLine()) {
+			case "1":
+				type = Iris.IrisType.SETOSA;
+				break;
+			case "2":
+				type = Iris.IrisType.VERSICOLOR;
+				break;
+			case "3":
+				type = Iris.IrisType.VIRGINICA;
+				break;
+			case "4":
+				type = Iris.IrisType.NONE;
+		}
+
+		int counter = 0;
+		List<Integer> fitIndexes = new ArrayList<>();
+		for (int i = 1; i < objTable.length; i++) {
+			if (lowestLL <= (Double) objTable[i][1] && highestLL >= (Double) objTable[i][1]) {
+				counter++;
+			}
+			if (lowestLW <= (Double) objTable[i][2] && highestLW >= (Double) objTable[i][2]) {
+				counter++;
+			}
+			if (lowestPL <= (Double) objTable[i][3] && highestPL >= (Double) objTable[i][3]) {
+				counter++;
+			}
+			if (lowestPW <= (Double) objTable[i][4] && highestPW >= (Double) objTable[i][4]) {
+				counter++;
+			}
+			if (type.equals(Iris.IrisType.NONE)) {
+				counter++;
+			} else if (type.toString().equals(objTable[i][5])){
+				counter++;
+			}
+
+			if (counter == 5) {
+				fitIndexes.add(i);
+			}
+			counter = 0;
+		}
+		return fitIndexes;
 	}
 
 	private static <T extends InputData> void deleteRedundantNodes(List<T> listOfIris) {
@@ -634,8 +779,52 @@ public class AssociativeGraphDataStructure{
 		}
 	}
 
-	private static <T> void showPatternsFromTable(List<T> patterns) {
+	/**
+	 * Input - only list with indexes
+	 **/
+	private static void showPatternsFromTable(List<Integer> fitIndexes, Object[][] objTable, ShowType showType) {
+		if (fitIndexes.size() == 0 && showType.equals(ShowType.WITH_SIMILARITY)) {
+			System.out.println("\nŻaden wzorzec nie jest podobny z takim prawdopodobienstwem!");
+		} else if (fitIndexes.size() == 0 && showType.equals(ShowType.WITHOUT_SIMILARITY)) {
+			System.out.println("\nŻaden wzorzec nie znajduje się w podanych zakresach!");
+		} else {
+			double maxValue = getMaxFromTable(objTable, 6);
+			for (int i = 1; i < objTable.length; i++) {
+				if (fitIndexes.contains(i)) {
 
+					if (maxValue == (double) objTable[i][6]) {
+						System.out.println();
+					}
+
+					if (i < 10) {
+						System.out.print("  " + i + ". ");
+					} else if (i < 100) {
+						System.out.print(" " + i + ". ");
+					} else {
+						System.out.print(i + ". ");
+					}
+
+					switch (showType) {
+						case WITH_SIMILARITY:
+							for (int j=1; j<objTable[0].length; j++) {
+								System.out.print(objTable[0][j] + ":" + objTable[i][j] + " | ");
+							}
+							break;
+						case WITHOUT_SIMILARITY:
+							for (int j=1; j<objTable[0].length-1; j++) {
+								System.out.print(objTable[0][j] + ":" + objTable[i][j] + " | ");
+							}
+							break;
+					}
+
+					if (maxValue == (double) objTable[i][6]) {
+						System.out.println();
+					}
+
+					System.out.println();
+				}
+			}
+		}
 	}
 
 	private static double roundDouble(double value, int n) {
