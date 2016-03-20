@@ -599,7 +599,7 @@ public class AssociativeGraphDataStructure{
 		return max;
 	}
 
-	private static <T> List<Integer> findPatternsInTableWithFilter(Object[][] objTable) {
+	private static List<Integer> findPatternsInTableWithFilter(Object[][] objTable) {
 		System.out.println("\nWprowadz zakresy parametrów.");
 
 		System.out.println("MIN Leaf-Length:");
