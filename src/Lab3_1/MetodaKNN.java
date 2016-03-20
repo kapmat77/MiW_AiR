@@ -16,20 +16,43 @@ public class MetodaKNN {
 
 	private static final int MAX_K = 10;
 	private static final int MIN_K = 3;
+	private static final int CROSS_VAL_N = 10;
 
 	public static void main(String[] args) throws Exception {
-		DataType dType = chooseType();
-		String dataPath = "src/Resources/data" + dType.name() +".txt";
-		System.out.println("1.Prosta metoda KNN z podaną wartością K");
-		System.out.println("2.Metoda KNN z walidacją krzyżową");
-		Scanner input = new Scanner(System.in);
-		int numberOfOperation = Integer.valueOf(input.nextLine());
-		System.out.println();
-		System.out.println("1.Zwykłe odległości");
-		System.out.println("2.Ważone odległości");
-		input = new Scanner(System.in);
-		int distanceImportanceType = Integer.valueOf(input.nextLine());
-		executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
+		while (true) {
+			DataType dType = chooseType();
+			String dataPath = "src/Resources/data" + dType.name() +".txt";
+			System.out.println("\n##################################################");
+			System.out.println("####################   MENU   ####################");
+			System.out.println("##################################################");
+			System.out.println("1.Prosta metoda KNN z podaną wartością K");
+			System.out.println("2.Metoda KNN z walidacją krzyżową");
+			System.out.println("0.EXIT");
+			Scanner input = new Scanner(System.in);
+			int numberOfOperation = Integer.valueOf(input.nextLine());
+			System.out.println();
+			int distanceImportanceType;
+			switch (numberOfOperation) {
+				case 1:
+					System.out.println("1.Zwykłe odległości");
+					System.out.println("2.Ważone odległości");
+					input = new Scanner(System.in);
+					distanceImportanceType = Integer.valueOf(input.nextLine());
+					executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
+					break;
+				case 2:
+					System.out.println("1.Zwykłe odległości");
+					System.out.println("2.Ważone odległości");
+					input = new Scanner(System.in);
+					distanceImportanceType = Integer.valueOf(input.nextLine());
+					executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
+					break;
+				case 0:
+					return;
+				default:
+					System.out.println("Wrong number. Try again!");
+			}
+		}
 	}
 
 	private static void executeProgram(Integer numberOfOperation, DataType dType,  String dataPath, int distanceImportanceType) throws FileNotFoundException {
@@ -39,6 +62,10 @@ public class MetodaKNN {
 		Map<String,Integer> countBestAssign = new HashMap<>();
 		Map<String,Integer> countBestAssignLearning = new HashMap<>();
 		Map<WrapperKey,Double> votCoefExtendMap = new HashMap<>();
+		int counter;
+		List<String> learningList = new ArrayList<>();
+		List<String> validationList = new ArrayList<>();
+		Map<Integer,Double> fitMap = new HashMap<>();
 		switch (dType) {
 			case IRIS:
 				Iris inputIris = new Iris(Iris.getInputParameters());
@@ -53,47 +80,72 @@ public class MetodaKNN {
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
-						while (parK>MIN_K-1) {
-							assignToLearningOrValidation(irisList, 1, parK);
-							Map<Iris, Double> distanceIrisMapValidation = createDistanceMap(inputIris, irisList, true);
-							Map<Iris, Double> distanceIrisMapLearning = createDistanceMap(inputIris, irisList, false);
-							typesLearning = findAssignment(MAX_K, distanceImportanceType, distanceIrisMapLearning, votCoefExtendMap);
-							types = findAssignment(MAX_K, distanceImportanceType, distanceIrisMapValidation, votCoefExtendMap);
-							parK--;
-							for (String type : typesLearning) {
-								if (!countBestAssignLearning.containsKey(type)) {
-									countBestAssignLearning.put(type, 1);
-								} else {
-									countBestAssignLearning.replace(type, countBestAssignLearning.get(type),
-											countBestAssignLearning.get(type) + 1);
+						int k = MAX_K;
+						int parN;
+						while (k>0) {
+							counter = 0;
+							parN = CROSS_VAL_N;
+							while (parN>0) {
+								assignToLearningOrValidation(irisList, 1, parN);
+								Map<Iris, Double> distanceIrisMapValidation = createDistanceMap(inputIris, irisList, true);
+								Map<Iris, Double> distanceIrisMapLearning = createDistanceMap(inputIris, irisList, false);
+								typesLearning = findAssignment(k, distanceImportanceType, distanceIrisMapLearning, votCoefExtendMap);
+								types = findAssignment(k, distanceImportanceType, distanceIrisMapValidation, votCoefExtendMap);
+								parN--;
+								for (String type : typesLearning) {
+									if (!countBestAssignLearning.containsKey(type)) {
+										countBestAssignLearning.put(type, 1);
+									} else {
+										countBestAssignLearning.replace(type, countBestAssignLearning.get(type),
+												countBestAssignLearning.get(type) + 1);
+									}
 								}
-							}
 
-							int maxNeighbours = Collections.max(countBestAssignLearning.values());
-							System.out.println("\nUCZENIE:");
-							for (Map.Entry<String,Integer> entry: countBestAssignLearning.entrySet()) {
-								if (entry.getValue().equals(maxNeighbours)) {
-									System.out.print(entry.getKey() + " ");
+								int maxNeighbours = Collections.max(countBestAssignLearning.values());
+								System.out.println("\tUCZENIE:");
+								for (Map.Entry<String,Integer> entry: countBestAssignLearning.entrySet()) {
+									if (entry.getValue().equals(maxNeighbours)) {
+										System.out.print("\t\t" + entry.getKey() + " ");
+										learningList.add(entry.getKey());
+									}
 								}
-							}
-							for (String type : types) {
-								if (!countBestAssign.containsKey(type)) {
-									countBestAssign.put(type, 1);
-								} else {
-									countBestAssign.replace(type, countBestAssign.get(type),
-											countBestAssign.get(type) + 1);
+								for (String type : types) {
+									if (!countBestAssign.containsKey(type)) {
+										countBestAssign.put(type, 1);
+									} else {
+										countBestAssign.replace(type, countBestAssign.get(type),
+												countBestAssign.get(type) + 1);
+									}
 								}
-							}
-							maxNeighbours = Collections.max(countBestAssign.values());
-							System.out.println("\nWALIDACJA:");
-							for (Map.Entry<String, Integer> entry : countBestAssign.entrySet()) {
-								if (entry.getValue().equals(maxNeighbours)) {
-									System.out.print(entry.getKey() + " ");
+
+								maxNeighbours = Collections.max(countBestAssign.values());
+								System.out.println("\n\tWALIDACJA:");
+								for (Map.Entry<String, Integer> entry : countBestAssign.entrySet()) {
+									if (entry.getValue().equals(maxNeighbours)) {
+										System.out.print("\t\t" + entry.getKey() + " ");
+										validationList.add(entry.getKey());
+									}
 								}
+								System.out.println("\n\n");
+
+								if (validationList.size() == learningList.size()) {
+									if (validationList.get(0).equals(learningList.get(0))) {
+										counter++;
+									}
+								}
+								learningList.clear();
+								validationList.clear();
 							}
-							System.out.println();
-							System.out.println();
+							fitMap.put(k,  ((double) counter / CROSS_VAL_N));
+							k--;
 						}
+						//Show fit map
+						System.out.println("\n");
+						for (Map.Entry<Integer,Double> map: fitMap.entrySet()) {
+							System.out.println("K=" + map.getKey() + "  Correctness: " + map.getValue()*100 + "%");
+						}
+						System.out.println("\n");
+						break;
 					default:
 						break;
 				}
@@ -111,55 +163,71 @@ public class MetodaKNN {
 						System.out.println("Typ obiektu: " + types);
 						break;
 					case 2:
-						while (parK>MIN_K-1) {
-							assignToLearningOrValidation(wineList,1,parK);
-							Map<Wine,Double> distanceWineMapValidation = createDistanceMap(inputWine, wineList, true);
-							Map<Wine,Double> distanceWineMapLearning = createDistanceMap(inputWine, wineList, false);
-							typesLearning = findAssignment(MAX_K, distanceImportanceType, distanceWineMapLearning, votCoefExtendMap);
-							types = findAssignment(MAX_K, distanceImportanceType, distanceWineMapValidation, votCoefExtendMap);
-							parK--;
-							for (String type : typesLearning) {
-								if (!countBestAssignLearning.containsKey(type)) {
-									countBestAssignLearning.put(type, 1);
-								} else {
-									countBestAssignLearning.replace(type, countBestAssignLearning.get(type),
-											countBestAssignLearning.get(type) + 1);
+						int k = MAX_K;
+						int parN;
+						while (k>0) {
+							counter = 0;
+							parN = CROSS_VAL_N;
+							while (parN>0) {
+								assignToLearningOrValidation(wineList,1,parN);
+								Map<Wine,Double> distanceWineMapValidation = createDistanceMap(inputWine, wineList, true);
+								Map<Wine,Double> distanceWineMapLearning = createDistanceMap(inputWine, wineList, false);
+								typesLearning = findAssignment(k, distanceImportanceType, distanceWineMapLearning, votCoefExtendMap);
+								types = findAssignment(k, distanceImportanceType, distanceWineMapValidation, votCoefExtendMap);
+								parN--;
+								for (String type : typesLearning) {
+									if (!countBestAssignLearning.containsKey(type)) {
+										countBestAssignLearning.put(type, 1);
+									} else {
+										countBestAssignLearning.replace(type, countBestAssignLearning.get(type),
+												countBestAssignLearning.get(type) + 1);
+									}
 								}
-							}
 
-							int maxNeighbours = Collections.max(countBestAssignLearning.values());
-							System.out.println("\nUCZENIE:");
-							for (Map.Entry<String,Integer> entry: countBestAssignLearning.entrySet()) {
-								if (entry.getValue().equals(maxNeighbours)) {
-									System.out.print(entry.getKey() + " ");
+								int maxNeighbours = Collections.max(countBestAssignLearning.values());
+								System.out.println("\tUCZENIE:");
+								for (Map.Entry<String,Integer> entry: countBestAssignLearning.entrySet()) {
+									if (entry.getValue().equals(maxNeighbours)) {
+										System.out.print("\t\t" + entry.getKey() + " ");
+										learningList.add(entry.getKey());
+									}
 								}
-							}
-							for (String type : types) {
-								if (!countBestAssign.containsKey(type)) {
-									countBestAssign.put(type, 1);
-								} else {
-									countBestAssign.replace(type, countBestAssign.get(type),
-											countBestAssign.get(type) + 1);
+								for (String type : types) {
+									if (!countBestAssign.containsKey(type)) {
+										countBestAssign.put(type, 1);
+									} else {
+										countBestAssign.replace(type, countBestAssign.get(type),
+												countBestAssign.get(type) + 1);
+									}
 								}
-							}
-							maxNeighbours = Collections.max(countBestAssign.values());
-							System.out.println("WALIDACJA:");
-							for (Map.Entry<String, Integer> entry : countBestAssign.entrySet()) {
-								if (entry.getValue().equals(maxNeighbours)) {
-									System.out.print(entry.getKey() + " ");
+								maxNeighbours = Collections.max(countBestAssign.values());
+								System.out.println("\n\tWALIDACJA:");
+								for (Map.Entry<String, Integer> entry : countBestAssign.entrySet()) {
+									if (entry.getValue().equals(maxNeighbours)) {
+										System.out.print("\t\t" + entry.getKey() + " ");
+										validationList.add(entry.getKey());
+									}
 								}
-							}
+								System.out.println("\n\n");
 
-							System.out.println();
-							System.out.println();
+								if (validationList.size() == learningList.size()) {
+									if (validationList.get(0).equals(learningList.get(0))) {
+										counter++;
+									}
+								}
+								learningList.clear();
+								validationList.clear();
+							}
+							fitMap.put(k,  ((double) counter / CROSS_VAL_N));
+							k--;
 						}
-//						Integer maxNeighbours = Collections.max(countBestAssign.values());
-//						System.out.println("Wprowadzony obiekt jest typu:");
-//						for (Map.Entry<String,Integer> entry: countBestAssign.entrySet()) {
-//							if (entry.getValue().equals(maxNeighbours)) {
-//								System.out.print(entry.getKey() + " ");
-//							}
-//						}
+						//Show fit map
+						System.out.println("\n");
+						for (Map.Entry<Integer,Double> map: fitMap.entrySet()) {
+							System.out.println("K=" + map.getKey() + "  Correctness: " + map.getValue()*100 + "%");
+						}
+						System.out.println("\n");
+						break;
 					default:
 						break;
 				}
@@ -351,6 +419,7 @@ public class MetodaKNN {
 	}
 
 	private static DataType chooseType() {
+		System.out.println("\n##################################################\n");
 		System.out.println("Wpisz numer wczytywanego obiektu");
 		System.out.println("1.Iris");
 		System.out.println("2.Wine");
