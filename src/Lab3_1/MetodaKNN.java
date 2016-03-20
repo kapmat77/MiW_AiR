@@ -19,9 +19,9 @@ public class MetodaKNN {
 	private static final int CROSS_VAL_N = 10;
 
 	public static void main(String[] args) throws Exception {
-		DataType dType = chooseType();
-		String dataPath = "src/Resources/data" + dType.name() +".txt";
 		while (true) {
+			DataType dType = chooseType();
+			String dataPath = "src/Resources/data" + dType.name() +".txt";
 			System.out.println("\n##################################################");
 			System.out.println("####################   MENU   ####################");
 			System.out.println("##################################################");
@@ -62,6 +62,10 @@ public class MetodaKNN {
 		Map<String,Integer> countBestAssign = new HashMap<>();
 		Map<String,Integer> countBestAssignLearning = new HashMap<>();
 		Map<WrapperKey,Double> votCoefExtendMap = new HashMap<>();
+		int counter;
+		List<String> learningList = new ArrayList<>();
+		List<String> validationList = new ArrayList<>();
+		Map<Integer,Double> fitMap = new HashMap<>();
 		switch (dType) {
 			case IRIS:
 				Iris inputIris = new Iris(Iris.getInputParameters());
@@ -78,10 +82,6 @@ public class MetodaKNN {
 					case 2:
 						int k = MAX_K;
 						int parN;
-						List<String> learningList = new ArrayList<>();
-						List<String> validationList = new ArrayList<>();
-						Map<Integer,Double> fitMap = new HashMap<>();
-						int counter;
 						while (k>0) {
 							counter = 0;
 							parN = CROSS_VAL_N;
@@ -166,8 +166,9 @@ public class MetodaKNN {
 						int k = MAX_K;
 						int parN;
 						while (k>0) {
+							counter = 0;
 							parN = CROSS_VAL_N;
-							while (parN>MIN_K-1) {
+							while (parN>0) {
 								assignToLearningOrValidation(wineList,1,parN);
 								Map<Wine,Double> distanceWineMapValidation = createDistanceMap(inputWine, wineList, true);
 								Map<Wine,Double> distanceWineMapLearning = createDistanceMap(inputWine, wineList, false);
@@ -184,10 +185,11 @@ public class MetodaKNN {
 								}
 
 								int maxNeighbours = Collections.max(countBestAssignLearning.values());
-								System.out.println("UCZENIE:");
+								System.out.println("\tUCZENIE:");
 								for (Map.Entry<String,Integer> entry: countBestAssignLearning.entrySet()) {
 									if (entry.getValue().equals(maxNeighbours)) {
-										System.out.print(entry.getKey() + " ");
+										System.out.print("\t\t" + entry.getKey() + " ");
+										learningList.add(entry.getKey());
 									}
 								}
 								for (String type : types) {
@@ -199,23 +201,33 @@ public class MetodaKNN {
 									}
 								}
 								maxNeighbours = Collections.max(countBestAssign.values());
-								System.out.println("WALIDACJA:");
+								System.out.println("\n\tWALIDACJA:");
 								for (Map.Entry<String, Integer> entry : countBestAssign.entrySet()) {
 									if (entry.getValue().equals(maxNeighbours)) {
-										System.out.print(entry.getKey() + " ");
+										System.out.print("\t\t" + entry.getKey() + " ");
+										validationList.add(entry.getKey());
 									}
 								}
 								System.out.println("\n\n");
+
+								if (validationList.size() == learningList.size()) {
+									if (validationList.get(0).equals(learningList.get(0))) {
+										counter++;
+									}
+								}
+								learningList.clear();
+								validationList.clear();
 							}
+							fitMap.put(k,  ((double) counter / CROSS_VAL_N));
 							k--;
 						}
-//						Integer maxNeighbours = Collections.max(countBestAssign.values());
-//						System.out.println("Wprowadzony obiekt jest typu:");
-//						for (Map.Entry<String,Integer> entry: countBestAssign.entrySet()) {
-//							if (entry.getValue().equals(maxNeighbours)) {
-//								System.out.print(entry.getKey() + " ");
-//							}
-//						}
+						//Show fit map
+						System.out.println("\n");
+						for (Map.Entry<Integer,Double> map: fitMap.entrySet()) {
+							System.out.println("K=" + map.getKey() + "  Correctness: " + map.getValue()*100 + "%");
+						}
+						System.out.println("\n");
+						break;
 					default:
 						break;
 				}
@@ -407,6 +419,7 @@ public class MetodaKNN {
 	}
 
 	private static DataType chooseType() {
+		System.out.println("\n##################################################\n");
 		System.out.println("Wpisz numer wczytywanego obiektu");
 		System.out.println("1.Iris");
 		System.out.println("2.Wine");
