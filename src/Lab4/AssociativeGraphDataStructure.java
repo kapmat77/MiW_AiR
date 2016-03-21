@@ -12,12 +12,12 @@ import Interf.InputData;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class AssociativeGraphDataStructure{
+public class AssociativeGraphDataStructure {
 
 	public static void main(String[] args) throws FileNotFoundException {
 //		DataType dType = chooseType();
 		DataType dType = DataType.IRIS;
-		String dataPath = "src/Resources/data" + dType.name() +".txt";
+		String dataPath = "src/Resources/data" + dType.name() + ".txt";
 		Long startTime;
 		Long endTime;
 
@@ -26,13 +26,13 @@ public class AssociativeGraphDataStructure{
 		switch (dType) {
 			case IRIS:
 				List<Iris> listOfIrises = Iris.readDataFromFile(dataPath);
-				buildGraphAGDS(listOfIrises);
 				objTable = buildTable(listOfIrises);
+				buildGraphAGDS(listOfIrises);
 				break;
 			case WINE:
 				List<Wine> listOfWines = Wine.readDataFromFile(dataPath);
-				buildGraphAGDS(listOfWines);
 				objTable = buildTable(listOfWines);
+				buildGraphAGDS(listOfWines);
 				break;
 		}
 
@@ -51,32 +51,24 @@ public class AssociativeGraphDataStructure{
 			Scanner in = new Scanner(System.in);
 			switch (in.nextLine()) {
 				case "1":
-					startTime = System.nanoTime();
-					fitNodes = findPatternsInGraph();
-					endTime = System.nanoTime();
-					showPatternsFromNodes(fitNodes, ShowType.WITH_SIMILARITY, dType);
-					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
+					fitNodes = findPatternsInGraph(dType);
+//					showPatternsFromNodes(fitNodes, ShowType.WITH_SIMILARITY, dType);
+//					System.out.println("Execution time for graph: " + (endTime-startTime)/1000000 + " microsecond");
 					break;
 				case "2":
-					startTime = System.nanoTime();
-					fitNodes = findPatternsInGraphWithFilter();
-					endTime = System.nanoTime();
-					showPatternsFromNodes(fitNodes, ShowType.WITHOUT_SIMILARITY, dType);
-					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
+					fitNodes = findPatternsInGraphWithFilter(dType);
+//					showPatternsFromNodes(fitNodes, ShowType.WITHOUT_SIMILARITY, dType);
+//					System.out.println("Execution time for graph: " + (endTime-startTime)/1000000 + " microsecond");
 					break;
 				case "3":
-					startTime = System.nanoTime();
-					fitIndexes = findPatternsInTable(objTable);
-					endTime = System.nanoTime();
-					showPatternsFromTable(fitIndexes, objTable, ShowType.WITH_SIMILARITY);
-					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
+					fitIndexes = findPatternsInTable(objTable, dType);
+//					showPatternsFromTable(fitIndexes, objTable, ShowType.WITH_SIMILARITY);
+//					System.out.println("Execution time for table: " + (endTime-startTime)/1000000 + " microsecond");
 					break;
 				case "4":
-					startTime = System.nanoTime();
-					fitIndexes = findPatternsInTableWithFilter(objTable);
-					endTime = System.nanoTime();
-					showPatternsFromTable(fitIndexes, objTable, ShowType.WITHOUT_SIMILARITY);
-					System.out.println("Execution time for graph: " + (endTime-startTime) + " nanosecond");
+					fitIndexes = findPatternsInTableWithFilter(objTable, dType);
+//					showPatternsFromTable(fitIndexes, objTable, ShowType.WITHOUT_SIMILARITY);
+//					System.out.println("Execution time for table: " + (endTime-startTime)/1000000 + " microsecond");
 					break;
 				case "0":
 					return;
@@ -86,13 +78,13 @@ public class AssociativeGraphDataStructure{
 		}
 	}
 
-	private static  <T extends InputData> Object[][] buildTable(List<T> listOfObjects) throws FileNotFoundException {
+	private static <T extends InputData> Object[][] buildTable(List<T> listOfObjects) throws FileNotFoundException {
 
-		int numOfCol = listOfObjects.get(0).numberOfParameters()+2+1;
-		Object[][] objTable = new Object[listOfObjects.size()+1][numOfCol];
+		int numOfCol = listOfObjects.get(0).numberOfParameters() + 2 + 1;
+		Object[][] objTable = new Object[listOfObjects.size() + 1][numOfCol];
 
 		int j = 0;
-		for (T obj: listOfObjects) {
+		for (T obj : listOfObjects) {
 			if (j == 0 && obj instanceof Iris) {
 				objTable[j][0] = "PARAM";
 				objTable[j][1] = "LEAF_LENGTH";
@@ -122,11 +114,11 @@ public class AssociativeGraphDataStructure{
 				j++;
 			}
 			objTable[j][0] = j;
-			for (int i = 1; i<numOfCol-1; i++) {
+			for (int i = 1; i < numOfCol - 1; i++) {
 				objTable[j][i] = obj.getParameterById(i);
 			}
-			objTable[j][numOfCol-2] = obj.getObjectType();
-			objTable[j][numOfCol-1] = 0.0;
+			objTable[j][numOfCol - 2] = obj.getObjectType();
+			objTable[j][numOfCol - 1] = 0.0;
 			j++;
 		}
 		return objTable;
@@ -154,8 +146,8 @@ public class AssociativeGraphDataStructure{
 
 		//Create INDEX nodes
 		List<Node> indexNodes = new ArrayList<>();
-		for (int i = 0; i<listOfIrises.size(); i++) {
-			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i+1);
+		for (int i = 0; i < listOfIrises.size(); i++) {
+			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i + 1);
 			indexNodes.add(singleIndex);
 		}
 
@@ -164,7 +156,7 @@ public class AssociativeGraphDataStructure{
 		List<Node> valueLWNodes = new ArrayList<>();
 		List<Node> valuePLNodes = new ArrayList<>();
 		List<Node> valuePWNodes = new ArrayList<>();
-		for (Iris singleIris: listOfIrises) {
+		for (Iris singleIris : listOfIrises) {
 			Node<Double> llValue = new Node<>(Node.Level.VALUE_OF_PARAM,
 					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
 
@@ -230,7 +222,7 @@ public class AssociativeGraphDataStructure{
 		List<Node> childrenSetosaType = new ArrayList<>();
 		List<Node> childrenVersicolorType = new ArrayList<>();
 		List<Node> childrenVirginicaType = new ArrayList<>();
-		for (Iris singleIris: listOfIrises) {
+		for (Iris singleIris : listOfIrises) {
 			switch (singleIris.getObjectType()) {
 				case "SETOSA":
 					childrenSetosaType.add(indexNodes.get(l));
@@ -250,28 +242,28 @@ public class AssociativeGraphDataStructure{
 
 		//Set VALUE_OF_PARAM children
 		int i = 0;
-		for (Node singleValueNode: valueLLNodes) {
+		for (Node singleValueNode : valueLLNodes) {
 			List<Node> indexList = new ArrayList<>();
 			indexList.add(indexNodes.get(i));
 			singleValueNode.setChildren(indexList);
 			i++;
 		}
 		i = 0;
-		for (Node singleValueNode: valueLWNodes) {
+		for (Node singleValueNode : valueLWNodes) {
 			List<Node> indexList = new ArrayList<>();
 			indexList.add(indexNodes.get(i));
 			singleValueNode.setChildren(indexList);
 			i++;
 		}
 		i = 0;
-		for (Node singleValueNode: valuePLNodes) {
+		for (Node singleValueNode : valuePLNodes) {
 			List<Node> indexList = new ArrayList<>();
 			indexList.add(indexNodes.get(i));
 			singleValueNode.setChildren(indexList);
 			i++;
 		}
 		i = 0;
-		for (Node singleValueNode: valuePWNodes) {
+		for (Node singleValueNode : valuePWNodes) {
 			List<Node> indexList = new ArrayList<>();
 			indexList.add(indexNodes.get(i));
 			singleValueNode.setChildren(indexList);
@@ -279,22 +271,22 @@ public class AssociativeGraphDataStructure{
 		}
 
 		//Set VALUE_OF_PARAM parents
-		for (Node singleValueNode: valueLLNodes) {
+		for (Node singleValueNode : valueLLNodes) {
 			List<Node> parentsValue = new ArrayList<>();
 			parentsValue.add(lLength);
 			singleValueNode.setParents(parentsValue);
 		}
-		for (Node singleValueNode: valueLWNodes) {
+		for (Node singleValueNode : valueLWNodes) {
 			List<Node> parentsValue = new ArrayList<>();
 			parentsValue.add(lWidth);
 			singleValueNode.setParents(parentsValue);
 		}
-		for (Node singleValueNode: valuePLNodes) {
+		for (Node singleValueNode : valuePLNodes) {
 			List<Node> parentsValue = new ArrayList<>();
 			parentsValue.add(pLength);
 			singleValueNode.setParents(parentsValue);
 		}
-		for (Node singleValueNode: valuePWNodes) {
+		for (Node singleValueNode : valuePWNodes) {
 			List<Node> parentsValue = new ArrayList<>();
 			parentsValue.add(pWidth);
 			singleValueNode.setParents(parentsValue);
@@ -302,7 +294,7 @@ public class AssociativeGraphDataStructure{
 
 		//Set INDEX parents
 		int j = 0;
-		for (Node singleIndexNode: indexNodes) {
+		for (Node singleIndexNode : indexNodes) {
 			List<Node> parentsIndex = new ArrayList<>();
 			parentsIndex.add(valueLLNodes.get(j));
 			parentsIndex.add(valueLWNodes.get(j));
@@ -314,14 +306,14 @@ public class AssociativeGraphDataStructure{
 
 		//Set INDEX children
 		int k = 0;
-		for (Node singleIndexNode: indexNodes) {
+		for (Node singleIndexNode : indexNodes) {
 			Iris singleIris = listOfIrises.get(k);
 			List<Node> childrenIndex = new ArrayList<>();
 			switch (singleIris.getObjectType()) {
 				case "SETOSA":
 					childrenIndex.add(irisSetosa);
 					break;
-				case  "VERSICOLOR":
+				case "VERSICOLOR":
 					childrenIndex.add(irisVersicolor);
 					break;
 				case "VIRGINICA":
@@ -342,70 +334,61 @@ public class AssociativeGraphDataStructure{
 		setAdditionalParam(NodesBox.getKindOfParamNodes());
 	}
 
-	private static List<Node> findPatternsInGraph() {
+	private static List<Node> findPatternsInGraph(DataType dType) {
 		System.out.println();
-		String[] param = Iris.getInputParameters();
-		double leafL = roundDouble(Double.valueOf(param[0]), 2);
-		double leafW = roundDouble(Double.valueOf(param[1]), 2);
-		double petalL = roundDouble(Double.valueOf(param[2]), 2);
-		double petalW = roundDouble(Double.valueOf(param[3]), 2);
 
-		System.out.println("Podaj współczynnik prawdopodobienstwa(1.0-0.0):");
-		Scanner input = new Scanner(System.in);
-		double similarityThreshold = Double.valueOf(input.nextLine());
+		double leafL = 5;
+		double leafW = 5;
+		double petalL = 5;
+		double petalW = 5;
+		double similarityThreshold = 0.5;
+//		String[] param = Iris.getInputParameters();
+//		double leafL = roundDouble(Double.valueOf(param[0]), 2);
+//		double leafW = roundDouble(Double.valueOf(param[1]), 2);
+//		double petalL = roundDouble(Double.valueOf(param[2]), 2);
+//		double petalW = roundDouble(Double.valueOf(param[3]), 2);
 
-		//Get KIND_OF_PARAM nodes with CLASS_OF_OBJECT node
+//		System.out.println("Podaj współczynnik prawdopodobienstwa(1.0-0.0):");
+//		Scanner input = new Scanner(System.in);
+//		double similarityThreshold = Double.valueOf(input.nextLine());
+
+		//Get class node
 		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
-
-		Double factor;
-		Double actualValue;
-		double similarity;
-		for (Node kindOfParam: childrenParam) {
-			if (kindOfParam.getLevel().equals(Node.Level.KIND_OF_PARAM)) {
-				List<Node> childrenKind = kindOfParam.getChildren();
-				for (Node singleValue : childrenKind) {
-					factor = 1.0 - (0.1/kindOfParam.getRange());
-					actualValue = (Double) singleValue.getValue();
-					switch ((String) kindOfParam.getValue()) {
-						case "LEAF_LENGTH":
-//							factor = 1.0 - (roundDouble(Math.abs(leafL - actualValue), 2)) / kindOfParam.getRange();
-							similarity = Math.pow(factor,(Math.abs(leafL - actualValue)*10));
-							break;
-						case "LEAF_WIDTH":
-//							factor = 1.0 - (roundDouble(Math.abs(leafW - actualValue), 2)) / kindOfParam.getRange();
-							similarity = Math.pow(factor,(Math.abs(leafW - actualValue)*10));
-							break;
-						case "PETAL_LENGTH":
-//							factor = 1.0 - (roundDouble(Math.abs(petalL - actualValue), 2)) / kindOfParam.getRange();
-							similarity = Math.pow(factor,(Math.abs(petalL - actualValue)*10));
-							break;
-						case "PETAL_WIDTH":
-//							factor = 1.0 - (roundDouble(Math.abs(petalW - actualValue), 2)) / kindOfParam.getRange();
-							similarity = Math.pow(factor,(Math.abs(petalW - actualValue)*10));
-							break;
-						default:
-							similarity = -1.0;
-					}
-					if (similarity <= 0.001) {
-						similarity = 0.0;
-					}
-					singleValue.setFactor(similarity);
-				}
+		Node classNode = new Node();
+		for (Node singleChild : childrenParam) {
+			if (singleChild.getLevel().equals(Node.Level.CLASS_OF_OBJECT)) {
+				classNode = singleChild;
 			}
 		}
 
-		//Get list of all patterns
-		List<Node> allIndexNodes = NodesBox.getIndexNodes();
-
-		double endFactor;
-		for (Node singleIndex: allIndexNodes) {
-			List<Node> parentsIndex = singleIndex.getParents();
-			endFactor = 0.0;
-			for (Node singleValue: parentsIndex) {
-				endFactor += singleValue.getFactor();
+		//Create list of all patterns
+		List<Node> allIndexNodes = new ArrayList<>();
+		List<Node> types = classNode.getChildren();
+		for (Node singleTypes : types) {
+			List<Node> childrenTypes = singleTypes.getChildren();
+			for (Node singleChild : childrenTypes) {
+				allIndexNodes.add(singleChild);
 			}
-			singleIndex.setFactor(endFactor/4);
 		}
+
+		double factorLL = 1.0 - (0.1 / childrenParam.get(0).getRange());
+		double factorLW = 1.0 - (0.1 / childrenParam.get(1).getRange());
+		double factorPL = 1.0 - (0.1 / childrenParam.get(2).getRange());
+		double factorPW = 1.0 - (0.1 / childrenParam.get(3).getRange());
+
+		long startTime = System.nanoTime();
+
+		for (Node index : allIndexNodes) {
+			List<Node> parentsIndex = index.getParents();
+			((Node) index.getParents().get(0)).setFactor(Math.pow(factorLL, (Math.abs(leafL - (double) parentsIndex.get(0).getValue()) * 10)));
+			((Node) index.getParents().get(1)).setFactor(Math.pow(factorLW, (Math.abs(leafW - (double) parentsIndex.get(1).getValue()) * 10)));
+			((Node) index.getParents().get(2)).setFactor(Math.pow(factorPL, (Math.abs(petalL - (double) parentsIndex.get(2).getValue()) * 10)));
+			((Node) index.getParents().get(3)).setFactor(Math.pow(factorPW, (Math.abs(petalW - (double) parentsIndex.get(3).getValue()) * 10)));
+			index.setFactor((parentsIndex.get(0).getFactor() + parentsIndex.get(1).getFactor() + parentsIndex.get(2).getFactor() + parentsIndex.get(3).getFactor())/4);
+		}
+
+		long endTime = System.nanoTime();
+		long time = endTime-startTime;
 
 		List<Node> showList = new ArrayList<>();
 		for (Node singleIndex: allIndexNodes) {
@@ -413,56 +396,69 @@ public class AssociativeGraphDataStructure{
 				showList.add(singleIndex);
 			}
 		}
+
+		showPatternsFromNodes(showList, ShowType.WITH_SIMILARITY, dType);
+		System.out.println("Execution time for graph: " + time/1000 + " microseconds");
+
 		return showList;
 	}
 
-	private static List<Node> findPatternsInGraphWithFilter() {
+	private static List<Node> findPatternsInGraphWithFilter(DataType dType) {
 		System.out.println("\nWprowadz zakresy parametrów.");
 
-		System.out.println("MIN Leaf-Length:");
-		Scanner input = new Scanner(System.in);
-		Double lowestLL = Double.valueOf(input.nextLine());
-		System.out.println("MAX Leaf-Length:");
-		input = new Scanner(System.in);
-		Double highestLL = Double.valueOf(input.nextLine());
-		System.out.println("MIN Leaf-Width:");
-		input = new Scanner(System.in);
-		Double lowestLW = Double.valueOf(input.nextLine());
-		System.out.println("MAX Leaf-Width:");
-		input = new Scanner(System.in);
-		Double highestLW = Double.valueOf(input.nextLine());
-		System.out.println("MIN Petal-Length:");
-		input = new Scanner(System.in);
-		Double lowestPL = Double.valueOf(input.nextLine());
-		System.out.println("MAX Petal-Length:");
-		input = new Scanner(System.in);
-		Double highestPL = Double.valueOf(input.nextLine());
-		System.out.println("MIN Petal-Width:");
-		input = new Scanner(System.in);
-		Double lowestPW = Double.valueOf(input.nextLine());
-		System.out.println("MAX Petal-Width:");
-		input = new Scanner(System.in);
-		Double highestPW = Double.valueOf(input.nextLine());
-		System.out.println("\n1.Setosa");
-		System.out.println("2.Versicolor ");
-		System.out.println("3.Virginica");
-		System.out.println("4.Wszystkie");
-		System.out.println("Numer typu:");
-		Iris.IrisType type = Iris.IrisType.NONE;
-		input = new Scanner(System.in);
-		switch (input.nextLine()) {
-			case "1":
-				type = Iris.IrisType.SETOSA;
-				break;
-			case "2":
-				type = Iris.IrisType.VERSICOLOR;
-				break;
-			case "3":
-				type = Iris.IrisType.VIRGINICA;
-				break;
-			case "4":
-				type = Iris.IrisType.NONE;
-		}
+		Double lowestLL = 0.0;
+		Double highestLL = 5.0;
+		Double lowestLW = 0.0;
+		Double highestLW = 5.0;
+		Double lowestPL = 0.0;
+		Double highestPL = 5.0;
+		Double lowestPW = 0.0;
+		Double highestPW = 5.0;
+		Iris.IrisType type = Iris.IrisType.SETOSA;
+//		System.out.println("MIN Leaf-Length:");
+//		Scanner input = new Scanner(System.in);
+//		Double lowestLL = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Leaf-Length:");
+//		input = new Scanner(System.in);
+//		Double highestLL = Double.valueOf(input.nextLine());
+//		System.out.println("MIN Leaf-Width:");
+//		input = new Scanner(System.in);
+//		Double lowestLW = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Leaf-Width:");
+//		input = new Scanner(System.in);
+//		Double highestLW = Double.valueOf(input.nextLine());
+//		System.out.println("MIN Petal-Length:");
+//		input = new Scanner(System.in);
+//		Double lowestPL = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Petal-Length:");
+//		input = new Scanner(System.in);
+//		Double highestPL = Double.valueOf(input.nextLine());
+//		System.out.println("MIN Petal-Width:");
+//		input = new Scanner(System.in);
+//		Double lowestPW = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Petal-Width:");
+//		input = new Scanner(System.in);
+//		Double highestPW = Double.valueOf(input.nextLine());
+//		System.out.println("\n1.Setosa");
+//		System.out.println("2.Versicolor ");
+//		System.out.println("3.Virginica");
+//		System.out.println("4.Wszystkie");
+//		System.out.println("Numer typu:");
+//		Iris.IrisType type = Iris.IrisType.NONE;
+//		input = new Scanner(System.in);
+//		switch (input.nextLine()) {
+//			case "1":
+//				type = Iris.IrisType.SETOSA;
+//				break;
+//			case "2":
+//				type = Iris.IrisType.VERSICOLOR;
+//				break;
+//			case "3":
+//				type = Iris.IrisType.VIRGINICA;
+//				break;
+//			case "4":
+//				type = Iris.IrisType.NONE;
+//		}
 
 		//Get class node
 		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
@@ -483,64 +479,50 @@ public class AssociativeGraphDataStructure{
 			}
 		}
 
+		long startTime = System.nanoTime();
+
 		//Find fit nodes
 		List<Node> fitNodes = new ArrayList<>();
-		int counter;
-		boolean correctType;
 		for (Node singleNode: allIndexNodes) {
-			counter = 0;
-			correctType = false;
-			for (int i = 0; i<singleNode.getParents().size(); i++) {
-				Node singleValue = (Node) singleNode.getParents().get(i);
-				Double actualValue = (Double) singleValue.getValue();
-				Node nameOfParam = (Node) singleValue.getParents().get(0);
-				switch ((String) nameOfParam.getValue()) {
-					case "LEAF_LENGTH":
-						if (actualValue >= lowestLL && actualValue <= highestLL) {
-							counter++;
-						}
-						break;
-					case "LEAF_WIDTH":
-						if (actualValue >= lowestLW && actualValue <= highestLW) {
-							counter++;
-						}
-						break;
-					case "PETAL_LENGTH":
-						if (actualValue >= lowestPL && actualValue <= highestPL) {
-							counter++;
-						}
-						break;
-					case "PETAL_WIDTH":
-						if (actualValue >= lowestPW && actualValue <= highestPW) {
-							counter++;
-						}
-						break;
-				}
-				Node typeOfPattern = (Node) singleNode.getChildren().get(0);
-				if ((typeOfPattern.getValue()).equals(type) || type.equals(Iris.IrisType.NONE)) {
-					correctType = true;
-				}
-				if (counter == 4 && correctType) {
+			if ((double) ((Node) singleNode.getParents().get(0)).getValue() >= lowestLL && (double) ((Node) singleNode.getParents().get(0)).getValue() <= highestLL &&
+					(double) ((Node) singleNode.getParents().get(1)).getValue() >= lowestLW && (double) ((Node) singleNode.getParents().get(1)).getValue() <= highestLW &&
+					(double) ((Node) singleNode.getParents().get(2)).getValue() >= lowestPL && (double) ((Node) singleNode.getParents().get(2)).getValue() <= highestPL &&
+					(double) ((Node) singleNode.getParents().get(3)).getValue() >= lowestPW && (double) ((Node) singleNode.getParents().get(3)).getValue() <= highestPW &&
+					(type.equals(Iris.IrisType.NONE) || (((Node) singleNode.getChildren().get(0)).getValue().equals(type)))) {
 					fitNodes.add(singleNode);
 				}
 			}
-		}
+
+		long endTime = System.nanoTime();
+		long time = endTime-startTime;
+
+		showPatternsFromNodes(fitNodes, ShowType.WITH_SIMILARITY, dType);
+		System.out.println("Execution time for graph: " + time/1000 + " microseconds");
+
 		return fitNodes;
 	}
 
-	private static List<Integer> findPatternsInTable(Object[][] objTable) {
+	private static List<Integer> findPatternsInTable(Object[][] objTable, DataType dType) {
 		List<Integer> fitIndexList = new ArrayList<>();
 
-		System.out.println();
-		String[] param = Iris.getInputParameters();
-		double leafL = roundDouble(Double.valueOf(param[0]), 2);
-		double leafW = roundDouble(Double.valueOf(param[1]), 2);
-		double petalL = roundDouble(Double.valueOf(param[2]), 2);
-		double petalW = roundDouble(Double.valueOf(param[3]), 2);
+		double leafL = 5;
+		double leafW = 5;
+		double petalL = 5;
+		double petalW = 5;
+		double similarityThreshold = 0.5;
 
-		System.out.println("Podaj współczynnik prawdopodobienstwa(1.0-0.0):");
-		Scanner input = new Scanner(System.in);
-		double similarityThreshold = Double.valueOf(input.nextLine());
+//		System.out.println();
+//		String[] param = Iris.getInputParameters();
+//		double leafL = roundDouble(Double.valueOf(param[0]), 2);
+//		double leafW = roundDouble(Double.valueOf(param[1]), 2);
+//		double petalL = roundDouble(Double.valueOf(param[2]), 2);
+//		double petalW = roundDouble(Double.valueOf(param[3]), 2);
+//
+//		System.out.println("Podaj współczynnik prawdopodobienstwa(1.0-0.0):");
+//		Scanner input = new Scanner(System.in);
+//		double similarityThreshold = Double.valueOf(input.nextLine());
+
+		long startTime = System.nanoTime();
 
 		double llRange = roundDouble(getMaxFromTable(objTable,1) - getMinFromTable(objTable,1), 2);
 		double lwRange = roundDouble(getMaxFromTable(objTable,2) - getMinFromTable(objTable,2), 2);
@@ -564,6 +546,13 @@ public class AssociativeGraphDataStructure{
 				fitIndexList.add(i);
 			}
 		}
+
+		long endTime = System.nanoTime();
+		long time = endTime-startTime;
+
+		showPatternsFromTable(fitIndexList, objTable, ShowType.WITH_SIMILARITY);
+		System.out.println("Execution time for table: " + time/1000 + " microseconds");
+
 		return fitIndexList;
 	}
 
@@ -599,53 +588,65 @@ public class AssociativeGraphDataStructure{
 		return max;
 	}
 
-	private static List<Integer> findPatternsInTableWithFilter(Object[][] objTable) {
+	private static List<Integer> findPatternsInTableWithFilter(Object[][] objTable, DataType dType) {
 		System.out.println("\nWprowadz zakresy parametrów.");
 
-		System.out.println("MIN Leaf-Length:");
-		Scanner input = new Scanner(System.in);
-		Double lowestLL = Double.valueOf(input.nextLine());
-		System.out.println("MAX Leaf-Length:");
-		input = new Scanner(System.in);
-		Double highestLL = Double.valueOf(input.nextLine());
-		System.out.println("MIN Leaf-Width:");
-		input = new Scanner(System.in);
-		Double lowestLW = Double.valueOf(input.nextLine());
-		System.out.println("MAX Leaf-Width:");
-		input = new Scanner(System.in);
-		Double highestLW = Double.valueOf(input.nextLine());
-		System.out.println("MIN Petal-Length:");
-		input = new Scanner(System.in);
-		Double lowestPL = Double.valueOf(input.nextLine());
-		System.out.println("MAX Petal-Length:");
-		input = new Scanner(System.in);
-		Double highestPL = Double.valueOf(input.nextLine());
-		System.out.println("MIN Petal-Width:");
-		input = new Scanner(System.in);
-		Double lowestPW = Double.valueOf(input.nextLine());
-		System.out.println("MAX Petal-Width:");
-		input = new Scanner(System.in);
-		Double highestPW = Double.valueOf(input.nextLine());
-		System.out.println("\n1.Setosa");
-		System.out.println("2.Versicolor ");
-		System.out.println("3.Virginica");
-		System.out.println("4.Wszystkie");
-		System.out.println("Numer typu:");
-		Iris.IrisType type = Iris.IrisType.NONE;
-		input = new Scanner(System.in);
-		switch (input.nextLine()) {
-			case "1":
-				type = Iris.IrisType.SETOSA;
-				break;
-			case "2":
-				type = Iris.IrisType.VERSICOLOR;
-				break;
-			case "3":
-				type = Iris.IrisType.VIRGINICA;
-				break;
-			case "4":
-				type = Iris.IrisType.NONE;
-		}
+		Double lowestLL = 0.0;
+		Double highestLL = 5.0;
+		Double lowestLW = 0.0;
+		Double highestLW = 5.0;
+		Double lowestPL = 0.0;
+		Double highestPL = 5.0;
+		Double lowestPW = 0.0;
+		Double highestPW = 5.0;
+		Iris.IrisType type = Iris.IrisType.SETOSA;
+
+//		System.out.println("MIN Leaf-Length:");
+//		Scanner input = new Scanner(System.in);
+//		Double lowestLL = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Leaf-Length:");
+//		input = new Scanner(System.in);
+//		Double highestLL = Double.valueOf(input.nextLine());
+//		System.out.println("MIN Leaf-Width:");
+//		input = new Scanner(System.in);
+//		Double lowestLW = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Leaf-Width:");
+//		input = new Scanner(System.in);
+//		Double highestLW = Double.valueOf(input.nextLine());
+//		System.out.println("MIN Petal-Length:");
+//		input = new Scanner(System.in);
+//		Double lowestPL = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Petal-Length:");
+//		input = new Scanner(System.in);
+//		Double highestPL = Double.valueOf(input.nextLine());
+//		System.out.println("MIN Petal-Width:");
+//		input = new Scanner(System.in);
+//		Double lowestPW = Double.valueOf(input.nextLine());
+//		System.out.println("MAX Petal-Width:");
+//		input = new Scanner(System.in);
+//		Double highestPW = Double.valueOf(input.nextLine());
+//		System.out.println("\n1.Setosa");
+//		System.out.println("2.Versicolor ");
+//		System.out.println("3.Virginica");
+//		System.out.println("4.Wszystkie");
+//		System.out.println("Numer typu:");
+//		Iris.IrisType type = Iris.IrisType.NONE;
+//		input = new Scanner(System.in);
+//		switch (input.nextLine()) {
+//			case "1":
+//				type = Iris.IrisType.SETOSA;
+//				break;
+//			case "2":
+//				type = Iris.IrisType.VERSICOLOR;
+//				break;
+//			case "3":
+//				type = Iris.IrisType.VIRGINICA;
+//				break;
+//			case "4":
+//				type = Iris.IrisType.NONE;
+//		}
+
+		long startTime = System.nanoTime();
 
 		int counter = 0;
 		List<Integer> fitIndexes = new ArrayList<>();
@@ -673,6 +674,13 @@ public class AssociativeGraphDataStructure{
 			}
 			counter = 0;
 		}
+
+		long endTime = System.nanoTime();
+		long time = endTime-startTime;
+
+		showPatternsFromTable(fitIndexes, objTable, ShowType.WITH_SIMILARITY);
+		System.out.println("Execution time for table: " + (endTime-startTime)/1000 + " microseconds");
+
 		return fitIndexes;
 	}
 
@@ -792,7 +800,7 @@ public class AssociativeGraphDataStructure{
 			for (int i = 1; i < objTable.length; i++) {
 				if (fitIndexes.contains(i)) {
 
-					if (maxValue == (double) objTable[i][6]) {
+					if ((maxValue == (double) objTable[i][6]) && showType.equals(ShowType.WITH_SIMILARITY)) {
 						System.out.println();
 					}
 
@@ -817,7 +825,7 @@ public class AssociativeGraphDataStructure{
 							break;
 					}
 
-					if (maxValue == (double) objTable[i][6]) {
+					if (maxValue == (double) objTable[i][6] && showType.equals(ShowType.WITH_SIMILARITY)) {
 						System.out.println();
 					}
 
