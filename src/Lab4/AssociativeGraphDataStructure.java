@@ -26,13 +26,13 @@ public class AssociativeGraphDataStructure {
 		switch (dType) {
 			case IRIS:
 				List<Iris> listOfIrises = Iris.readDataFromFile(dataPath);
-				objTable = buildTable(listOfIrises);
 				buildGraphAGDS(listOfIrises);
+				objTable = buildTable(listOfIrises);
 				break;
 			case WINE:
 				List<Wine> listOfWines = Wine.readDataFromFile(dataPath);
-				objTable = buildTable(listOfWines);
 				buildGraphAGDS(listOfWines);
+				objTable = buildTable(listOfWines);
 				break;
 		}
 

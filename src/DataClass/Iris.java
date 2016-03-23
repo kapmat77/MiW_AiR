@@ -20,14 +20,29 @@ public class Iris implements InputData {
 	private double petalWidth;
 	private IrisType type;
 
+	private Integer index = 0;
+
 	private boolean isValidation  = false;
-	
-	public enum IrisType {
-		SETOSA, VERSICOLOR, VIRGINICA, NONE
+
+	private double similarity;
+
+	public Integer getIndex() {
+		return index;
 	}
 
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+
+
+
+	public enum IrisType {
+		SETOSA, VERSICOLOR, VIRGINICA, NONE;
+	}
 //	public enum KindOfParam {
+
 //		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH
+
 //	}
 	
 	public Iris() {
@@ -46,6 +61,16 @@ public class Iris implements InputData {
 		this.type = type;
 	}
 
+	public Iris(double leafLength, double leafWidth, double petalLength, double petalWidth, IrisType type, double similarity, Integer index) {
+		this.leafLength = leafLength;
+		this.leafWidth = leafWidth;
+		this.petalLength = petalLength;
+		this.petalWidth = petalWidth;
+		this.type = type;
+		this.similarity = similarity;
+		this.index = index;
+	}
+
 	public Iris(String[] parameters) {
 		this.leafLength = Double.valueOf(parameters[0]);
 		this.leafWidth = Double.valueOf(parameters[1]);
@@ -61,7 +86,15 @@ public class Iris implements InputData {
 		this.petalWidth = anotherIris.petalWidth;
 		this.type = anotherIris.type;
 	}
-	
+
+	public double getSimilarity() {
+		return similarity;
+	}
+
+	public void setSimilarity(double similarity) {
+		this.similarity = similarity;
+	}
+
 	public static IrisType convertStringToType(String strType) {
 		switch(strType) {
 			case "Iris-setosa":
