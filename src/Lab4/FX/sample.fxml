@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.ControllerAGDS">
    <children>
       <SplitPane dividerPositions="0.560200668896321" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -98,17 +98,17 @@
                                                             <TextField fx:id="filterLeafLengthMAX" alignment="CENTER" layoutX="187.0" layoutY="53.0" prefHeight="25.0" prefWidth="50.0" />
                                                             <Label layoutX="198.0" layoutY="17.0" text="MAX" />
                                                             <Label layoutX="126.0" layoutY="17.0" text="MIN" />
-                                                            <RadioButton fx:id="rbTypeSetosa" layoutX="290.0" layoutY="80.0" mnemonicParsing="false" onAction="#radioButtonTypesAction" text="Setosa">
+                                                            <RadioButton fx:id="rbTypeSetosa" layoutX="290.0" layoutY="80.0" onAction="#radioButtonTypesAction" mnemonicParsing="false" text="Setosa">
                                                                <font>
                                                                   <Font size="14.0" />
                                                                </font>
                                                             </RadioButton>
-                                                            <RadioButton fx:id="rbTypeVersicolor" layoutX="290.0" layoutY="115.0" mnemonicParsing="false" onAction="#radioButtonTypesAction" text="Versicolor">
+                                                            <RadioButton fx:id="rbTypeVersicolor" layoutX="290.0" layoutY="115.0" onAction="#radioButtonTypesAction" mnemonicParsing="false" text="Versicolor">
                                                                <font>
                                                                   <Font size="14.0" />
                                                                </font>
                                                             </RadioButton>
-                                                            <RadioButton fx:id="rbTypeVirginica" layoutX="290.0" layoutY="150.0" mnemonicParsing="false" onAction="#radioButtonTypesAction" text="Virginica">
+                                                            <RadioButton fx:id="rbTypeVirginica" layoutX="290.0" layoutY="150.0" onAction="#radioButtonTypesAction" mnemonicParsing="false" text="Virginica">
                                                                <font>
                                                                   <Font size="14.0" />
                                                                </font>
@@ -128,22 +128,22 @@
                                     </AnchorPane>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="175.0" prefWidth="241.0">
                                        <children>
-                                          <Button fx:id="bStart" layoutX="27.0" layoutY="120.0" mnemonicParsing="false" onAction="#startButtonAction" prefHeight="41.0" prefWidth="107.0" text="Start">
+                                          <Button fx:id="bStart" layoutX="27.0" layoutY="120.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="107.0" text="Start">
                                              <font>
                                                 <Font name="Franklin Gothic Heavy" size="18.0" />
                                              </font>
                                           </Button>
-                                          <RadioButton fx:id="rbGraph" layoutX="51.0" layoutY="41.0" mnemonicParsing="false" onAction="#radioButtonMainAction" text="Graph">
+                                          <RadioButton fx:id="rbGraph" layoutX="51.0" layoutY="41.0" mnemonicParsing="false" text="Graph">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
                                           </RadioButton>
-                                          <RadioButton fx:id="rbTable" layoutX="51.0" layoutY="71.0" mnemonicParsing="false" onAction="#radioButtonMainAction" text="Table">
+                                          <RadioButton fx:id="rbTable" layoutX="51.0" layoutY="71.0" mnemonicParsing="false" text="Table">
                                              <font>
                                                 <Font size="14.0" />
                                              </font>
                                           </RadioButton>
-                                          <Button fx:id="closeButton" layoutX="46.0" layoutY="198.0" mnemonicParsing="false" onAction="#closeButtonAction" prefHeight="25.0" prefWidth="70.0" text="Exit">
+                                          <Button fx:id="bExit" layoutX="46.0" layoutY="198.0" onAction="#exitButtonAction" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Exit">
                                              <font>
                                                 <Font name="Franklin Gothic Heavy" size="15.0" />
                                              </font>
