@@ -128,7 +128,7 @@
                                     </AnchorPane>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="175.0" prefWidth="241.0">
                                        <children>
-                                          <Button fx:id="bStart" layoutX="27.0" layoutY="120.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="107.0" text="Start">
+                                          <Button fx:id="bStart" layoutX="27.0" layoutY="120.0" onAction="#startButtonAction" mnemonicParsing="false" prefHeight="41.0" prefWidth="107.0" text="Start">
                                              <font>
                                                 <Font name="Franklin Gothic Heavy" size="18.0" />
                                              </font>

@@ -57,11 +57,11 @@ public class ControllerAGDS implements Initializable {
 	@FXML private TableColumn colSimilarity;
 
 	//Similarity methods variables
-	private double leafL, leafW, petalL, petalW, similarityThreshold = 0;
+	private double leafL, leafW, petalL, petalW, similarityThreshold;
 
 	//Filter methods variables
-	private double lowestLL, highestLL, lowestLW, highestLW = 0;
-	private double lowestPL, highestPL, lowestPW, highestPW = 0;
+	private double lowestLL, highestLL, lowestLW, highestLW;
+	private double lowestPL, highestPL, lowestPW, highestPW;
 	private Iris.IrisType type = Iris.IrisType.NONE;
 
 	private ModelAGDS modelAGDS = new ModelAGDS();
@@ -99,48 +99,52 @@ public class ControllerAGDS implements Initializable {
 		rbTable.setSelected(false);
 	}
 
-//	public void actionEventAGDS(ActionEvent event) {
-//		//Similarity methods variables
-//		double leafL, leafW, petalL, petalW, similarityThreshold = 0;
-//
-//		//Filter methods variables
-//		double lowestLL, highestLL, lowestLW, highestLW = 0;
-//		double lowestPL, highestPL, lowestPW, highestPW = 0;
-//		Iris.IrisType type = Iris.IrisType.NONE;
-//
-//		//Initialize
-////		modelAGDS.
-//		}
-
 	@FXML
 	public void startButtonAction(ActionEvent event) {
+		updateParameters(event);
 		if (tabSimilarity.isSelected()) {
 			if (rbGraph.isSelected()) {
-
+				modelAGDS.findPatternsInGraphSimilarity();
 			} else if (rbTable.isSelected()) {
-
+				modelAGDS.findPatternsInTableSimilarity();
 			}
 		} else if (tabSimilarity.isSelected()) {
 			if (rbGraph.isSelected()) {
-
+				modelAGDS.findPatternsInGraphFilter();
 			} else if (rbTable.isSelected()) {
-
+				modelAGDS.findPatternsInTableWithFilter();
 			}
 		}
 	}
 
+	private void updateParameters(ActionEvent event) {
+		//Similarity methods variables
+		this.leafL = Double.valueOf(similarityLeafLengthInput.getText());
+		this.leafW = Double.valueOf(similarityLeafWidthInput.getText());
+		this.petalL = Double.valueOf(similarityPetalLengthInput.getText());
+		this.petalW = Double.valueOf(similarityPetalWidthInput.getText());
+		this.similarityThreshold = Double.valueOf(similarityTextField.getText());
+
+		//Filter methods variables
+		this.lowestLL = Double.valueOf(filterLeafLengthMIN.getText());
+		this.highestLL = Double.valueOf(filterLeafLengthMAX.getText());
+		this.lowestLW = Double.valueOf(filterLeafWidthMIN.getText());
+		this.highestLW = Double.valueOf(filterLeafWidthMAX.getText());
+		this.lowestPL = Double.valueOf(filterPetalLengthMIN.getText());
+		this.highestPL = Double.valueOf(filterPetalLengthMAX.getText());
+		this.lowestPW = Double.valueOf(filterPetalWidthMIN.getText());
+		this.highestPW = Double.valueOf(filterPetalWidthMAX.getText());
+		//TODO wybranie typu jednego lub kilku
+		this.type = Iris.IrisType.SETOSA;
+	}
+
 	@FXML
 	public void radioButtonTypesAction(ActionEvent event) {
-
 		if (rbTypeSetosa.isFocused() && !rbTypeVersicolor.isSelected() && !rbTypeVirginica.isSelected()) {
 			rbTypeSetosa.setSelected(true);
-		}
-
-		if (rbTypeVersicolor.isFocused() && !rbTypeSetosa.isSelected() && !rbTypeVirginica.isSelected()) {
+		} else if (rbTypeVersicolor.isFocused() && !rbTypeSetosa.isSelected() && !rbTypeVirginica.isSelected()) {
 			rbTypeVersicolor.setSelected(true);
-		}
-
-		if (rbTypeVirginica.isFocused() && !rbTypeVersicolor.isSelected() && !rbTypeSetosa.isSelected()) {
+		} else if (rbTypeVirginica.isFocused() && !rbTypeVersicolor.isSelected() && !rbTypeSetosa.isSelected()) {
 			rbTypeVirginica.setSelected(true);
 		}
 	}
