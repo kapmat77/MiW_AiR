@@ -150,6 +150,17 @@ public class ControllerAGDS implements Initializable {
 	}
 
 	@FXML
+	public void radioButtonMainAction() {
+		if (rbTable.isFocused()) {
+			rbTable.setSelected(true);
+			rbGraph.setSelected(false);
+		} else if (rbGraph.isFocused()){
+			rbTable.setSelected(false);
+			rbGraph.setSelected(true);
+		}
+	}
+
+	@FXML
 	public void exitButtonAction(ActionEvent event) {
 		Stage stage = (Stage) bExit.getScene().getWindow();
 		stage.close();

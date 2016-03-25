@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.NewControll">
+   <children>
+      <SplitPane dividerPositions="0.044412607449856735" orientation="VERTICAL" prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <MenuBar prefHeight="29.0" prefWidth="998.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <menus>
+                      <Menu fx:id="menuMain" mnemonicParsing="false" text="Main menu">
+                        <items>
+                          <MenuItem fx:id="miStart" onAction="#startAction" mnemonicParsing="false" text="Start" />
+                          <MenuItem fx:id="miLoadData" onAction="#loadDataAction" mnemonicParsing="false" text="Load data" />
+                          <MenuItem fx:id="miSaveOutput" onAction="#saveOutputAction" mnemonicParsing="false" text="Save output" />
+                          <MenuItem fx:id="miOption" onAction="#optionAction" mnemonicParsing="false" text="Options" />
+                          <MenuItem fx:id="miExit" onAction="#exitAction" mnemonicParsing="false" text="Exit" />
+                        </items>
+                      </Menu>
+                      <Menu fx:id="menuData" text="Data type">
+                          <items>
+                              <RadioMenuItem fx:id="rmiIris" onAction="#irisAction" text="Iris"/>
+                              <RadioMenuItem fx:id="rmiWine" onAction="#wineAction" text="Wine"/>
+                          </items>
+                      </Menu>
+                      <Menu fx:id="menuMethods" text="Methods">
+                           <items>
+                               <RadioMenuItem fx:id="rmiSimilarity" onAction="#similarityAction" mnemonicParsing="false" text="Similarity" />
+                               <RadioMenuItem fx:id="rmiFilter" onAction="#filterAction" mnemonicParsing="false" text="Filter" />
+                               <RadioMenuItem fx:id="rmiMinMax" onAction="#minMaxAction" mnemonicParsing="false" text="Min &amp; Max" />
+                               <RadioMenuItem fx:id="rmiCorrelation" onAction="#correlactionAction" mnemonicParsing="false" text="Correlation" />
+                           </items>
+                      </Menu>
+                        <Menu fx:id="menuGraphic" text="Generate graphic">
+                           <items>
+                              <MenuItem fx:id="miSimilarityGraphic" onAction="#generateSimilarityGraphicAction" mnemonicParsing="false" text="Similarity table" />
+                              <MenuItem fx:id="miCorrelationGraphic" onAction="#generateCorrelationGraphicAction" mnemonicParsing="false" text="Correlation table" />
+                              <MenuItem fx:id="miAgdsGraphic" onAction="#generateAgdsGraphicAction" mnemonicParsing="false" text="AGDS" />
+                           </items>
+                        </Menu>
+                      <Menu fx:id="menuAbout" text="About" />
+                    </menus>
+                  </MenuBar>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <SplitPane dividerPositions="0.3257328990228013" orientation="VERTICAL" prefHeight="664.0" prefWidth="998.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="241.0" prefWidth="996.0">
+                           <children>
+                              <SplitPane dividerPositions="0.30985915492957744" prefHeight="191.0" prefWidth="996.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <items>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="189.0" prefWidth="209.0">
+                                       <children>
+                                          <TextField fx:id="tfGraphTime" editable="false" layoutX="153.0" layoutY="60.0" prefHeight="25.0" prefWidth="99.0" />
+                                           <TextField fx:id="tfTableTime" editable="false" layoutX="153.0" layoutY="102.0" prefHeight="25.0" prefWidth="99.0" />
+                                           <TextField fx:id="tfDiffTime" editable="false" layoutX="153.0" layoutY="144.0" prefHeight="25.0" prefWidth="99.0" />
+                                           <Label alignment="CENTER" contentDisplay="CENTER" layoutX="118.0" layoutY="14.0" prefHeight="35.0" prefWidth="70.0" text="Time">
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                          <Label layoutX="36.0" layoutY="106.0" text="Last graph method" />
+                                          <Label layoutX="39.0" layoutY="64.0" text="Last table method" />
+                                          <Label layoutX="59.0" layoutY="148.0" text="Difference" />
+                                          <Label layoutX="258.0" layoutY="64.0" text="ns" />
+                                          <Label layoutX="258.0" layoutY="148.0" text="ns" />
+                                          <Label layoutX="258.0" layoutY="106.0" text="ns" />
+                                       </children>
+                                    </AnchorPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="189.0" prefWidth="790.0">
+                                       <children>
+                                          <Label fx:id="lOptionHeader" layoutX="14.0" layoutY="14.0" prefHeight="35.0" prefWidth="326.0"> <!--text="Object(type) - method">-->
+                                             <font>
+                                                <Font size="24.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="356.0" prefWidth="996.0">
+                           <children>
+                              <TableView fx:id="resultIrisTable" prefHeight="465.0" prefWidth="996.0">
+                                 <columns>
+                                    <TableColumn fx:id="colIIndex" prefWidth="76.0" text="Index" />
+                                    <TableColumn fx:id="colILeafLength" prefWidth="90.0" text="Leaf-length" />
+                                    <TableColumn fx:id="colILeafWidth" prefWidth="90.0" text="Leaf-width" />
+                                    <TableColumn fx:id="colIPetalLength" prefWidth="90.0" text="Petal-length" />
+                                    <TableColumn fx:id="colIPetalWidth" prefWidth="90.0" text="Petal-width" />
+                                    <TableColumn fx:id="colIType" prefWidth="90.0" text="Type" />
+                                    <TableColumn fx:id="colISimilarity" prefWidth="106.0" text="Similarity" />
+                                 </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                              <TableView fx:id="resultWineTable" layoutX="2.0" prefHeight="465.0" prefWidth="996.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="-2.0" AnchorPane.topAnchor="0.0">
+                                 <columns>
+                                    <TableColumn fx:id="colWIndex" maxWidth="45.0" minWidth="45.0" prefWidth="45.0" resizable="false" text="Index" />
+                                    <TableColumn fx:id="colWClass" maxWidth="45.0" minWidth="45.0" prefWidth="45.0" resizable="false" text="Class" />
+                                    <TableColumn fx:id="colWAlcohol" maxWidth="55.0" minWidth="55.0" prefWidth="55.0" resizable="false" text="Alcohol" />
+                                    <TableColumn fx:id="colWMalicAcid" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Malic acid" />
+                                    <TableColumn fx:id="colWAshe" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" text="Ashe" />
+                                    <TableColumn fx:id="colWAlicalinity" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" resizable="false" text="Alcalinity of ashe" />
+                                    <TableColumn fx:id="colWMagnesium" maxWidth="80.0" minWidth="80.0" resizable="false" text="Magnesium" />
+                                    <TableColumn fx:id="colWTotalPhenols" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" resizable="false" text="Total phenols" />
+                                    <TableColumn fx:id="colWFlavanoids" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" resizable="false" text="Flavanoids" />
+                                    <TableColumn fx:id="colWNonflavanoid" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" resizable="false" text="Nonflavanoid phenols" />
+                                    <TableColumn fx:id="colWProanthocyanins" maxWidth="105.0" minWidth="105.0" prefWidth="105.0" resizable="false" text="Proanthocyanins" />
+                                    <TableColumn fx:id="colWColor" maxWidth="95.0" minWidth="95.0" prefWidth="95.0" resizable="false" text="Color intensity" />
+                                    <TableColumn fx:id="colWHue" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" text="Hue" />
+                                    <TableColumn fx:id="colWOD280" maxWidth="95.0" minWidth="95.0" prefWidth="95.0" resizable="false" text="OD280/OD315" />
+                                    <TableColumn fx:id="colWProline" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" resizable="false" text="Proline" />
+                                    <TableColumn fx:id="colWSimilarity" prefWidth="106.0" text="Similarity" />
+                                 </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children></AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
