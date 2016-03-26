@@ -17,7 +17,7 @@ public class Main extends Application {
 //        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("GuiDesign.fxml"));
         primaryStage.setTitle("Metody inżynierii wiedzy - Associative Graph Data Structure vs Table");
-        primaryStage.setScene(new Scene(root, 1200, 650));
+        primaryStage.setScene(new Scene(root, 1200, 550));
 		primaryStage.setResizable(false);
         primaryStage.show();
 	}

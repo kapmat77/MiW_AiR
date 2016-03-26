@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.NewControll">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.NewControll">
    <children>
       <SplitPane dividerPositions="0.044412607449856735" orientation="VERTICAL" prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -52,41 +52,24 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <SplitPane dividerPositions="0.3257328990228013" orientation="VERTICAL" prefHeight="664.0" prefWidth="998.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <SplitPane dividerPositions="0.1237785016286645" orientation="VERTICAL" prefHeight="664.0" prefWidth="998.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="241.0" prefWidth="996.0">
                            <children>
-                              <SplitPane dividerPositions="0.30985915492957744" prefHeight="191.0" prefWidth="996.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <items>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="189.0" prefWidth="209.0">
-                                       <children>
-                                          <TextField fx:id="tfGraphTime" editable="false" layoutX="153.0" layoutY="60.0" prefHeight="25.0" prefWidth="99.0" />
-                                           <TextField fx:id="tfTableTime" editable="false" layoutX="153.0" layoutY="102.0" prefHeight="25.0" prefWidth="99.0" />
-                                           <TextField fx:id="tfDiffTime" editable="false" layoutX="153.0" layoutY="144.0" prefHeight="25.0" prefWidth="99.0" />
-                                           <Label alignment="CENTER" contentDisplay="CENTER" layoutX="118.0" layoutY="14.0" prefHeight="35.0" prefWidth="70.0" text="Time">
-                                             <font>
-                                                <Font size="24.0" />
-                                             </font>
-                                          </Label>
-                                          <Label layoutX="36.0" layoutY="106.0" text="Last graph method" />
-                                          <Label layoutX="39.0" layoutY="64.0" text="Last table method" />
-                                          <Label layoutX="59.0" layoutY="148.0" text="Difference" />
-                                          <Label layoutX="258.0" layoutY="64.0" text="ns" />
-                                          <Label layoutX="258.0" layoutY="148.0" text="ns" />
-                                          <Label layoutX="258.0" layoutY="106.0" text="ns" />
-                                       </children>
-                                    </AnchorPane>
-                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="189.0" prefWidth="790.0">
-                                       <children>
-                                          <Label fx:id="lOptionHeader" layoutX="14.0" layoutY="14.0" prefHeight="35.0" prefWidth="326.0"> <!--text="Object(type) - method">-->
-                                             <font>
-                                                <Font size="24.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </AnchorPane>
-                                </items>
-                              </SplitPane>
+                              <TextField fx:id="tfGraphTime" editable="false" layoutX="116.0" layoutY="37.0" prefHeight="25.0" prefWidth="50.0" />
+                              <TextField fx:id="tfTableTime" editable="false" layoutX="238.0" layoutY="37.0" prefHeight="25.0" prefWidth="50.0" />
+                              <TextField fx:id="tfDiffTime" editable="false" layoutX="343.0" layoutY="37.0" prefHeight="25.0" prefWidth="50.0" />
+                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="19.0" prefHeight="35.0" prefWidth="70.0" text="Time">
+                                 <font>
+                                    <Font size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="219.0" layoutY="15.0" text="Last graph method" />
+                              <Label layoutX="103.0" layoutY="15.0" text="Last table method" />
+                              <Label layoutX="343.0" layoutY="15.0" text="Difference" />
+                              <Label layoutX="166.0" layoutY="41.0" text="us" />
+                              <Label layoutX="392.0" layoutY="41.0" text="us" />
+                              <Label layoutX="288.0" layoutY="41.0" text="us" />
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="356.0" prefWidth="1100.0">
