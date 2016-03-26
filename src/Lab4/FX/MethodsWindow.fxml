@@ -5,9 +5,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="optionsWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.NewControll">
+<AnchorPane fx:id="methodsWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.MethodsWindowController">
    <children>
-      <Label layoutX="270.0" layoutY="35.0" text="Methods">
+      <Label fx:id="lMethod" layoutX="270.0" layoutY="35.0" text="aa">
          <font>
             <Font size="20.0" />
          </font>

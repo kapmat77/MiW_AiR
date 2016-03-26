@@ -56,7 +56,7 @@ public class ControllerAGDS implements Initializable {
 	@FXML private TableColumn colType;
 	@FXML private TableColumn colSimilarity;
 
-	//Similarity methods variables
+	//Similarity variables - Iris
 	private double leafL, leafW, petalL, petalW, similarityThreshold;
 
 	//Filter methods variables

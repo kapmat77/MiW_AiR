@@ -23,12 +23,12 @@
                           <MenuItem fx:id="miExit" mnemonicParsing="false" onAction="#exitAction" text="Exit" />
                         </items>
                       </Menu>
-                      <Menu fx:id="menuData" text="Data type">
-                          <items>
-                              <RadioMenuItem fx:id="rmiIris" onAction="#dataChangeAction" text="Iris" />
-                              <RadioMenuItem fx:id="rmiWine" onAction="#dataChangeAction" text="Wine" />
-                          </items>
-                      </Menu>
+                      <!--<Menu fx:id="menuData" text="Data type">-->
+                          <!--<items>-->
+                              <!--<RadioMenuItem fx:id="rmiIris" onAction="#dataChangeAction" text="Iris" />-->
+                              <!--<RadioMenuItem fx:id="rmiWine" onAction="#dataChangeAction" text="Wine" />-->
+                          <!--</items>-->
+                      <!--</Menu>-->
                       <Menu fx:id="menuMethods" text="Methods">
                            <items>
                                <RadioMenuItem fx:id="rmiSimilarity" mnemonicParsing="false" onAction="#methodsChangeAction" text="Similarity" />
