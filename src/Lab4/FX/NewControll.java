@@ -126,15 +126,19 @@ public class NewControll implements Initializable {
 		if (rmi.getId().equals(rmiSimilarity.getId())) {
 			rmiSimilarity.setSelected(true);
 			mwController.setLabelMethod("Method: SIMILARITY");
+			mwController.setVisibility();
 		} else if (rmi.getId().equals(rmiFilter.getId())) {
 			rmiFilter.setSelected(true);
 			mwController.setLabelMethod("Method: FILTER");
+			mwController.setVisibility();
 		} else  if (rmi.getId().equals(rmiCorrelation.getId())) {
 			rmiCorrelation.setSelected(true);
 			mwController.setLabelMethod("Method: CORRELACTION");
+			mwController.setVisibility();
 		} else if (rmi.getId().equals(rmiMinMax.getId())) {
 			rmiMinMax.setSelected(true);
 			mwController.setLabelMethod("Method: MIN&MAX");
+			mwController.setVisibility();
 		}
 		mStage.show();
 	}
