@@ -4,6 +4,7 @@
 
 package Lab4.FX;
 
+import DataClass.Iris;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,14 +19,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
-public class NewControll implements Initializable {
-
-	@FXML private Label lOptionHeader;
+public class MainController implements Initializable {
 
 	//#################### MENU ####################
 	//Main menu
@@ -35,10 +37,6 @@ public class NewControll implements Initializable {
 	@FXML private MenuItem miSaveOutput;
 	@FXML private MenuItem miOption;
 	@FXML private MenuItem miExit;
-//	//Data type
-//	@FXML private Menu menuData;
-//	@FXML private RadioMenuItem rmiIris;
-//	@FXML private RadioMenuItem rmiWine;
 	//Methods
 	@FXML private Menu menuMethods;
 	@FXML private RadioMenuItem rmiSimilarity;
@@ -62,26 +60,52 @@ public class NewControll implements Initializable {
 	@FXML private Button cancelButton;
 
 
-
 	private Stage optionStage = new Stage();
 	private Stage mStage = new Stage();
+	private Stage aboutStage = new Stage();
 
 	//Similarity variables - Iris
 	private double leafL, leafW, petalL, petalW, similarityThreshold;
 
 	private ModelAGDS modelAGDS = new ModelAGDS();
+
+	//#################### OTHER CONTROLLERS ####################
 	private MethodsWindowController mwController = new MethodsWindowController();
+	private AboutController aboutController = new AboutController();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		initializeMethodsWindow();
+		initializeMethodsWindow(); //TODO
+		initializeAboutWindow();
+
+		initializeModelAGDS();
 
 		resultIrisTable.setVisible(true);
 		resultWineTable.setVisible(false);
 	}
 
+	private void initializeAboutWindow() {
+		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Lab4/FX/AboutWindow.fxml"));
+		Region root = null;
+		try {
+			root = (Region) loader.load();
+		} catch (IOException e) {
+			System.out.println("ERROR while loading AboutWindow.fxml. " + e.getMessage());
+		}
+		Scene mScene = new Scene(root, 200, 100);
+		aboutStage.setScene(mScene);
+		aboutController = loader.<AboutController>getController();
+		aboutStage.setTitle("About window");
+		aboutStage.setResizable(false);
+	}
+
+	private void initializeModelAGDS() {
+		modelAGDS.buildGraphAndTable();
+
+	}
+
 	private void initializeMethodsWindow() {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("MethodsWindow.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Lab4/FX/MethodsWindow.fxml"));
 		Region root = null;
 		try {
 			root = (Region) loader.load();
@@ -143,13 +167,15 @@ public class NewControll implements Initializable {
 		mStage.show();
 	}
 
-	public void loadDataAction(ActionEvent event) {
+	public void loadDataAction(ActionEvent event) throws FileNotFoundException {
+		//TODO wymczasowe wczytywanie
+		modelAGDS.setDataType(1);
+		List<Iris> listOfIrises = Iris.readDataFromFile(modelAGDS.getPath());
+		modelAGDS.setListOfIrises(listOfIrises);
 	}
 
 	public void startAction(ActionEvent event) {
 	}
-
-//	}
 
 	private void changeVisibility(String id) {
 		switch (id) {
@@ -172,6 +198,11 @@ public class NewControll implements Initializable {
 	}
 
 	public void generateAgdsGraphicAction(ActionEvent event) {
+	}
+
+	@FXML
+	private void aboutAction(ActionEvent event) {
+		aboutStage.show();
 	}
 
 	public void cancelButtonAction(ActionEvent event) {

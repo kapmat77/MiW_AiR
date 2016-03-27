@@ -30,7 +30,7 @@
                         <TextField fx:id="txLwSim" layoutX="315.0" layoutY="152.0" prefHeight="25.0" prefWidth="55.0" />
                         <TextField fx:id="txPlSim" layoutX="315.0" layoutY="192.0" prefHeight="25.0" prefWidth="55.0" />
                         <TextField fx:id="txPwSim" layoutX="315.0" layoutY="232.0" prefHeight="25.0" prefWidth="55.0" />
-                        <TextField fx:id="txIrisSimilarity" layoutX="315.0" layoutY="272.0" prefHeight="25.0" prefWidth="55.0" />
+                        <TextField fx:id="txIrisSim" layoutX="315.0" layoutY="272.0" prefHeight="25.0" prefWidth="55.0" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -67,7 +67,7 @@
                         <TextField fx:id="txHueSim" layoutX="426.0" layoutY="196.0" prefHeight="25.0" prefWidth="55.0" />
                         <TextField fx:id="txOD280Sim" layoutX="426.0" layoutY="236.0" prefHeight="25.0" prefWidth="55.0" />
                         <TextField fx:id="txProlineSim" layoutX="426.0" layoutY="277.0" prefHeight="25.0" prefWidth="55.0" />
-                        <TextField fx:id="txWineSimilarity" layoutX="426.0" layoutY="316.0" prefHeight="25.0" prefWidth="55.0" />
+                        <TextField fx:id="txWineSim" layoutX="426.0" layoutY="316.0" prefHeight="25.0" prefWidth="55.0" />
                      </children></AnchorPane>
             </content>
           </Tab>

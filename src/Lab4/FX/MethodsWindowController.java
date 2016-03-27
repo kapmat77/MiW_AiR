@@ -23,7 +23,7 @@ public class MethodsWindowController {
 	@FXML private TextField txLwSim;
 	@FXML private TextField txPlSim;
 	@FXML private TextField txPwSim;
-	@FXML private TextField txIrisSimilarity;
+	@FXML private TextField txIrisSim;
 	//WINE
 	@FXML private TextField txAlcoholSim;
 	@FXML private TextField txMalicAcidSim;
@@ -38,7 +38,7 @@ public class MethodsWindowController {
 	@FXML private TextField txHueSim;
 	@FXML private TextField txOD280Sim;
 	@FXML private TextField txProlineSim;
-	@FXML private TextField txWineSimilarity;
+	@FXML private TextField txWineSim;
 
 	public Label getLabelMethod() {
 		return lMethod;
@@ -81,11 +81,11 @@ public class MethodsWindowController {
 	}
 
 	public TextField getTxIrisSimilarity() {
-		return txIrisSimilarity;
+		return txIrisSim;
 	}
 
 	public void setTxIrisSimilarity(double val) {
-		this.txIrisSimilarity.setText(String.valueOf(val));
+		this.txIrisSim.setText(String.valueOf(val));
 	}
 
 	@FXML
@@ -110,7 +110,7 @@ public class MethodsWindowController {
 		txLwSim.setVisible(visible);
 		txPlSim.setVisible(visible);
 		txPwSim.setVisible(visible);
-		txIrisSimilarity.setVisible(visible);
+		txIrisSim.setVisible(visible);
 		txAlcoholSim.setVisible(visible);
 		txMalicAcidSim.setVisible(visible);
 		txAshSim.setVisible(visible);
@@ -124,6 +124,6 @@ public class MethodsWindowController {
 		txHueSim.setVisible(visible);
 		txOD280Sim.setVisible(visible);
 		txProlineSim.setVisible(visible);
-		txWineSimilarity.setVisible(visible);
+		txWineSim.setVisible(visible);
 	}
 }

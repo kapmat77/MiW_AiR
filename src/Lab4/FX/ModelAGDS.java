@@ -19,6 +19,21 @@ public class ModelAGDS {
 	private DataType dataType;
 	private String dataPath;
 
+	public List<Iris> getListOfIrises() {
+		return listOfIrises;
+	}
+
+	public void setListOfIrises(List<Iris> listOfIrises) {
+		this.listOfIrises = listOfIrises;
+	}
+
+	public Object[][] getObjectsTable() {
+		return objectsTable;
+	}
+
+	public void setObjectsTable(Object[][] objectsTable) {
+		this.objectsTable = objectsTable;
+	}
 
 	public void buildGraphAndTable() {
 		buildGraphAGDS();
@@ -27,7 +42,6 @@ public class ModelAGDS {
 
 	public void buildGraphAGDS() {
 		deleteRedundantNodes(listOfIrises);
-
 	}
 
 	public void buildTable() {
@@ -108,6 +122,11 @@ public class ModelAGDS {
 
 	private void setPath() {
 		this.dataPath = "src/Resources/data" + dataType.name() + ".txt";
+	}
+
+	//TODO tymczasowe wczytywanie
+	public String getPath() {
+		return dataPath;
 	}
 
 	private enum DataType {
