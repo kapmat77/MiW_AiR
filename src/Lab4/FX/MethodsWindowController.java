@@ -6,9 +6,7 @@ package Lab4.FX;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class MethodsWindowController {
@@ -17,6 +15,7 @@ public class MethodsWindowController {
 	@FXML private Label lMethod;
 	@FXML private Button okButton;
 	@FXML private Button cancelButton;
+
 	//########## SIMILARITY #############
 	//IRIS
 	@FXML private TextField txLlSim;
@@ -88,9 +87,23 @@ public class MethodsWindowController {
 		this.txIrisSim.setText(String.valueOf(val));
 	}
 
+//	@FXML
+//	public void cancelButtonAction(ActionEvent event) {
+//		((Stage) cancelButton.getScene().getWindow()).close();
+//	}
+
 	@FXML
-	public void cancelButtonAction(ActionEvent event) {
-		((Stage) cancelButton.getScene().getWindow()).close();
+	public void okButtonAction(ActionEvent event) {
+//		if (lMethod.getText().contains("SIMILARITY")) {
+//
+//		} else if (lMethod.getText().contains("FILTER")) {
+//
+//		} else if (lMethod.getText().contains("CORRELACTION")) {
+//
+//		} else if (lMethod.getText().contains("MIN&MAX")) {
+//
+//		}
+		((Stage) okButton.getScene().getWindow()).close();
 	}
 
 	public void setVisibility() {

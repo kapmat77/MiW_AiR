@@ -6,6 +6,8 @@ package Lab4.FX;
 
 import DataClass.Iris;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,19 +15,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeoutException;
 
 public class MainController implements Initializable {
 
@@ -36,7 +35,11 @@ public class MainController implements Initializable {
 	@FXML private MenuItem miLoadData;
 	@FXML private MenuItem miSaveOutput;
 	@FXML private MenuItem miOption;
+	@FXML private MenuItem menuAbout;
 	@FXML private MenuItem miExit;
+	//Type
+	@FXML private RadioMenuItem rmiGraph;
+	@FXML private RadioMenuItem rmiTable;
 	//Methods
 	@FXML private Menu menuMethods;
 	@FXML private RadioMenuItem rmiSimilarity;
@@ -48,17 +51,28 @@ public class MainController implements Initializable {
 	@FXML private MenuItem miSimilarityGraphic;
 	@FXML private MenuItem miCorrelationGraphic;
 	@FXML private MenuItem miAgdsGraphic;
-	//About
-	@FXML private Menu menuAbout;
 
 	//#################### TABLE VIEW ####################
+	@FXML private AnchorPane resultAnchorPane;
 	@FXML private TableView resultIrisTable;
 	@FXML private TableView resultWineTable;
+	//IRIS
+	@FXML private TableColumn colIIndex;
+	@FXML private TableColumn colLeafLength;
+	@FXML private TableColumn colLeafWidth;
+	@FXML private TableColumn colPetalLength;
+	@FXML private TableColumn colPetalWidth;
+	@FXML private TableColumn colType;
+	@FXML private TableColumn colISimilarity;
 
 	//################## OPTIONS WINDOW ####################
 	@FXML private AnchorPane optionsWindow;
 	@FXML private Button cancelButton;
 
+	//###################### TIME ########################
+	@FXML private TextField tfGraphTime;
+	@FXML private TextField tfTableTime;
+	@FXML private TextField tfDiffTime;
 
 	private Stage optionStage = new Stage();
 	private Stage mStage = new Stage();
@@ -73,13 +87,18 @@ public class MainController implements Initializable {
 	private MethodsWindowController mwController = new MethodsWindowController();
 	private AboutController aboutController = new AboutController();
 
+	public ModelAGDS getModel() {
+		return modelAGDS;
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initializeMethodsWindow(); //TODO
 		initializeAboutWindow();
 
-		initializeModelAGDS();
+		//TODO LOAD DATA
 
+		rmiGraph.setSelected(true);
 		resultIrisTable.setVisible(true);
 		resultWineTable.setVisible(false);
 	}
@@ -92,7 +111,7 @@ public class MainController implements Initializable {
 		} catch (IOException e) {
 			System.out.println("ERROR while loading AboutWindow.fxml. " + e.getMessage());
 		}
-		Scene mScene = new Scene(root, 200, 100);
+		Scene mScene = new Scene(root, 250, 125);
 		aboutStage.setScene(mScene);
 		aboutController = loader.<AboutController>getController();
 		aboutStage.setTitle("About window");
@@ -165,6 +184,7 @@ public class MainController implements Initializable {
 			mwController.setVisibility();
 		}
 		mStage.show();
+
 	}
 
 	public void loadDataAction(ActionEvent event) throws FileNotFoundException {
@@ -172,9 +192,32 @@ public class MainController implements Initializable {
 		modelAGDS.setDataType(1);
 		List<Iris> listOfIrises = Iris.readDataFromFile(modelAGDS.getPath());
 		modelAGDS.setListOfIrises(listOfIrises);
+		initializeModelAGDS();
 	}
 
 	public void startAction(ActionEvent event) {
+		if (mwController.getLabelMethod().getText().contains("SIMILARITY")) {
+			modelAGDS.setLeafL(Double.valueOf(mwController.getTxLlSim().getText()));
+			modelAGDS.setLeafW(Double.valueOf(mwController.getTxLwSim().getText()));
+			modelAGDS.setPetalL(Double.valueOf(mwController.getTxPlSim().getText()));
+			modelAGDS.setPetalW(Double.valueOf(mwController.getTxPwSim().getText()));
+			modelAGDS.setSimilarityThreshold(Double.valueOf(mwController.getTxIrisSimilarity().getText().replaceAll(",",".")));
+			modelAGDS.findPatternsInGraphSimilarity();
+		} else if (mwController.getLabelMethod().getText().contains("FILTER")) {
+
+		} else if (mwController.getLabelMethod().getText().contains("CORRELACTION")) {
+
+		} else if (mwController.getLabelMethod().getText().contains("MIN&MAX")) {
+
+		}
+		fillIrisTable();
+		updateTime();
+	}
+
+	private void updateTime() {
+		tfTableTime.setText(String.valueOf(modelAGDS.getTableTime()));
+		tfGraphTime.setText(String.valueOf(modelAGDS.getGraphTime()));
+		tfDiffTime.setText(String.valueOf(modelAGDS.getTableTime()-modelAGDS.getGraphTime()));
 	}
 
 	private void changeVisibility(String id) {
@@ -200,12 +243,50 @@ public class MainController implements Initializable {
 	public void generateAgdsGraphicAction(ActionEvent event) {
 	}
 
+	private void fillIrisTable() {
+		resultIrisTable = new TableView<Iris>();
+		resultIrisTable.setMaxSize(1208,452);
+		resultIrisTable.setMinSize(1208,452);
+		ObservableList<Iris> data = FXCollections.observableArrayList();
+		data.addAll(modelAGDS.getOutputIrisList());
+
+		colIIndex.setCellValueFactory(new PropertyValueFactory<Iris,Integer>("index"));
+		colLeafLength.setCellValueFactory(new PropertyValueFactory<Iris,Double>("leafLength"));
+		colLeafWidth.setCellValueFactory(new PropertyValueFactory<Iris,Double>("leafWidth"));
+		colPetalLength.setCellValueFactory(new PropertyValueFactory<Iris,Double>("petalLength"));
+		colPetalWidth.setCellValueFactory(new PropertyValueFactory<Iris,Double>("petalWidth"));
+		colType.setCellValueFactory(new PropertyValueFactory<Iris,String>("type"));
+		colISimilarity.setCellValueFactory(new PropertyValueFactory<Iris,Double>("similarity"));
+
+		resultIrisTable.setItems(data);
+		resultIrisTable.getColumns().addAll(colIIndex, colLeafLength, colLeafWidth, colPetalLength, colPetalWidth, colType, colISimilarity);
+
+		resultAnchorPane.getChildren().addAll(resultIrisTable);
+	}
+
 	@FXML
-	private void aboutAction(ActionEvent event) {
-		aboutStage.show();
+	public void okButton(ActionEvent event) {
+		mwController.setLabelMethod("s");
 	}
 
 	public void cancelButtonAction(ActionEvent event) {
 		((Stage) cancelButton.getScene().getWindow()).close();
+	}
+
+	@FXML
+	public void aboutAction(ActionEvent event) {
+		aboutStage.show();
+	}
+
+	@FXML
+	public void dataTypeAction(ActionEvent event) {
+		rmiGraph.setSelected(false);
+		rmiTable.setSelected(false);
+		RadioMenuItem rmi = (RadioMenuItem) event.getSource();
+		if (rmi.getId().equals(rmiGraph.getId())) {
+			rmiGraph.setSelected(true);
+		} else if (rmi.getId().equals(rmiTable.getId())) {
+			rmiTable.setSelected(true);
+		}
 	}
 }
