@@ -5,6 +5,7 @@
 package Lab4.FX;
 
 import DataClass.Iris;
+import DataClass.Wine;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,8 +19,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -77,6 +80,8 @@ public class MainController implements Initializable {
 	private Stage optionStage = new Stage();
 	private Stage mStage = new Stage();
 	private Stage aboutStage = new Stage();
+	@FXML
+	private Stage loadStage = new Stage();
 
 	//Similarity variables - Iris
 	private double leafL, leafW, petalL, petalW, similarityThreshold;
@@ -188,11 +193,25 @@ public class MainController implements Initializable {
 	}
 
 	public void loadDataAction(ActionEvent event) throws FileNotFoundException {
-		//TODO wymczasowe wczytywanie
-		modelAGDS.setDataType(1);
-		List<Iris> listOfIrises = Iris.readDataFromFile(modelAGDS.getPath());
-		modelAGDS.setListOfIrises(listOfIrises);
-		initializeModelAGDS();
+		FileChooser filechooser = new FileChooser();
+		filechooser.setTitle("Load data");
+		filechooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+		filechooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Txt files", "*.txt"));
+		File file = filechooser.showOpenDialog(loadStage);
+
+		if (file.getAbsolutePath().contains("dataIris")) {
+			//IRIS
+			modelAGDS.setDataType(1);
+			List<Iris> listOfIrises = Iris.readDataFromFile(modelAGDS.getPath());
+			modelAGDS.setListOfIrises(listOfIrises);
+			initializeModelAGDS();
+		} else if (file.getAbsolutePath().contains("dataWine")){
+			//WINE
+			modelAGDS.setDataType(2);
+			List<Wine> listOfWines = Wine.readDataFromFile(modelAGDS.getPath());
+			modelAGDS.setListOfWines(listOfWines);
+			initializeModelAGDS();
+		}
 	}
 
 	public void startAction(ActionEvent event) {
@@ -202,6 +221,7 @@ public class MainController implements Initializable {
 			modelAGDS.setPetalL(Double.valueOf(mwController.getTxPlSim().getText()));
 			modelAGDS.setPetalW(Double.valueOf(mwController.getTxPwSim().getText()));
 			modelAGDS.setSimilarityThreshold(Double.valueOf(mwController.getTxIrisSimilarity().getText().replaceAll(",",".")));
+			//TODO wine
 			modelAGDS.findPatternsInGraphSimilarity();
 		} else if (mwController.getLabelMethod().getText().contains("FILTER")) {
 			modelAGDS.setLowestLL(Double.valueOf(mwController.getTxLlMinFil().getText()));
@@ -212,6 +232,7 @@ public class MainController implements Initializable {
 			modelAGDS.setHighestPL(Double.valueOf(mwController.getTxPlMaxFil().getText()));
 			modelAGDS.setLowestPW(Double.valueOf(mwController.getTxPwMinFil().getText()));
 			modelAGDS.setHighestPW(Double.valueOf(mwController.getTxPwMaxFil().getText()));
+			//TODO wine
 			modelAGDS.findPatternsInGraphFilter();
 		} else if (mwController.getLabelMethod().getText().contains("CORRELACTION")) {
 

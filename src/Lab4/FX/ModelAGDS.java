@@ -19,8 +19,9 @@ import java.util.Scanner;
 public class ModelAGDS {
 
 	private List<Iris> listOfIrises = new ArrayList<>();
-
 	private List<Iris> outputIrisList = new ArrayList<>();
+	private List<Wine> listOfWines = new ArrayList<>();
+	private List<Wine> outputWineList = new ArrayList<>();
 
 	private Object[][] objectsTable;
 
@@ -117,12 +118,12 @@ public class ModelAGDS {
 		this.similarityThreshold = similarityThreshold;
 	}
 
-	public List<Iris> getListOfIrises() {
-		return listOfIrises;
-	}
-
 	public void setListOfIrises(List<Iris> listOfIrises) {
 		this.listOfIrises = listOfIrises;
+	}
+
+	public void setListOfWines(List<Wine> listOfWines) {
+		this.listOfWines = listOfWines;
 	}
 
 	public Object[][] getObjectsTable() {
@@ -134,11 +135,20 @@ public class ModelAGDS {
 	}
 
 	public void buildGraphAndTable() {
-		buildGraphAGDS();
-		buildTable(listOfIrises);
+
+		switch (dataType) {
+			case IRIS:
+				buildIrisGraphAGDS();
+				buildTable(listOfIrises);
+				break;
+			case WINE:
+				buildWineGraphAGDS();
+				buildTable(listOfWines);
+				break;
+		}
 	}
 
-	public void buildGraphAGDS() {
+	public void buildIrisGraphAGDS() {
 		deleteRedundantNodes(listOfIrises);
 
 		//Create CLASS_OF_OBJECT node
@@ -162,6 +172,222 @@ public class ModelAGDS {
 			indexNodes.add(singleIndex);
 		}
 
+		//Create VALUE_OF_PARAM nodes
+		List<Node> valueLLNodes = new ArrayList<>();
+		List<Node> valueLWNodes = new ArrayList<>();
+		List<Node> valuePLNodes = new ArrayList<>();
+		List<Node> valuePWNodes = new ArrayList<>();
+		for (Iris singleIris : listOfIrises) {
+			Node<Double> llValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
+
+			Node<Double> lwValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_WIDTH));
+
+			Node<Double> plValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleIris.getParameterByEnum(Iris.KindOfParam.PETAL_LENGTH));
+
+			Node<Double> pwValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleIris.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			valueLLNodes.add(llValue);
+			valueLWNodes.add(lwValue);
+			valuePLNodes.add(plValue);
+			valuePWNodes.add(pwValue);
+		}
+
+		//Set PARAM children
+		List<Node> childrenParam = new ArrayList<>();
+		childrenParam.add(lLength);
+		childrenParam.add(lWidth);
+		childrenParam.add(pLength);
+		childrenParam.add(pWidth);
+		childrenParam.add(classNode);
+		NodesBox.getParamNode().setChildren(childrenParam);
+
+		//Set CLASS_OF_OBJECT parent
+		List<Node> parentClass = new ArrayList<>();
+		parentClass.add(NodesBox.getParamNode());
+		classNode.setParents(parentClass);
+
+		//Set CLASS_OF_OBJECT children
+		List<Node> childrenClass = new ArrayList<>();
+		childrenClass.add(irisSetosa);
+		childrenClass.add(irisVersicolor);
+		childrenClass.add(irisVirginica);
+		classNode.setChildren(childrenClass);
+
+		//Set KIND_OF_PARAM parent
+		List<Node> kindParent = new ArrayList<>();
+		kindParent.add(NodesBox.getParamNode());
+		lLength.setParents(kindParent);
+		lWidth.setParents(kindParent);
+		pLength.setParents(kindParent);
+		pWidth.setParents(kindParent);
+
+		//Set KIND_OF_PARAM children
+		lLength.setChildren(valueLLNodes);
+		lWidth.setChildren(valueLWNodes);
+		pLength.setChildren(valuePLNodes);
+		pWidth.setChildren(valuePWNodes);
+
+		//Set TYPE_OF_OBJECT parents
+		List<Node> parentsType = new ArrayList<>();
+		parentsType.add(classNode);
+		irisSetosa.setParents(parentsType);
+		irisVersicolor.setParents(parentsType);
+		irisVirginica.setParents(parentsType);
+
+		//Set TYPE_OF_OBJECT children
+		int l = 0;
+		List<Node> childrenSetosaType = new ArrayList<>();
+		List<Node> childrenVersicolorType = new ArrayList<>();
+		List<Node> childrenVirginicaType = new ArrayList<>();
+		for (Iris singleIris : listOfIrises) {
+			switch (singleIris.getObjectType()) {
+				case "SETOSA":
+					childrenSetosaType.add(indexNodes.get(l));
+					break;
+				case "VERSICOLOR":
+					childrenVersicolorType.add(indexNodes.get(l));
+					break;
+				case "VIRGINICA":
+					childrenVirginicaType.add(indexNodes.get(l));
+					break;
+			}
+			l++;
+		}
+		irisSetosa.setChildren(childrenSetosaType);
+		irisVersicolor.setChildren(childrenVersicolorType);
+		irisVirginica.setChildren(childrenVirginicaType);
+
+		//Set VALUE_OF_PARAM children
+		int i = 0;
+		for (Node singleValueNode : valueLLNodes) {
+			List<Node> indexList = new ArrayList<>();
+			indexList.add(indexNodes.get(i));
+			singleValueNode.setChildren(indexList);
+			i++;
+		}
+		i = 0;
+		for (Node singleValueNode : valueLWNodes) {
+			List<Node> indexList = new ArrayList<>();
+			indexList.add(indexNodes.get(i));
+			singleValueNode.setChildren(indexList);
+			i++;
+		}
+		i = 0;
+		for (Node singleValueNode : valuePLNodes) {
+			List<Node> indexList = new ArrayList<>();
+			indexList.add(indexNodes.get(i));
+			singleValueNode.setChildren(indexList);
+			i++;
+		}
+		i = 0;
+		for (Node singleValueNode : valuePWNodes) {
+			List<Node> indexList = new ArrayList<>();
+			indexList.add(indexNodes.get(i));
+			singleValueNode.setChildren(indexList);
+			i++;
+		}
+
+		//Set VALUE_OF_PARAM parents
+		for (Node singleValueNode : valueLLNodes) {
+			List<Node> parentsValue = new ArrayList<>();
+			parentsValue.add(lLength);
+			singleValueNode.setParents(parentsValue);
+		}
+		for (Node singleValueNode : valueLWNodes) {
+			List<Node> parentsValue = new ArrayList<>();
+			parentsValue.add(lWidth);
+			singleValueNode.setParents(parentsValue);
+		}
+		for (Node singleValueNode : valuePLNodes) {
+			List<Node> parentsValue = new ArrayList<>();
+			parentsValue.add(pLength);
+			singleValueNode.setParents(parentsValue);
+		}
+		for (Node singleValueNode : valuePWNodes) {
+			List<Node> parentsValue = new ArrayList<>();
+			parentsValue.add(pWidth);
+			singleValueNode.setParents(parentsValue);
+		}
+
+		//Set INDEX parents
+		int j = 0;
+		for (Node singleIndexNode : indexNodes) {
+			List<Node> parentsIndex = new ArrayList<>();
+			parentsIndex.add(valueLLNodes.get(j));
+			parentsIndex.add(valueLWNodes.get(j));
+			parentsIndex.add(valuePLNodes.get(j));
+			parentsIndex.add(valuePWNodes.get(j));
+			singleIndexNode.setParents(parentsIndex);
+			j++;
+		}
+
+		//Set INDEX children
+		int k = 0;
+		for (Node singleIndexNode : indexNodes) {
+			Iris singleIris = listOfIrises.get(k);
+			List<Node> childrenIndex = new ArrayList<>();
+			switch (singleIris.getObjectType()) {
+				case "SETOSA":
+					childrenIndex.add(irisSetosa);
+					break;
+				case "VERSICOLOR":
+					childrenIndex.add(irisVersicolor);
+					break;
+				case "VIRGINICA":
+					childrenIndex.add(irisVirginica);
+					break;
+			}
+			singleIndexNode.setChildren(childrenIndex);
+			k++;
+		}
+
+		//Sort date
+		Collections.sort(valueLLNodes);
+		Collections.sort(valueLWNodes);
+		Collections.sort(valuePLNodes);
+		Collections.sort(valuePWNodes);
+
+		//Set MIN, MAX, RANGE
+		setAdditionalParam(NodesBox.getKindOfParamNodes());
+	}
+
+	private void buildWineGraphAGDS() {
+		deleteRedundantNodes(listOfWines);
+
+		//Create CLASS_OF_OBJECT node
+		Node<String> classNode = new Node<>(Node.Level.CLASS_OF_OBJECT, Node.Level.CLASS_OF_OBJECT.name());
+
+		//Create KIND_OF_PARAM nodes
+		Node<String> alcohol = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ALCOHOL.name());
+		Node<String> malicAcid = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.MALIC_ACID.name());
+		Node<String> ash = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ASH.name());
+		Node<String> alcalinityOfAshe = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ALCALINITY_OF_ASHE.name());
+		Node<String> magnesium = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.MAGNESIUM.name());
+		Node<String> totalPhenols = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.TOTAL_PHENOLS.name());
+		Node<String> flavanoids = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.FLAVANOIDS.name());
+		Node<String> nonflavanoidPhenols = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.NONFLAVANOID_PHENOLS.name());
+		Node<String> proanthocyanins = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.PROANTHOCYANINS.name());
+		Node<String> colorIntensity = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.COLOR_INTENSITY.name());
+		Node<String> hue = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.HUE.name());
+		Node<String> od280od315OfDilutedWines = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.OD280OD315_OF_DILUTED_WINES.name());
+		Node<String> proline = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.PROFLINE.name());
+
+		//Create TYPE_OF_OBJECT nodes
+		Node<Integer> firstType = new Node<>(Node.Level.TYPE_OF_OBJECT, 1);
+		Node<Integer> secondType = new Node<>(Node.Level.TYPE_OF_OBJECT, 2);
+		Node<Integer> thirdType = new Node<>(Node.Level.TYPE_OF_OBJECT, 3);
+
+		//Create INDEX nodes
+		List<Node> indexNodes = new ArrayList<>();
+		for (int i = 0; i < listOfIrises.size(); i++) {
+			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i + 1);
+			indexNodes.add(singleIndex);
+		}
+		//TODO dalej przerobic - wine
 		//Create VALUE_OF_PARAM nodes
 		List<Node> valueLLNodes = new ArrayList<>();
 		List<Node> valueLWNodes = new ArrayList<>();
@@ -428,40 +654,108 @@ public class ModelAGDS {
 			}
 		}
 
-		double factorLL = 1.0 - (0.1 / childrenParam.get(0).getRange());
-		double factorLW = 1.0 - (0.1 / childrenParam.get(1).getRange());
-		double factorPL = 1.0 - (0.1 / childrenParam.get(2).getRange());
-		double factorPW = 1.0 - (0.1 / childrenParam.get(3).getRange());
+		long startTime = 0;
+		long endTime = 0;
+		long time = 0;
 
-		long startTime = System.nanoTime();
+		switch (dataType) {
+			case IRIS:
+				double factorLL = 1.0 - (0.1 / childrenParam.get(0).getRange());
+				double factorLW = 1.0 - (0.1 / childrenParam.get(1).getRange());
+				double factorPL = 1.0 - (0.1 / childrenParam.get(2).getRange());
+				double factorPW = 1.0 - (0.1 / childrenParam.get(3).getRange());
 
-		for (Node index : allIndexNodes) {
-			List<Node> parentsIndex = index.getParents();
-			((Node) index.getParents().get(0)).setFactor(Math.pow(factorLL, (Math.abs(leafL - (double) parentsIndex.get(0).getValue()) * 10)));
-			((Node) index.getParents().get(1)).setFactor(Math.pow(factorLW, (Math.abs(leafW - (double) parentsIndex.get(1).getValue()) * 10)));
-			((Node) index.getParents().get(2)).setFactor(Math.pow(factorPL, (Math.abs(petalL - (double) parentsIndex.get(2).getValue()) * 10)));
-			((Node) index.getParents().get(3)).setFactor(Math.pow(factorPW, (Math.abs(petalW - (double) parentsIndex.get(3).getValue()) * 10)));
-			index.setFactor((parentsIndex.get(0).getFactor() + parentsIndex.get(1).getFactor() + parentsIndex.get(2).getFactor() + parentsIndex.get(3).getFactor())/4);
+				startTime = System.nanoTime();
+
+				for (Node index : allIndexNodes) {
+					List<Node> parentsIndex = index.getParents();
+					((Node) index.getParents().get(0)).setFactor(Math.pow(factorLL, (Math.abs(leafL - (double) parentsIndex.get(0).getValue()) * 10)));
+					((Node) index.getParents().get(1)).setFactor(Math.pow(factorLW, (Math.abs(leafW - (double) parentsIndex.get(1).getValue()) * 10)));
+					((Node) index.getParents().get(2)).setFactor(Math.pow(factorPL, (Math.abs(petalL - (double) parentsIndex.get(2).getValue()) * 10)));
+					((Node) index.getParents().get(3)).setFactor(Math.pow(factorPW, (Math.abs(petalW - (double) parentsIndex.get(3).getValue()) * 10)));
+
+					index.setFactor((parentsIndex.get(0).getFactor() + parentsIndex.get(1).getFactor() + parentsIndex.get(2).getFactor() + parentsIndex.get(3).getFactor())/4);
+				}
+
+				endTime = System.nanoTime();
+				time = endTime-startTime;
+
+				outputIrisList.clear();
+				for (Node singleIndex: allIndexNodes) {
+					if (similarityThreshold <= singleIndex.getFactor()) {
+						List<Node> parentsIndex = singleIndex.getParents();
+						outputIrisList.add(new Iris((double) parentsIndex.get(0).getValue(), (double) parentsIndex.get(1).getValue(),
+								(double) parentsIndex.get(2).getValue(),(double) parentsIndex.get(3).getValue(),
+								(Iris.IrisType) ((Node) singleIndex.getChildren().get(0)).getValue(), roundDouble(singleIndex.getFactor(),4), (Integer) singleIndex.getValue()));
+					}
+				}
+
+		//		showPatternsFromNodes(showList, ShowType.WITH_SIMILARITY, dType);
+				graphTime = (int) time/1000;
+				System.out.println("Execution time for graph: " + time/1000 + " microseconds");
+
+				break;
+
+			case WINE:
+				double factorAlcohol = 1.0 - (0.1 / childrenParam.get(0).getRange());
+				double factorMalicAcid = 1.0 - (0.1 / childrenParam.get(1).getRange());
+				double factorAsh = 1.0 - (0.1 / childrenParam.get(2).getRange());
+				double factorAlcalinityOfAshe = 1.0 - (0.1 / childrenParam.get(3).getRange());
+				double factorMagnesium = 1.0 - (0.1 / childrenParam.get(4).getRange());
+				double factorTotalPhenols = 1.0 - (0.1 / childrenParam.get(5).getRange());
+				double factorFlavanoids = 1.0 - (0.1 / childrenParam.get(6).getRange());
+				double factorNonflavanoidPhenols = 1.0 - (0.1 / childrenParam.get(7).getRange());
+				double factorProanthocyanins = 1.0 - (0.1 / childrenParam.get(8).getRange());
+				double factorColorIntensity = 1.0 - (0.1 / childrenParam.get(9).getRange());
+				double factorHue = 1.0 - (0.1 / childrenParam.get(10).getRange());
+				double factorOd280od315OfDilutedWines = 1.0 - (0.1 / childrenParam.get(11).getRange());
+				double factorProline = 1.0 - (0.1 / childrenParam.get(12).getRange());
+
+				startTime = System.nanoTime();
+
+				for (Node index : allIndexNodes) {
+					List<Node> parentsIndex = index.getParents();
+					((Node) index.getParents().get(0)).setFactor(Math.pow(factorAlcohol, (Math.abs(leafL - (double) parentsIndex.get(0).getValue()) * 10)));
+					((Node) index.getParents().get(1)).setFactor(Math.pow(factorMalicAcid, (Math.abs(leafW - (double) parentsIndex.get(1).getValue()) * 10)));
+					((Node) index.getParents().get(2)).setFactor(Math.pow(factorAsh, (Math.abs(petalL - (double) parentsIndex.get(2).getValue()) * 10)));
+					((Node) index.getParents().get(3)).setFactor(Math.pow(factorAlcalinityOfAshe, (Math.abs(petalW - (double) parentsIndex.get(3).getValue()) * 10)));
+					((Node) index.getParents().get(4)).setFactor(Math.pow(factorMagnesium, (Math.abs(petalW - (double) parentsIndex.get(4).getValue()) * 10)));
+					((Node) index.getParents().get(5)).setFactor(Math.pow(factorTotalPhenols, (Math.abs(petalW - (double) parentsIndex.get(5).getValue()) * 10)));
+					((Node) index.getParents().get(6)).setFactor(Math.pow(factorFlavanoids, (Math.abs(petalW - (double) parentsIndex.get(6).getValue()) * 10)));
+					((Node) index.getParents().get(7)).setFactor(Math.pow(factorNonflavanoidPhenols, (Math.abs(petalW - (double) parentsIndex.get(7).getValue()) * 10)));
+					((Node) index.getParents().get(8)).setFactor(Math.pow(factorProanthocyanins, (Math.abs(petalW - (double) parentsIndex.get(8).getValue()) * 10)));
+					((Node) index.getParents().get(9)).setFactor(Math.pow(factorColorIntensity, (Math.abs(petalW - (double) parentsIndex.get(9).getValue()) * 10)));
+					((Node) index.getParents().get(10)).setFactor(Math.pow(factorHue, (Math.abs(petalW - (double) parentsIndex.get(10).getValue()) * 10)));
+					((Node) index.getParents().get(11)).setFactor(Math.pow(factorOd280od315OfDilutedWines, (Math.abs(petalW - (double) parentsIndex.get(11).getValue()) * 10)));
+					((Node) index.getParents().get(12)).setFactor(Math.pow(factorProline, (Math.abs(petalW - (double) parentsIndex.get(12).getValue()) * 10)));
+
+					index.setFactor((parentsIndex.get(0).getFactor() + parentsIndex.get(1).getFactor() + parentsIndex.get(2).getFactor() + parentsIndex.get(3).getFactor() +
+							parentsIndex.get(4).getFactor() + parentsIndex.get(5).getFactor() + parentsIndex.get(6).getFactor() + parentsIndex.get(7).getFactor() +
+							parentsIndex.get(8).getFactor() + parentsIndex.get(9).getFactor() + parentsIndex.get(10).getFactor() + parentsIndex.get(11).getFactor() +
+							parentsIndex.get(12).getFactor())/14);
+				}
+
+				endTime = System.nanoTime();
+				time = endTime-startTime;
+
+				outputWineList.clear();
+				for (Node singleIndex: allIndexNodes) {
+					if (similarityThreshold <= singleIndex.getFactor()) {
+						List<Node> parentsIndex = singleIndex.getParents();
+//						outputWineList.add(new Iris((double) parentsIndex.get(0).getValue(), (double) parentsIndex.get(1).getValue(),
+//								(double) parentsIndex.get(2).getValue(),(double) parentsIndex.get(3).getValue(),
+//								(Iris.IrisType) ((Node) singleIndex.getChildren().get(0)).getValue(), roundDouble(singleIndex.getFactor(),4),
+//								(Integer) singleIndex.getValue()));
+					}
+				}
+
+		//		showPatternsFromNodes(showList, ShowType.WITH_SIMILARITY, dType);
+				graphTime = (int) time/1000;
+				System.out.println("Execution time for graph: " + time/1000 + " microseconds");
 		}
 
-		long endTime = System.nanoTime();
-		long time = endTime-startTime;
 
-//		List<Node> showList = new ArrayList<>();
-		outputIrisList.clear();
-		for (Node singleIndex: allIndexNodes) {
-			if (similarityThreshold <= singleIndex.getFactor()) {
-//				showList.add(singleIndex);
-				List<Node> parentsIndex = singleIndex.getParents();
-				outputIrisList.add(new Iris((double) parentsIndex.get(0).getValue(), (double) parentsIndex.get(1).getValue(),
-						(double) parentsIndex.get(2).getValue(),(double) parentsIndex.get(3).getValue(),
-						(Iris.IrisType) ((Node) singleIndex.getChildren().get(0)).getValue(), roundDouble(singleIndex.getFactor(),4), (Integer) singleIndex.getValue()));
-			}
-		}
 
-//		showPatternsFromNodes(showList, ShowType.WITH_SIMILARITY, dType);
-		graphTime = (int) time/1000;
-		System.out.println("Execution time for graph: " + time/1000 + " microseconds");
 	}
 
 	public void findPatternsInGraphFilter() {
@@ -595,6 +889,8 @@ public class ModelAGDS {
 	public String getPath() {
 		return dataPath;
 	}
+
+
 
 	private enum DataType {
 		IRIS, WINE

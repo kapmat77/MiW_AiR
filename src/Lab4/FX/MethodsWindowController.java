@@ -13,8 +13,11 @@ public class MethodsWindowController {
 
 	//################## METHODS WINDOW ####################
 	@FXML private Label lMethod;
-	@FXML private Button okButton;
+	@FXML private Button okIrisButton;
+	@FXML private Button okWineButton;
 	@FXML private Button cancelButton;
+	@FXML public Tab tabIris;
+	@FXML public Tab tabWine;
 
 	//########## SIMILARITY #############
 	//IRIS
@@ -140,16 +143,12 @@ public class MethodsWindowController {
 
 	@FXML
 	public void okButtonAction(ActionEvent event) {
-//		if (lMethod.getText().contains("SIMILARITY")) {
-//
-//		} else if (lMethod.getText().contains("FILTER")) {
-//
-//		} else if (lMethod.getText().contains("CORRELACTION")) {
-//
-//		} else if (lMethod.getText().contains("MIN&MAX")) {
-//
-//		}
-		((Stage) okButton.getScene().getWindow()).close();
+
+		if (tabIris.isSelected()) {
+			((Stage) okIrisButton.getScene().getWindow()).close();
+		} else if (tabWine.isSelected()) {
+			((Stage) okIrisButton.getScene().getWindow()).close();
+		}
 	}
 
 	public void setVisibility() {
