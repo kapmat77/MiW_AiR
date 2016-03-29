@@ -109,32 +109,46 @@ public class Wine implements InputData {
 		Scanner input = new Scanner(System.in);
 
 		setOfParameters[0] = String.valueOf(0);
+		setOfParameters[0] = setOfParameters[0].replace(",",".");
 		System.out.println("alcohol: ");
 		setOfParameters[1] = input.nextLine();
+		setOfParameters[1] = setOfParameters[1].replace(",",".");
 		System.out.println("malicAcid: ");
 		setOfParameters[2] = input.nextLine();
+		setOfParameters[2] = setOfParameters[2].replace(",",".");
 		System.out.println("ash: ");
 		setOfParameters[3] = input.nextLine();
+		setOfParameters[3] = setOfParameters[3].replace(",",".");
 		System.out.println("alcalinityOfAshe: ");
 		setOfParameters[4] = input.nextLine();
+		setOfParameters[4] = setOfParameters[4].replace(",",".");
 		System.out.println("magnesium: ");
 		setOfParameters[5] = input.nextLine();
+		setOfParameters[5] = setOfParameters[5].replace(",",".");
 		System.out.println("totalPhenols: ");
 		setOfParameters[6] = input.nextLine();
+		setOfParameters[6] = setOfParameters[6].replace(",",".");
 		System.out.println("flavanoids: ");
 		setOfParameters[7] = input.nextLine();
+		setOfParameters[7] = setOfParameters[7].replace(",",".");
 		System.out.println("nonflavanoidPhenols: ");
 		setOfParameters[8] = input.nextLine();
+		setOfParameters[8] = setOfParameters[8].replace(",",".");
 		System.out.println("proanthocyanins: ");
 		setOfParameters[9] = input.nextLine();
+		setOfParameters[9] = setOfParameters[9].replace(",",".");
 		System.out.println("colorIntensity: ");
 		setOfParameters[10] = input.nextLine();
+		setOfParameters[10] = setOfParameters[10].replace(",",".");
 		System.out.println("hue: ");
 		setOfParameters[11] = input.nextLine();
+		setOfParameters[11] = setOfParameters[11].replace(",",".");
 		System.out.println("od280od315OfDilutedWines: ");
 		setOfParameters[12] = input.nextLine();
+		setOfParameters[12] = setOfParameters[12].replace(",",".");
 		System.out.println("proline: ");
 		setOfParameters[13] = input.nextLine();
+		setOfParameters[13] = setOfParameters[13].replace(",",".");
 
 		return setOfParameters;
 	}

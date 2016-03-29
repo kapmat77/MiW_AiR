@@ -84,12 +84,16 @@ public class Iris implements InputData {
 
 		System.out.println("leafLength: ");
 		setOfParameters[0] = input.nextLine();
+		setOfParameters[0] = setOfParameters[0].replace(",",".");
 		System.out.println("leafWidth: ");
 		setOfParameters[1] = input.nextLine();
+		setOfParameters[1] = setOfParameters[1].replace(",",".");
 		System.out.println("petalLength: ");
 		setOfParameters[2] = input.nextLine();
+		setOfParameters[2] = setOfParameters[2].replace(",",".");
 		System.out.println("petalWidth: ");
 		setOfParameters[3] = input.nextLine();
+		setOfParameters[3] = setOfParameters[3].replace(",",".");
 		setOfParameters[4] = IrisType.NONE.name();
 
 		return setOfParameters;
