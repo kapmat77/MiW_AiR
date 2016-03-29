@@ -21,8 +21,8 @@ public class MetodaKNN {
 	public static void main(String[] args) throws Exception {
 		while (true) {
 			DataType dType = chooseType();
-//			String dataPath = "src/Resources/data" + dType.name() +".txt";
-			String dataPath = "Resources/data" + dType.name() +".txt";
+			String dataPath = "src/Resources/data" + dType.name() +".txt";
+//			String dataPath = "Resources/data" + dType.name() +".txt";
 			System.out.println("\n##################################################");
 			System.out.println("####################   MENU   ####################");
 			System.out.println("##################################################");
