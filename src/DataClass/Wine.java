@@ -149,7 +149,6 @@ public class Wine implements InputData {
 		System.out.println("proline: ");
 		setOfParameters[13] = input.nextLine();
 		setOfParameters[13] = setOfParameters[13].replace(",",".");
-
 		return setOfParameters;
 	}
 
