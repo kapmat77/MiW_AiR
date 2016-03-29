@@ -20,8 +20,9 @@ public class EksploracjaDanych {
 
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
-		System.out.println("Dane wczytywane są z pliku Lab2/resources/dane_lab2.txt");
-		readDataFromFile("src/Resources/dane_prezentacja_lab2.txt");
+		System.out.println("Dane wczytywane są z pliku Resources/dane_lab2.txt");
+		readDataFromFile("src/Lab2/dane_prezentacja_lab2.txt");
+//		readDataFromFile("Resources/dane_lab2.txt");
 
 		countFrequentData();
 		countProbability();
@@ -85,7 +86,7 @@ public class EksploracjaDanych {
 
 		//TODO wybór czy wszystkie możliwe komibnacje czy chcemy wybrać konkretną parę
 
-		System.out.println("Wprowadz produkty!");
+		System.out.println("Wprowadz produkty! (bez polskich znaków)");
 		System.out.println("Produkt pierwszy: ");
 		while (firstProduct.name().equalsIgnoreCase("none")) {
 			input = new Scanner(System.in);
@@ -246,6 +247,13 @@ public class EksploracjaDanych {
 				line = replacePolishCharacters(in.nextLine());
 				parts = line.split("\t");
 				for(int i=1; i<parts.length; i++) {
+					if (parts[i].contains("mi")) {
+						parts[i] = "miod";
+					} else if (parts[i].contains("atki")) {
+						parts[i] = "platki";
+					} else if (parts[i].contains("mas")) {
+						parts[i] = "maslo";
+					}
 					if(!(parts[i].isEmpty())) {
 						elem.add(EnumElements.getEnumValue(parts[i]));
 					}
@@ -258,6 +266,7 @@ public class EksploracjaDanych {
 		} catch (IOException e) {
 			System.out.println("Plik nie zostal wczytany poprawnie");
 			e.printStackTrace();
+			System.exit(-1);
 		}
 		return 1;
 	}

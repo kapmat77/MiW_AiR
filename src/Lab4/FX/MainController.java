@@ -204,7 +204,15 @@ public class MainController implements Initializable {
 			modelAGDS.setSimilarityThreshold(Double.valueOf(mwController.getTxIrisSimilarity().getText().replaceAll(",",".")));
 			modelAGDS.findPatternsInGraphSimilarity();
 		} else if (mwController.getLabelMethod().getText().contains("FILTER")) {
-
+			modelAGDS.setLowestLL(Double.valueOf(mwController.getTxLlMinFil().getText()));
+			modelAGDS.setHighestLL(Double.valueOf(mwController.getTxLlMaxFil().getText()));
+			modelAGDS.setLowestLW(Double.valueOf(mwController.getTxLwMinFil().getText()));
+			modelAGDS.setHighestLW(Double.valueOf(mwController.getTxLwMaxFil().getText()));
+			modelAGDS.setLowestPL(Double.valueOf(mwController.getTxPlMinFil().getText()));
+			modelAGDS.setHighestPL(Double.valueOf(mwController.getTxPlMaxFil().getText()));
+			modelAGDS.setLowestPW(Double.valueOf(mwController.getTxPwMinFil().getText()));
+			modelAGDS.setHighestPW(Double.valueOf(mwController.getTxPwMaxFil().getText()));
+			modelAGDS.findPatternsInGraphFilter();
 		} else if (mwController.getLabelMethod().getText().contains("CORRELACTION")) {
 
 		} else if (mwController.getLabelMethod().getText().contains("MIN&MAX")) {

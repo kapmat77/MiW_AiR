@@ -23,6 +23,7 @@ public class MethodsWindowController {
 	@FXML private TextField txPlSim;
 	@FXML private TextField txPwSim;
 	@FXML private TextField txIrisSim;
+	@FXML private Label labelIrisSimilarity;
 	//WINE
 	@FXML private TextField txAlcoholSim;
 	@FXML private TextField txMalicAcidSim;
@@ -38,6 +39,51 @@ public class MethodsWindowController {
 	@FXML private TextField txOD280Sim;
 	@FXML private TextField txProlineSim;
 	@FXML private TextField txWineSim;
+
+	//############# FILTER ################
+	//IRIS
+	@FXML private TextField txLlMinFil;
+	@FXML private TextField txLwMinFil;
+	@FXML private TextField txPlMinFil;
+	@FXML private TextField txPwMinFil;
+	@FXML private TextField txLlMaxFil;
+	@FXML private TextField txLwMaxFil;
+	@FXML private TextField txPlMaxFil;
+	@FXML private TextField txPwMaxFil;
+	@FXML private Label labelIrisMin;
+	@FXML private Label labelIrisMax;
+
+	public TextField getTxLlMinFil() {
+		return txLlMinFil;
+	}
+
+	public TextField getTxPlMinFil() {
+		return txPlMinFil;
+	}
+
+	public TextField getTxLwMinFil() {
+		return txLwMinFil;
+	}
+
+	public TextField getTxPwMinFil() {
+		return txPwMinFil;
+	}
+
+	public TextField getTxLlMaxFil() {
+		return txLlMaxFil;
+	}
+
+	public TextField getTxLwMaxFil() {
+		return txLwMaxFil;
+	}
+
+	public TextField getTxPlMaxFil() {
+		return txPlMaxFil;
+	}
+
+	public TextField getTxPwMaxFil() {
+		return txPwMaxFil;
+	}
 
 	public Label getLabelMethod() {
 		return lMethod;
@@ -109,12 +155,16 @@ public class MethodsWindowController {
 	public void setVisibility() {
 		if (lMethod.getText().contains("SIMILARITY")) {
 			setVisibilitySim(true);
+			setVisibilityFilter(false);
 		} else if (lMethod.getText().contains("FILTER")) {
 			setVisibilitySim(false);
+			setVisibilityFilter(true);
 		} else if (lMethod.getText().contains("CORRELACTION")) {
 			setVisibilitySim(false);
+			setVisibilityFilter(false);
 		} else if (lMethod.getText().contains("MIN&MAX")) {
 			setVisibilitySim(false);
+			setVisibilityFilter(false);
 		}
 	}
 
@@ -124,6 +174,7 @@ public class MethodsWindowController {
 		txPlSim.setVisible(visible);
 		txPwSim.setVisible(visible);
 		txIrisSim.setVisible(visible);
+		labelIrisSimilarity.setVisible(visible);
 		txAlcoholSim.setVisible(visible);
 		txMalicAcidSim.setVisible(visible);
 		txAshSim.setVisible(visible);
@@ -138,5 +189,18 @@ public class MethodsWindowController {
 		txOD280Sim.setVisible(visible);
 		txProlineSim.setVisible(visible);
 		txWineSim.setVisible(visible);
+	}
+
+	private void setVisibilityFilter(boolean visible) {
+		txLlMinFil.setVisible(visible);
+		txLwMinFil.setVisible(visible);
+		txPlMinFil.setVisible(visible);
+		txPwMinFil.setVisible(visible);
+		txLlMaxFil.setVisible(visible);
+		txLwMaxFil.setVisible(visible);
+		txPlMaxFil.setVisible(visible);
+		txPwMaxFil.setVisible(visible);
+		labelIrisMin.setVisible(visible);
+		labelIrisMax.setVisible(visible);
 	}
 }

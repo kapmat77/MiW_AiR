@@ -18,18 +18,25 @@ public class MetodaKNN {
 	private static final int MIN_K = 3;
 
 	public static void main(String[] args) throws Exception {
-		DataType dType = chooseType();
-		String dataPath = "src/Resources/data" + dType.name() +".txt";
-		System.out.println("1.Prosta metoda KNN z podaną wartością K");
-		System.out.println("2.Metoda KNN z walidacją krzyżową");
-		Scanner input = new Scanner(System.in);
-		int numberOfOperation = Integer.valueOf(input.nextLine());
-		System.out.println();
-		System.out.println("1.Zwykłe odległości");
-		System.out.println("2.Ważone odległości");
-		input = new Scanner(System.in);
-		int distanceImportanceType = Integer.valueOf(input.nextLine());
-		executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
+		while (true) {
+			DataType dType = chooseType();
+//			String dataPath = "Resources/data" + dType.name() +".txt";
+			String dataPath = "src/Resources/data" + dType.name() +".txt";
+			System.out.println("1.Prosta metoda KNN z podaną wartością K");
+			System.out.println("2.Metoda KNN z walidacją krzyżową");
+			System.out.println("Wprowadz dowolny inny znak aby zakonczyc");
+			Scanner input = new Scanner(System.in);
+			int numberOfOperation = Integer.valueOf(input.nextLine());
+			if (!(numberOfOperation==1 || numberOfOperation==2)) {
+				return;
+			}
+			System.out.println();
+			System.out.println("1.Zwykłe odległości");
+			System.out.println("2.Ważone odległości");
+			input = new Scanner(System.in);
+			int distanceImportanceType = Integer.valueOf(input.nextLine());
+			executeProgram(numberOfOperation, dType, dataPath, distanceImportanceType);
+		}
 	}
 
 	private static void executeProgram(Integer numberOfOperation, DataType dType,  String dataPath, int distanceImportanceType) throws FileNotFoundException {

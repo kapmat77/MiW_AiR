@@ -26,16 +26,64 @@ public class ModelAGDS {
 
 	private DataType dataType;
 	private String dataPath;
-	private double leafL = 0;
 
+	//Similarity - IRIS
+	private double leafL = 0;
 	private double leafW = 0;
 	private double petalL = 0;
 	private double petalW = 0;
 	private double similarityThreshold = 0;
 
+	//Filter - IRIS
+	private double lowestLL = 0;
+	private double highestLL = 0;
+	private double lowestLW = 0;
+	private double highestLW = 0;
+	private double lowestPL = 0;
+	private double highestPL = 0;
+	private double lowestPW = 0;
+	private double highestPW = 0;
+	private Iris.IrisType type = Iris.IrisType.SETOSA;
+
 	//TIME
 	private int graphTime = 0;
 	private int tableTime = 0;
+
+	public void setLowestLL(double lowestLL) {
+		this.lowestLL = lowestLL;
+	}
+
+	public void setHighestLL(double highestLL) {
+		this.highestLL = highestLL;
+	}
+
+	public void setLowestLW(double lowestLW) {
+		this.lowestLW = lowestLW;
+	}
+
+	public void setLowestPL(double lowestPL) {
+		this.lowestPL = lowestPL;
+	}
+
+	public void setHighestLW(double highestLW) {
+		this.highestLW = highestLW;
+	}
+
+	public void setHighestPL(double highestPL) {
+		this.highestPL = highestPL;
+	}
+
+	public void setLowestPW(double lowestPW) {
+		this.lowestPW = lowestPW;
+	}
+
+	public void setHighestPW(double highestPW) {
+		this.highestPW = highestPW;
+	}
+
+	public void setType(Iris.IrisType type) {
+		this.type = type;
+	}
 
 	public int getGraphTime() {
 		return graphTime;
@@ -399,11 +447,11 @@ public class ModelAGDS {
 		long endTime = System.nanoTime();
 		long time = endTime-startTime;
 
-		List<Node> showList = new ArrayList<>();
+//		List<Node> showList = new ArrayList<>();
 		outputIrisList.clear();
 		for (Node singleIndex: allIndexNodes) {
 			if (similarityThreshold <= singleIndex.getFactor()) {
-				showList.add(singleIndex);
+//				showList.add(singleIndex);
 				List<Node> parentsIndex = singleIndex.getParents();
 				outputIrisList.add(new Iris((double) parentsIndex.get(0).getValue(), (double) parentsIndex.get(1).getValue(),
 						(double) parentsIndex.get(2).getValue(),(double) parentsIndex.get(3).getValue(),
@@ -417,15 +465,15 @@ public class ModelAGDS {
 	}
 
 	public void findPatternsInGraphFilter() {
-		Double lowestLL = 0.0;
-		Double highestLL = 5.0;
-		Double lowestLW = 0.0;
-		Double highestLW = 5.0;
-		Double lowestPL = 0.0;
-		Double highestPL = 5.0;
-		Double lowestPW = 0.0;
-		Double highestPW = 5.0;
-		Iris.IrisType type = Iris.IrisType.SETOSA;
+//		Double lowestLL = 0.0;
+//		Double highestLL = 5.0;
+//		Double lowestLW = 0.0;
+//		Double highestLW = 5.0;
+//		Double lowestPL = 0.0;
+//		Double highestPL = 5.0;
+//		Double lowestPW = 0.0;
+//		Double highestPW = 5.0;
+//		Iris.IrisType type = Iris.IrisType.SETOSA;
 
 		//Get class node
 		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
@@ -450,19 +498,26 @@ public class ModelAGDS {
 
 		//Find fit nodes
 		List<Node> fitNodes = new ArrayList<>();
+		outputIrisList.clear();
 		for (Node singleNode: allIndexNodes) {
 			if ((double) ((Node) singleNode.getParents().get(0)).getValue() >= lowestLL && (double) ((Node) singleNode.getParents().get(0)).getValue() <= highestLL &&
 					(double) ((Node) singleNode.getParents().get(1)).getValue() >= lowestLW && (double) ((Node) singleNode.getParents().get(1)).getValue() <= highestLW &&
 					(double) ((Node) singleNode.getParents().get(2)).getValue() >= lowestPL && (double) ((Node) singleNode.getParents().get(2)).getValue() <= highestPL &&
 					(double) ((Node) singleNode.getParents().get(3)).getValue() >= lowestPW && (double) ((Node) singleNode.getParents().get(3)).getValue() <= highestPW &&
 					(type.equals(Iris.IrisType.NONE) || (((Node) singleNode.getChildren().get(0)).getValue().equals(type)))) {
-				fitNodes.add(singleNode);
+//				fitNodes.add(singleNode);
+				List<Node> parentsIndex = singleNode.getParents();
+				outputIrisList.add((new Iris((double) parentsIndex.get(0).getValue(), (double) parentsIndex.get(1).getValue(),
+						(double) parentsIndex.get(2).getValue(),(double) parentsIndex.get(3).getValue(),
+						(Iris.IrisType) ((Node) singleNode.getChildren().get(0)).getValue(), roundDouble(singleNode.getFactor(),4), (Integer) singleNode.getValue())));
 			}
 		}
+
 
 		long endTime = System.nanoTime();
 		long time = endTime-startTime;
 
+		graphTime = (int) (time/1000);
 //		showPatternsFromNodes(fitNodes, ShowType.WITH_SIMILARITY, dType);
 		System.out.println("Execution time for graph: " + time/1000 + " microseconds");
 
