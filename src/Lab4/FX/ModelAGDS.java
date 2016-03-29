@@ -387,29 +387,73 @@ public class ModelAGDS {
 			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i + 1);
 			indexNodes.add(singleIndex);
 		}
-		//TODO dalej przerobic - wine
+
 		//Create VALUE_OF_PARAM nodes
-		List<Node> valueLLNodes = new ArrayList<>();
-		List<Node> valueLWNodes = new ArrayList<>();
-		List<Node> valuePLNodes = new ArrayList<>();
-		List<Node> valuePWNodes = new ArrayList<>();
-		for (Iris singleIris : listOfIrises) {
-			Node<Double> llValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
+		List<Node> valueaAlcoholNodes = new ArrayList<>();
+		List<Node> valueMalicAcidNodes = new ArrayList<>();
+		List<Node> valueAshNodes = new ArrayList<>();
+		List<Node> valueAlcalinityOfAsheNodes = new ArrayList<>();
+		List<Node> valueMagnesiumNodes = new ArrayList<>();
+		List<Node> valueTotalPhenolsNodes = new ArrayList<>();
+		List<Node> valueFlavanoidsNodes = new ArrayList<>();
+		List<Node> valueNonflavanoidPhenolsNodes = new ArrayList<>();
+		List<Node> valueProanthocyaninsNodes = new ArrayList<>();
+		List<Node> valueColorIntensityNodes = new ArrayList<>();
+		List<Node> valueHueNodes = new ArrayList<>();
+		List<Node> valueOd280Nodes = new ArrayList<>();
+		for (Wine singleWine : listOfWines) {
+			//TODO
+			Node<Double> alcoholValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
 
-			Node<Double> lwValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleIris.getParameterByEnum(Iris.KindOfParam.LEAF_WIDTH));
+			Node<Double> malicAcidValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.LEAF_WIDTH));
 
-			Node<Double> plValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleIris.getParameterByEnum(Iris.KindOfParam.PETAL_LENGTH));
+			Node<Double> ashValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_LENGTH));
 
-			Node<Double> pwValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleIris.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+			Node<Double> alcalinityOfAsheValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
 
-			valueLLNodes.add(llValue);
-			valueLWNodes.add(lwValue);
-			valuePLNodes.add(plValue);
-			valuePWNodes.add(pwValue);
+			Node<Integer> magnesiumValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Double> totalPhenolsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Double> flavanoidsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Double> nonflavanoidPhenolsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Double> proanthocyaninsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Double> colorIntensityValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Double> hueValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Double> od280Value = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			Node<Integer> prolineValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+
+			valueaAlcoholNodes.add(alcoholValue);
+			valueMalicAcidNodes.add(malicAcidValue);
+			valueAshNodes.add(ashValue);
+			valueAlcalinityOfAsheNodes.add(alcalinityOfAsheValue);
+			valueMagnesiumNodes.add(magnesiumValue);
+			valueTotalPhenolsNodes.add(totalPhenolsValue);
+			valueFlavanoidsNodes.add(flavanoidsValue);
+			valueNonflavanoidPhenolsNodes.add(nonflavanoidPhenolsValue);
+			valueProanthocyaninsNodes.add(proanthocyaninsValue);
+			valueColorIntensityNodes.add(colorIntensityValue);
+			valueHueNodes.add(hueValue);
+			valueOd280Nodes.add(od280Value);
 		}
 
 		//Set PARAM children
