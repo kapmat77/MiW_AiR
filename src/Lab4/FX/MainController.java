@@ -101,8 +101,6 @@ public class MainController implements Initializable {
 		initializeMethodsWindow(); //TODO
 		initializeAboutWindow();
 
-		//TODO LOAD DATA
-
 		rmiGraph.setSelected(true);
 		resultIrisTable.setVisible(true);
 		resultWineTable.setVisible(false);
@@ -193,25 +191,30 @@ public class MainController implements Initializable {
 	}
 
 	public void loadDataAction(ActionEvent event) throws FileNotFoundException {
-		FileChooser filechooser = new FileChooser();
-		filechooser.setTitle("Load data");
-		filechooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-		filechooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Txt files", "*.txt"));
-		File file = filechooser.showOpenDialog(loadStage);
-
-		if (file.getAbsolutePath().contains("dataIris")) {
-			//IRIS
-			modelAGDS.setDataType(1);
-			List<Iris> listOfIrises = Iris.readDataFromFile(modelAGDS.getPath());
-			modelAGDS.setListOfIrises(listOfIrises);
-			initializeModelAGDS();
-		} else if (file.getAbsolutePath().contains("dataWine")){
-			//WINE
-			modelAGDS.setDataType(2);
-			List<Wine> listOfWines = Wine.readDataFromFile(modelAGDS.getPath());
-			modelAGDS.setListOfWines(listOfWines);
-			initializeModelAGDS();
-		}
+//		FileChooser filechooser = new FileChooser();
+//		filechooser.setTitle("Load data");
+//		filechooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+//		filechooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Txt files", "*.txt"));
+//		File file = filechooser.showOpenDialog(loadStage);
+//
+//		if (file.getAbsolutePath().contains("dataIris")) {
+//			//IRIS
+//			modelAGDS.setDataType(1);
+//			List<Iris> listOfIrises = Iris.readDataFromFile(modelAGDS.getPath());
+//			modelAGDS.setListOfIrises(listOfIrises);
+//			initializeModelAGDS();
+//		} else if (file.getAbsolutePath().contains("dataWine")){
+//			//WINE
+//			modelAGDS.setDataType(2);
+//			List<Wine> listOfWines = Wine.readDataFromFile(modelAGDS.getPath());
+//			modelAGDS.setListOfWines(listOfWines);
+//			initializeModelAGDS();
+//		}
+		//TODO tymczasowo Iris
+		modelAGDS.setDataType(1);
+		List<Iris> listOfIrises = Iris.readDataFromFile("src/Resources/dataIris.txt");
+		modelAGDS.setListOfIrises(listOfIrises);
+		initializeModelAGDS();
 	}
 
 	public void startAction(ActionEvent event) {
@@ -222,7 +225,11 @@ public class MainController implements Initializable {
 			modelAGDS.setPetalW(Double.valueOf(mwController.getTxPwSim().getText()));
 			modelAGDS.setSimilarityThreshold(Double.valueOf(mwController.getTxIrisSimilarity().getText().replaceAll(",",".")));
 			//TODO wine
-			modelAGDS.findPatternsInGraphSimilarity();
+			if (rmiGraph.isSelected()) {
+				modelAGDS.findPatternsInGraphSimilarity();
+			} else if (rmiTable.isSelected()) {
+				modelAGDS.findPatternsInTableSimilarity();
+			}
 		} else if (mwController.getLabelMethod().getText().contains("FILTER")) {
 			modelAGDS.setLowestLL(Double.valueOf(mwController.getTxLlMinFil().getText()));
 			modelAGDS.setHighestLL(Double.valueOf(mwController.getTxLlMaxFil().getText()));

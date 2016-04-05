@@ -142,7 +142,7 @@ public class ModelAGDS {
 				buildTable(listOfIrises);
 				break;
 			case WINE:
-				buildWineGraphAGDS();
+//				buildWineGraphAGDS();
 				buildTable(listOfWines);
 				break;
 		}
@@ -355,265 +355,265 @@ public class ModelAGDS {
 		setAdditionalParam(NodesBox.getKindOfParamNodes());
 	}
 
-	private void buildWineGraphAGDS() {
-		deleteRedundantNodes(listOfWines);
-
-		//Create CLASS_OF_OBJECT node
-		Node<String> classNode = new Node<>(Node.Level.CLASS_OF_OBJECT, Node.Level.CLASS_OF_OBJECT.name());
-
-		//Create KIND_OF_PARAM nodes
-		Node<String> alcohol = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ALCOHOL.name());
-		Node<String> malicAcid = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.MALIC_ACID.name());
-		Node<String> ash = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ASH.name());
-		Node<String> alcalinityOfAshe = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ALCALINITY_OF_ASHE.name());
-		Node<String> magnesium = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.MAGNESIUM.name());
-		Node<String> totalPhenols = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.TOTAL_PHENOLS.name());
-		Node<String> flavanoids = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.FLAVANOIDS.name());
-		Node<String> nonflavanoidPhenols = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.NONFLAVANOID_PHENOLS.name());
-		Node<String> proanthocyanins = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.PROANTHOCYANINS.name());
-		Node<String> colorIntensity = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.COLOR_INTENSITY.name());
-		Node<String> hue = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.HUE.name());
-		Node<String> od280od315OfDilutedWines = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.OD280OD315_OF_DILUTED_WINES.name());
-		Node<String> proline = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.PROFLINE.name());
-
-		//Create TYPE_OF_OBJECT nodes
-		Node<Integer> firstType = new Node<>(Node.Level.TYPE_OF_OBJECT, 1);
-		Node<Integer> secondType = new Node<>(Node.Level.TYPE_OF_OBJECT, 2);
-		Node<Integer> thirdType = new Node<>(Node.Level.TYPE_OF_OBJECT, 3);
-
-		//Create INDEX nodes
-		List<Node> indexNodes = new ArrayList<>();
-		for (int i = 0; i < listOfIrises.size(); i++) {
-			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i + 1);
-			indexNodes.add(singleIndex);
-		}
-
-		//Create VALUE_OF_PARAM nodes
-		List<Node> valueaAlcoholNodes = new ArrayList<>();
-		List<Node> valueMalicAcidNodes = new ArrayList<>();
-		List<Node> valueAshNodes = new ArrayList<>();
-		List<Node> valueAlcalinityOfAsheNodes = new ArrayList<>();
-		List<Node> valueMagnesiumNodes = new ArrayList<>();
-		List<Node> valueTotalPhenolsNodes = new ArrayList<>();
-		List<Node> valueFlavanoidsNodes = new ArrayList<>();
-		List<Node> valueNonflavanoidPhenolsNodes = new ArrayList<>();
-		List<Node> valueProanthocyaninsNodes = new ArrayList<>();
-		List<Node> valueColorIntensityNodes = new ArrayList<>();
-		List<Node> valueHueNodes = new ArrayList<>();
-		List<Node> valueOd280Nodes = new ArrayList<>();
-		for (Wine singleWine : listOfWines) {
-			//TODO
-			Node<Double> alcoholValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
-
-			Node<Double> malicAcidValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.LEAF_WIDTH));
-
-			Node<Double> ashValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_LENGTH));
-
-			Node<Double> alcalinityOfAsheValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Integer> magnesiumValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Double> totalPhenolsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Double> flavanoidsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Double> nonflavanoidPhenolsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Double> proanthocyaninsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Double> colorIntensityValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Double> hueValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Double> od280Value = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			Node<Integer> prolineValue = new Node<>(Node.Level.VALUE_OF_PARAM,
-					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
-
-			valueaAlcoholNodes.add(alcoholValue);
-			valueMalicAcidNodes.add(malicAcidValue);
-			valueAshNodes.add(ashValue);
-			valueAlcalinityOfAsheNodes.add(alcalinityOfAsheValue);
-			valueMagnesiumNodes.add(magnesiumValue);
-			valueTotalPhenolsNodes.add(totalPhenolsValue);
-			valueFlavanoidsNodes.add(flavanoidsValue);
-			valueNonflavanoidPhenolsNodes.add(nonflavanoidPhenolsValue);
-			valueProanthocyaninsNodes.add(proanthocyaninsValue);
-			valueColorIntensityNodes.add(colorIntensityValue);
-			valueHueNodes.add(hueValue);
-			valueOd280Nodes.add(od280Value);
-		}
-
-		//Set PARAM children
-		List<Node> childrenParam = new ArrayList<>();
-		childrenParam.add(lLength);
-		childrenParam.add(lWidth);
-		childrenParam.add(pLength);
-		childrenParam.add(pWidth);
-		childrenParam.add(classNode);
-		NodesBox.getParamNode().setChildren(childrenParam);
-
-		//Set CLASS_OF_OBJECT parent
-		List<Node> parentClass = new ArrayList<>();
-		parentClass.add(NodesBox.getParamNode());
-		classNode.setParents(parentClass);
-
-		//Set CLASS_OF_OBJECT children
-		List<Node> childrenClass = new ArrayList<>();
-		childrenClass.add(irisSetosa);
-		childrenClass.add(irisVersicolor);
-		childrenClass.add(irisVirginica);
-		classNode.setChildren(childrenClass);
-
-		//Set KIND_OF_PARAM parent
-		List<Node> kindParent = new ArrayList<>();
-		kindParent.add(NodesBox.getParamNode());
-		lLength.setParents(kindParent);
-		lWidth.setParents(kindParent);
-		pLength.setParents(kindParent);
-		pWidth.setParents(kindParent);
-
-		//Set KIND_OF_PARAM children
-		lLength.setChildren(valueLLNodes);
-		lWidth.setChildren(valueLWNodes);
-		pLength.setChildren(valuePLNodes);
-		pWidth.setChildren(valuePWNodes);
-
-		//Set TYPE_OF_OBJECT parents
-		List<Node> parentsType = new ArrayList<>();
-		parentsType.add(classNode);
-		irisSetosa.setParents(parentsType);
-		irisVersicolor.setParents(parentsType);
-		irisVirginica.setParents(parentsType);
-
-		//Set TYPE_OF_OBJECT children
-		int l = 0;
-		List<Node> childrenSetosaType = new ArrayList<>();
-		List<Node> childrenVersicolorType = new ArrayList<>();
-		List<Node> childrenVirginicaType = new ArrayList<>();
-		for (Iris singleIris : listOfIrises) {
-			switch (singleIris.getObjectType()) {
-				case "SETOSA":
-					childrenSetosaType.add(indexNodes.get(l));
-					break;
-				case "VERSICOLOR":
-					childrenVersicolorType.add(indexNodes.get(l));
-					break;
-				case "VIRGINICA":
-					childrenVirginicaType.add(indexNodes.get(l));
-					break;
-			}
-			l++;
-		}
-		irisSetosa.setChildren(childrenSetosaType);
-		irisVersicolor.setChildren(childrenVersicolorType);
-		irisVirginica.setChildren(childrenVirginicaType);
-
-		//Set VALUE_OF_PARAM children
-		int i = 0;
-		for (Node singleValueNode : valueLLNodes) {
-			List<Node> indexList = new ArrayList<>();
-			indexList.add(indexNodes.get(i));
-			singleValueNode.setChildren(indexList);
-			i++;
-		}
-		i = 0;
-		for (Node singleValueNode : valueLWNodes) {
-			List<Node> indexList = new ArrayList<>();
-			indexList.add(indexNodes.get(i));
-			singleValueNode.setChildren(indexList);
-			i++;
-		}
-		i = 0;
-		for (Node singleValueNode : valuePLNodes) {
-			List<Node> indexList = new ArrayList<>();
-			indexList.add(indexNodes.get(i));
-			singleValueNode.setChildren(indexList);
-			i++;
-		}
-		i = 0;
-		for (Node singleValueNode : valuePWNodes) {
-			List<Node> indexList = new ArrayList<>();
-			indexList.add(indexNodes.get(i));
-			singleValueNode.setChildren(indexList);
-			i++;
-		}
-
-		//Set VALUE_OF_PARAM parents
-		for (Node singleValueNode : valueLLNodes) {
-			List<Node> parentsValue = new ArrayList<>();
-			parentsValue.add(lLength);
-			singleValueNode.setParents(parentsValue);
-		}
-		for (Node singleValueNode : valueLWNodes) {
-			List<Node> parentsValue = new ArrayList<>();
-			parentsValue.add(lWidth);
-			singleValueNode.setParents(parentsValue);
-		}
-		for (Node singleValueNode : valuePLNodes) {
-			List<Node> parentsValue = new ArrayList<>();
-			parentsValue.add(pLength);
-			singleValueNode.setParents(parentsValue);
-		}
-		for (Node singleValueNode : valuePWNodes) {
-			List<Node> parentsValue = new ArrayList<>();
-			parentsValue.add(pWidth);
-			singleValueNode.setParents(parentsValue);
-		}
-
-		//Set INDEX parents
-		int j = 0;
-		for (Node singleIndexNode : indexNodes) {
-			List<Node> parentsIndex = new ArrayList<>();
-			parentsIndex.add(valueLLNodes.get(j));
-			parentsIndex.add(valueLWNodes.get(j));
-			parentsIndex.add(valuePLNodes.get(j));
-			parentsIndex.add(valuePWNodes.get(j));
-			singleIndexNode.setParents(parentsIndex);
-			j++;
-		}
-
-		//Set INDEX children
-		int k = 0;
-		for (Node singleIndexNode : indexNodes) {
-			Iris singleIris = listOfIrises.get(k);
-			List<Node> childrenIndex = new ArrayList<>();
-			switch (singleIris.getObjectType()) {
-				case "SETOSA":
-					childrenIndex.add(irisSetosa);
-					break;
-				case "VERSICOLOR":
-					childrenIndex.add(irisVersicolor);
-					break;
-				case "VIRGINICA":
-					childrenIndex.add(irisVirginica);
-					break;
-			}
-			singleIndexNode.setChildren(childrenIndex);
-			k++;
-		}
-
-		//Sort date
-		Collections.sort(valueLLNodes);
-		Collections.sort(valueLWNodes);
-		Collections.sort(valuePLNodes);
-		Collections.sort(valuePWNodes);
-
-		//Set MIN, MAX, RANGE
-		setAdditionalParam(NodesBox.getKindOfParamNodes());
-	}
+//	private void buildWineGraphAGDS() {
+//		deleteRedundantNodes(listOfWines);
+//
+//		//Create CLASS_OF_OBJECT node
+//		Node<String> classNode = new Node<>(Node.Level.CLASS_OF_OBJECT, Node.Level.CLASS_OF_OBJECT.name());
+//
+//		//Create KIND_OF_PARAM nodes
+//		Node<String> alcohol = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ALCOHOL.name());
+//		Node<String> malicAcid = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.MALIC_ACID.name());
+//		Node<String> ash = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ASH.name());
+//		Node<String> alcalinityOfAshe = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.ALCALINITY_OF_ASHE.name());
+//		Node<String> magnesium = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.MAGNESIUM.name());
+//		Node<String> totalPhenols = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.TOTAL_PHENOLS.name());
+//		Node<String> flavanoids = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.FLAVANOIDS.name());
+//		Node<String> nonflavanoidPhenols = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.NONFLAVANOID_PHENOLS.name());
+//		Node<String> proanthocyanins = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.PROANTHOCYANINS.name());
+//		Node<String> colorIntensity = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.COLOR_INTENSITY.name());
+//		Node<String> hue = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.HUE.name());
+//		Node<String> od280od315OfDilutedWines = new Node<>(Node.Level.KIND_OF_PARAM,Wine.KindOfParam.OD280OD315_OF_DILUTED_WINES.name());
+//		Node<String> proline = new Node<>(Node.Level.KIND_OF_PARAM, Wine.KindOfParam.PROFLINE.name());
+//
+//		//Create TYPE_OF_OBJECT nodes
+//		Node<Integer> firstType = new Node<>(Node.Level.TYPE_OF_OBJECT, 1);
+//		Node<Integer> secondType = new Node<>(Node.Level.TYPE_OF_OBJECT, 2);
+//		Node<Integer> thirdType = new Node<>(Node.Level.TYPE_OF_OBJECT, 3);
+//
+//		//Create INDEX nodes
+//		List<Node> indexNodes = new ArrayList<>();
+//		for (int i = 0; i < listOfIrises.size(); i++) {
+//			Node<Integer> singleIndex = new Node<>(Node.Level.INDEX, i + 1);
+//			indexNodes.add(singleIndex);
+//		}
+//
+//		//Create VALUE_OF_PARAM nodes
+//		List<Node> valueaAlcoholNodes = new ArrayList<>();
+//		List<Node> valueMalicAcidNodes = new ArrayList<>();
+//		List<Node> valueAshNodes = new ArrayList<>();
+//		List<Node> valueAlcalinityOfAsheNodes = new ArrayList<>();
+//		List<Node> valueMagnesiumNodes = new ArrayList<>();
+//		List<Node> valueTotalPhenolsNodes = new ArrayList<>();
+//		List<Node> valueFlavanoidsNodes = new ArrayList<>();
+//		List<Node> valueNonflavanoidPhenolsNodes = new ArrayList<>();
+//		List<Node> valueProanthocyaninsNodes = new ArrayList<>();
+//		List<Node> valueColorIntensityNodes = new ArrayList<>();
+//		List<Node> valueHueNodes = new ArrayList<>();
+//		List<Node> valueOd280Nodes = new ArrayList<>();
+//		for (Wine singleWine : listOfWines) {
+//			//TODO
+//			Node<Double> alcoholValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.LEAF_LENGTH));
+//
+//			Node<Double> malicAcidValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.LEAF_WIDTH));
+//
+//			Node<Double> ashValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_LENGTH));
+//
+//			Node<Double> alcalinityOfAsheValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Integer> magnesiumValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Double> totalPhenolsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Double> flavanoidsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Double> nonflavanoidPhenolsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Double> proanthocyaninsValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Double> colorIntensityValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Double> hueValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Double> od280Value = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			Node<Integer> prolineValue = new Node<>(Node.Level.VALUE_OF_PARAM,
+//					singleWine.getParameterByEnum(Iris.KindOfParam.PETAL_WIDTH));
+//
+//			valueaAlcoholNodes.add(alcoholValue);
+//			valueMalicAcidNodes.add(malicAcidValue);
+//			valueAshNodes.add(ashValue);
+//			valueAlcalinityOfAsheNodes.add(alcalinityOfAsheValue);
+//			valueMagnesiumNodes.add(magnesiumValue);
+//			valueTotalPhenolsNodes.add(totalPhenolsValue);
+//			valueFlavanoidsNodes.add(flavanoidsValue);
+//			valueNonflavanoidPhenolsNodes.add(nonflavanoidPhenolsValue);
+//			valueProanthocyaninsNodes.add(proanthocyaninsValue);
+//			valueColorIntensityNodes.add(colorIntensityValue);
+//			valueHueNodes.add(hueValue);
+//			valueOd280Nodes.add(od280Value);
+//		}
+//
+//		//Set PARAM children
+//		List<Node> childrenParam = new ArrayList<>();
+//		childrenParam.add(lLength);
+//		childrenParam.add(lWidth);
+//		childrenParam.add(pLength);
+//		childrenParam.add(pWidth);
+//		childrenParam.add(classNode);
+//		NodesBox.getParamNode().setChildren(childrenParam);
+//
+//		//Set CLASS_OF_OBJECT parent
+//		List<Node> parentClass = new ArrayList<>();
+//		parentClass.add(NodesBox.getParamNode());
+//		classNode.setParents(parentClass);
+//
+//		//Set CLASS_OF_OBJECT children
+//		List<Node> childrenClass = new ArrayList<>();
+//		childrenClass.add(irisSetosa);
+//		childrenClass.add(irisVersicolor);
+//		childrenClass.add(irisVirginica);
+//		classNode.setChildren(childrenClass);
+//
+//		//Set KIND_OF_PARAM parent
+//		List<Node> kindParent = new ArrayList<>();
+//		kindParent.add(NodesBox.getParamNode());
+//		lLength.setParents(kindParent);
+//		lWidth.setParents(kindParent);
+//		pLength.setParents(kindParent);
+//		pWidth.setParents(kindParent);
+//
+//		//Set KIND_OF_PARAM children
+//		lLength.setChildren(valueLLNodes);
+//		lWidth.setChildren(valueLWNodes);
+//		pLength.setChildren(valuePLNodes);
+//		pWidth.setChildren(valuePWNodes);
+//
+//		//Set TYPE_OF_OBJECT parents
+//		List<Node> parentsType = new ArrayList<>();
+//		parentsType.add(classNode);
+//		irisSetosa.setParents(parentsType);
+//		irisVersicolor.setParents(parentsType);
+//		irisVirginica.setParents(parentsType);
+//
+//		//Set TYPE_OF_OBJECT children
+//		int l = 0;
+//		List<Node> childrenSetosaType = new ArrayList<>();
+//		List<Node> childrenVersicolorType = new ArrayList<>();
+//		List<Node> childrenVirginicaType = new ArrayList<>();
+//		for (Iris singleIris : listOfIrises) {
+//			switch (singleIris.getObjectType()) {
+//				case "SETOSA":
+//					childrenSetosaType.add(indexNodes.get(l));
+//					break;
+//				case "VERSICOLOR":
+//					childrenVersicolorType.add(indexNodes.get(l));
+//					break;
+//				case "VIRGINICA":
+//					childrenVirginicaType.add(indexNodes.get(l));
+//					break;
+//			}
+//			l++;
+//		}
+//		irisSetosa.setChildren(childrenSetosaType);
+//		irisVersicolor.setChildren(childrenVersicolorType);
+//		irisVirginica.setChildren(childrenVirginicaType);
+//
+//		//Set VALUE_OF_PARAM children
+//		int i = 0;
+//		for (Node singleValueNode : valueLLNodes) {
+//			List<Node> indexList = new ArrayList<>();
+//			indexList.add(indexNodes.get(i));
+//			singleValueNode.setChildren(indexList);
+//			i++;
+//		}
+//		i = 0;
+//		for (Node singleValueNode : valueLWNodes) {
+//			List<Node> indexList = new ArrayList<>();
+//			indexList.add(indexNodes.get(i));
+//			singleValueNode.setChildren(indexList);
+//			i++;
+//		}
+//		i = 0;
+//		for (Node singleValueNode : valuePLNodes) {
+//			List<Node> indexList = new ArrayList<>();
+//			indexList.add(indexNodes.get(i));
+//			singleValueNode.setChildren(indexList);
+//			i++;
+//		}
+//		i = 0;
+//		for (Node singleValueNode : valuePWNodes) {
+//			List<Node> indexList = new ArrayList<>();
+//			indexList.add(indexNodes.get(i));
+//			singleValueNode.setChildren(indexList);
+//			i++;
+//		}
+//
+//		//Set VALUE_OF_PARAM parents
+//		for (Node singleValueNode : valueLLNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(lLength);
+//			singleValueNode.setParents(parentsValue);
+//		}
+//		for (Node singleValueNode : valueLWNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(lWidth);
+//			singleValueNode.setParents(parentsValue);
+//		}
+//		for (Node singleValueNode : valuePLNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(pLength);
+//			singleValueNode.setParents(parentsValue);
+//		}
+//		for (Node singleValueNode : valuePWNodes) {
+//			List<Node> parentsValue = new ArrayList<>();
+//			parentsValue.add(pWidth);
+//			singleValueNode.setParents(parentsValue);
+//		}
+//
+//		//Set INDEX parents
+//		int j = 0;
+//		for (Node singleIndexNode : indexNodes) {
+//			List<Node> parentsIndex = new ArrayList<>();
+//			parentsIndex.add(valueLLNodes.get(j));
+//			parentsIndex.add(valueLWNodes.get(j));
+//			parentsIndex.add(valuePLNodes.get(j));
+//			parentsIndex.add(valuePWNodes.get(j));
+//			singleIndexNode.setParents(parentsIndex);
+//			j++;
+//		}
+//
+//		//Set INDEX children
+//		int k = 0;
+//		for (Node singleIndexNode : indexNodes) {
+//			Iris singleIris = listOfIrises.get(k);
+//			List<Node> childrenIndex = new ArrayList<>();
+//			switch (singleIris.getObjectType()) {
+//				case "SETOSA":
+//					childrenIndex.add(irisSetosa);
+//					break;
+//				case "VERSICOLOR":
+//					childrenIndex.add(irisVersicolor);
+//					break;
+//				case "VIRGINICA":
+//					childrenIndex.add(irisVirginica);
+//					break;
+//			}
+//			singleIndexNode.setChildren(childrenIndex);
+//			k++;
+//		}
+//
+//		//Sort date
+//		Collections.sort(valueLLNodes);
+//		Collections.sort(valueLWNodes);
+//		Collections.sort(valuePLNodes);
+//		Collections.sort(valuePWNodes);
+//
+//		//Set MIN, MAX, RANGE
+//		setAdditionalParam(NodesBox.getKindOfParamNodes());
+//	}
 
 	private void setAdditionalParam(List<Node> nodes) {
 		for (Node singleNode: nodes) {
@@ -634,47 +634,46 @@ public class ModelAGDS {
 
 	private <T extends InputData> void buildTable(List<T> listOfObjects) {
 		int numOfCol = listOfObjects.get(0).numberOfParameters() + 2 + 1;
-		Object[][] objTable = new Object[listOfObjects.size() + 1][numOfCol];
+		objectsTable = new Object[listOfObjects.size() + 1][numOfCol];
 
 		int j = 0;
 		for (T obj : listOfObjects) {
 			if (j == 0 && obj instanceof Iris) {
-				objTable[j][0] = "PARAM";
-				objTable[j][1] = "LEAF_LENGTH";
-				objTable[j][2] = "LEAF_WIDTH";
-				objTable[j][3] = "PETAL_LENGTH";
-				objTable[j][4] = "PETAL_WIDTH";
-				objTable[j][5] = "CLASS";
-				objTable[j][6] = "SIMILARITY";
+				objectsTable[j][0] = "PARAM";
+				objectsTable[j][1] = "LEAF_LENGTH";
+				objectsTable[j][2] = "LEAF_WIDTH";
+				objectsTable[j][3] = "PETAL_LENGTH";
+				objectsTable[j][4] = "PETAL_WIDTH";
+				objectsTable[j][5] = "CLASS";
+				objectsTable[j][6] = "SIMILARITY";
 				j++;
 			} else if (j == 0 && obj instanceof Wine) {
-				objTable[j][0] = "PARAM";
-				objTable[j][1] = "ALCOHOL";
-				objTable[j][2] = "MALIC_ACID";
-				objTable[j][3] = "ASH";
-				objTable[j][4] = "ALCALINITY_OF_ASHE";
-				objTable[j][5] = "MAGNESIUM";
-				objTable[j][6] = "TOTAL_PHENOLS";
-				objTable[j][7] = "FLAVANOIDS";
-				objTable[j][8] = "NONFLAVANOID_PHENOLS";
-				objTable[j][9] = "PROANTHOCYANINS";
-				objTable[j][10] = "COLOR_INTENSITY";
-				objTable[j][11] = "HUE";
-				objTable[j][12] = "OD280OD315_OF_DILUTED_WINES";
-				objTable[j][13] = "PROFLINE";
-				objTable[j][14] = "CLASS";
-				objTable[j][15] = "SIMILARITY";
+				objectsTable[j][0] = "PARAM";
+				objectsTable[j][1] = "ALCOHOL";
+				objectsTable[j][2] = "MALIC_ACID";
+				objectsTable[j][3] = "ASH";
+				objectsTable[j][4] = "ALCALINITY_OF_ASHE";
+				objectsTable[j][5] = "MAGNESIUM";
+				objectsTable[j][6] = "TOTAL_PHENOLS";
+				objectsTable[j][7] = "FLAVANOIDS";
+				objectsTable[j][8] = "NONFLAVANOID_PHENOLS";
+				objectsTable[j][9] = "PROANTHOCYANINS";
+				objectsTable[j][10] = "COLOR_INTENSITY";
+				objectsTable[j][11] = "HUE";
+				objectsTable[j][12] = "OD280OD315_OF_DILUTED_WINES";
+				objectsTable[j][13] = "PROFLINE";
+				objectsTable[j][14] = "CLASS";
+				objectsTable[j][15] = "SIMILARITY";
 				j++;
 			}
-			objTable[j][0] = j;
+			objectsTable[j][0] = j;
 			for (int i = 1; i < numOfCol - 1; i++) {
-				objTable[j][i] = obj.getParameterById(i);
+				objectsTable[j][i] = obj.getParameterById(i);
 			}
-			objTable[j][numOfCol - 2] = obj.getObjectType();
-			objTable[j][numOfCol - 1] = 0.0;
+			objectsTable[j][numOfCol - 2] = obj.getObjectType();
+			objectsTable[j][numOfCol - 1] = 0.0;
 			j++;
 		}
-		objectsTable = objTable;
 	}
 
 	public void findPatternsInGraphSimilarity() {
@@ -862,11 +861,81 @@ public class ModelAGDS {
 	}
 
 	public void findPatternsInTableSimilarity() {
+//		List<Integer> fitIndexList = new ArrayList<>();
 
+		long startTime = System.nanoTime();
+
+		double llRange = roundDouble(getMaxFromTable(objectsTable,1) - getMinFromTable(objectsTable,1), 2);
+		double lwRange = roundDouble(getMaxFromTable(objectsTable,2) - getMinFromTable(objectsTable,2), 2);
+		double plRange = roundDouble(getMaxFromTable(objectsTable,3) - getMinFromTable(objectsTable,3), 2);
+		double pwRange = roundDouble(getMaxFromTable(objectsTable,4) - getMinFromTable(objectsTable,4), 2);
+
+		double similarity;
+
+		double llFactor = 1.0 - (0.1/llRange);
+		double lwFactor = 1.0 - (0.1/lwRange);
+		double plFactor = 1.0 - (0.1/plRange);
+		double pwFactor = 1.0 - (0.1/pwRange);
+
+		outputIrisList.clear();
+
+		for (int i = 1; i<objectsTable.length; i++) {
+			similarity = Math.pow(llFactor,(Math.abs(leafL - (double) objectsTable[i][1])*10));
+			similarity += Math.pow(lwFactor,(Math.abs(leafW - (double) objectsTable[i][2])*10));
+			similarity += Math.pow(plFactor,(Math.abs(petalL - (double) objectsTable[i][3])*10));
+			similarity += Math.pow(pwFactor,(Math.abs(petalW - (double) objectsTable[i][4])*10));
+			objectsTable[i][6] = roundDouble(similarity/4, 4);
+			if (similarity/4 >= similarityThreshold) {
+//				fitIndexList.add(i);
+//				outputIrisList.add(listOfIrises.get(i-1));
+				outputIrisList.add((new Iris((double) objectsTable[i][1], (double) objectsTable[i][2], (double) objectsTable[i][3],
+						(double)objectsTable[i][4], Iris.getTypeFromString((String)objectsTable[i][5]), (double)objectsTable[i][6], i)));
+			}
+		}
+
+		long endTime = System.nanoTime();
+		long time = endTime-startTime;
+		tableTime = (int) time/1000 + (int) time/10000;
+//		showPatternsFromTable(fitIndexList, objectsTable, ShowType.WITH_SIMILARITY);
+		System.out.println("Execution time for table: " + time/1000 + " microseconds");
+
+//		return fitIndexList;
 	}
 
 	public void findPatternsInTableWithFilter() {
 
+	}
+
+	private static double getMinFromTable(Object[][] objectsTable, int col) {
+		double min = 0.0;
+		boolean first = true;
+		for (int i = 1; i<objectsTable.length; i++) {
+			if (first) {
+				min = (double) objectsTable[i][col];
+				first = false;
+			} else {
+				if ((double) objectsTable[i][col] < min) {
+					min = (double) objectsTable[i][col];
+				}
+			}
+		}
+		return min;
+	}
+
+	private static double getMaxFromTable(Object[][] objectsTable, int col) {
+		double max = 0.0;
+		boolean first = true;
+		for (int i = 1; i<objectsTable.length; i++) {
+			if (first) {
+				max = (double) objectsTable[i][col];
+				first = false;
+			} else {
+				if ((double) objectsTable[i][col] > max) {
+					max = (double) objectsTable[i][col];
+				}
+			}
+		}
+		return max;
 	}
 
 	private <T extends InputData> void deleteRedundantNodes(List<T> listOfIris) {
@@ -929,7 +998,6 @@ public class ModelAGDS {
 		this.dataPath = "src/Resources/data" + dataType.name() + ".txt";
 	}
 
-	//TODO tymczasowe wczytywanie
 	public String getPath() {
 		return dataPath;
 	}

@@ -34,11 +34,24 @@ public class Iris implements InputData {
 		this.index = index;
 	}
 
-
-
 	public enum IrisType {
 		SETOSA, VERSICOLOR, VIRGINICA, NONE;
 	}
+
+	public static IrisType getTypeFromString(String t) {
+		switch (t.toUpperCase()) {
+			case "SETOSA":
+				return IrisType.SETOSA;
+			case "VERSICOLOR":
+				return IrisType.VERSICOLOR;
+			case "VIRGINICA":
+				return IrisType.VIRGINICA;
+			default:
+				return IrisType.NONE;
+		}
+	}
+
+
 //	public enum KindOfParam {
 
 //		LEAF_LENGTH, LEAF_WIDTH, PETAL_LENGTH, PETAL_WIDTH

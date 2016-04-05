@@ -4,6 +4,10 @@
 
 package Interf;
 
+import DataClass.Iris;
+
+import java.util.Date;
+
 public interface  InputData<T> {
 
 	double getParameterById(int id);
