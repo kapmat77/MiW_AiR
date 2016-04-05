@@ -83,6 +83,8 @@ public class MainController implements Initializable {
 	@FXML
 	private Stage loadStage = new Stage();
 
+	private boolean dataReady = false;
+
 	//Similarity variables - Iris
 	private double leafL, leafW, petalL, petalW, similarityThreshold;
 
@@ -98,6 +100,7 @@ public class MainController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		miStart.setDisable(true);
 		initializeMethodsWindow(); //TODO
 		initializeAboutWindow();
 
@@ -187,7 +190,7 @@ public class MainController implements Initializable {
 			mwController.setVisibility();
 		}
 		mStage.show();
-
+		checkAndSetIfReady();
 	}
 
 	public void loadDataAction(ActionEvent event) throws FileNotFoundException {
@@ -210,6 +213,8 @@ public class MainController implements Initializable {
 //			modelAGDS.setListOfWines(listOfWines);
 //			initializeModelAGDS();
 //		}
+		dataReady = true;
+		checkAndSetIfReady();
 		//TODO tymczasowo Iris
 		modelAGDS.setDataType(1);
 		List<Iris> listOfIrises = Iris.readDataFromFile("src/Resources/dataIris.txt");
@@ -217,7 +222,17 @@ public class MainController implements Initializable {
 		initializeModelAGDS();
 	}
 
+	private void checkAndSetIfReady() {
+		if ((rmiSimilarity.isSelected() || rmiCorrelation.isSelected() || rmiFilter.isSelected() || rmiMinMax.isSelected())
+				&& dataReady) {
+			miStart.setDisable(false);
+		}
+	}
+
 	public void startAction(ActionEvent event) {
+		//Clear table
+		resultIrisTable.setItems(FXCollections.observableArrayList());
+
 		if (mwController.getLabelMethod().getText().contains("SIMILARITY")) {
 			modelAGDS.setLeafL(Double.valueOf(mwController.getTxLlSim().getText()));
 			modelAGDS.setLeafW(Double.valueOf(mwController.getTxLwSim().getText()));
@@ -240,7 +255,11 @@ public class MainController implements Initializable {
 			modelAGDS.setLowestPW(Double.valueOf(mwController.getTxPwMinFil().getText()));
 			modelAGDS.setHighestPW(Double.valueOf(mwController.getTxPwMaxFil().getText()));
 			//TODO wine
-			modelAGDS.findPatternsInGraphFilter();
+			if (rmiGraph.isSelected()) {
+				modelAGDS.findPatternsInGraphFilter();
+			} else if (rmiTable.isSelected()) {
+				modelAGDS.findPatternsInTableFilter();
+			}
 		} else if (mwController.getLabelMethod().getText().contains("CORRELACTION")) {
 
 		} else if (mwController.getLabelMethod().getText().contains("MIN&MAX")) {
@@ -266,7 +285,6 @@ public class MainController implements Initializable {
 				resultIrisTable.setVisible(false);
 				resultWineTable.setVisible(true);
 				break;
-
 		}
 	}
 

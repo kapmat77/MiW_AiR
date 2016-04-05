@@ -802,15 +802,6 @@ public class ModelAGDS {
 	}
 
 	public void findPatternsInGraphFilter() {
-//		Double lowestLL = 0.0;
-//		Double highestLL = 5.0;
-//		Double lowestLW = 0.0;
-//		Double highestLW = 5.0;
-//		Double lowestPL = 0.0;
-//		Double highestPL = 5.0;
-//		Double lowestPW = 0.0;
-//		Double highestPW = 5.0;
-//		Iris.IrisType type = Iris.IrisType.SETOSA;
 
 		//Get class node
 		List<Node> childrenParam = NodesBox.getParamNode().getChildren();
@@ -902,7 +893,7 @@ public class ModelAGDS {
 //		return fitIndexList;
 	}
 
-	public void findPatternsInTableWithFilter() {
+	public void findPatternsInTableFilter() {
 
 	}
 
