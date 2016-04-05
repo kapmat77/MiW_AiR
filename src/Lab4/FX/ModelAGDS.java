@@ -852,7 +852,6 @@ public class ModelAGDS {
 	}
 
 	public void findPatternsInTableSimilarity() {
-//		List<Integer> fitIndexList = new ArrayList<>();
 
 		long startTime = System.nanoTime();
 
@@ -877,8 +876,6 @@ public class ModelAGDS {
 			similarity += Math.pow(pwFactor,(Math.abs(petalW - (double) objectsTable[i][4])*10));
 			objectsTable[i][6] = roundDouble(similarity/4, 4);
 			if (similarity/4 >= similarityThreshold) {
-//				fitIndexList.add(i);
-//				outputIrisList.add(listOfIrises.get(i-1));
 				outputIrisList.add((new Iris((double) objectsTable[i][1], (double) objectsTable[i][2], (double) objectsTable[i][3],
 						(double)objectsTable[i][4], Iris.getTypeFromString((String)objectsTable[i][5]), (double)objectsTable[i][6], i)));
 			}
@@ -887,14 +884,46 @@ public class ModelAGDS {
 		long endTime = System.nanoTime();
 		long time = endTime-startTime;
 		tableTime = (int) time/1000 + (int) time/10000;
-//		showPatternsFromTable(fitIndexList, objectsTable, ShowType.WITH_SIMILARITY);
 		System.out.println("Execution time for table: " + time/1000 + " microseconds");
-
-//		return fitIndexList;
 	}
 
 	public void findPatternsInTableFilter() {
 
+		long startTime = System.nanoTime();
+
+		outputIrisList.clear();
+
+		int counter = 0;
+		for (int i = 1; i < objectsTable.length; i++) {
+			if (lowestLL <= (Double) objectsTable[i][1] && highestLL >= (Double) objectsTable[i][1]) {
+				counter++;
+			}
+			if (lowestLW <= (Double) objectsTable[i][2] && highestLW >= (Double) objectsTable[i][2]) {
+				counter++;
+			}
+			if (lowestPL <= (Double) objectsTable[i][3] && highestPL >= (Double) objectsTable[i][3]) {
+				counter++;
+			}
+			if (lowestPW <= (Double) objectsTable[i][4] && highestPW >= (Double) objectsTable[i][4]) {
+				counter++;
+			}
+			if (type.equals(Iris.IrisType.NONE)) {
+				counter++;
+			} else if (type.toString().equals(objectsTable[i][5])){
+				counter++;
+			}
+
+			if (counter == 5) {
+				outputIrisList.add((new Iris((double) objectsTable[i][1], (double) objectsTable[i][2], (double) objectsTable[i][3],
+						(double)objectsTable[i][4], Iris.getTypeFromString((String)objectsTable[i][5]), (double)objectsTable[i][6], i)));
+			}
+			counter = 0;
+		}
+
+		long endTime = System.nanoTime();
+		long time = endTime-startTime;
+		tableTime = (int) time/1000 + (int) time/10000;
+		System.out.println("Execution time for table: " + (endTime-startTime)/1000 + " microseconds");
 	}
 
 	private static double getMinFromTable(Object[][] objectsTable, int col) {

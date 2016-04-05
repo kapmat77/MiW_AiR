@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="methodsWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.MethodsWindowController">
+<AnchorPane fx:id="methodsWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.MethodsWindowController">
    <children>
       <Label fx:id="lMethod" layoutX="20.0" layoutY="40.0" text="Method">
          <font>
@@ -15,7 +15,7 @@
 
       <TabPane prefHeight="275.0" prefWidth="398.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-          <Tab text="Iris" fx:id="tabIris">
+          <Tab fx:id="tabIris" text="Iris">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -41,15 +41,19 @@
                          <TextField fx:id="txLwMaxFil" layoutX="385.0" layoutY="152.0" prefHeight="25.0" prefWidth="55.0" text="5" />
                          <TextField fx:id="txPlMaxFil" layoutX="385.0" layoutY="192.0" prefHeight="25.0" prefWidth="55.0" text="5" />
                          <TextField fx:id="txPwMaxFil" layoutX="385.0" layoutY="232.0" prefHeight="25.0" prefWidth="55.0" text="5" />
+                        <Slider fx:id="sliderIrisMM" layoutX="96.0" layoutY="309.0" prefHeight="37.0" prefWidth="439.0" />
+                        <ChoiceBox fx:id="cbIrisMM" layoutX="295.0" layoutY="205.0" prefWidth="150.0" />
+                        <RadioButton fx:id="rbIrisMin" layoutX="128.0" layoutY="181.0" mnemonicParsing="false" text="RadioButton" />
+                        <RadioButton fx:id="rbIrisMax" layoutX="128.0" layoutY="236.0" mnemonicParsing="false" text="RadioButton" />
                      </children>
               </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Wine" fx:id="tabWine">
+          <Tab fx:id="tabWine" text="Wine">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="okWineButton" onAction="#okButtonAction" layoutX="50.0" layoutY="450.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="80.0" text="OK" />
+                        <Button fx:id="okWineButton" layoutX="50.0" layoutY="450.0" mnemonicParsing="false" onAction="#okButtonAction" prefHeight="20.0" prefWidth="80.0" text="OK" />
                         <!--<Button fx:id="cancelButton" layoutX="465.0" layoutY="450.0" mnemonicParsing="false" onAction="#cancelButtonAction" prefHeight="20.0" prefWidth="80.0" text="Cancel" />-->
                         <Label contentDisplay="CENTER" layoutX="50.0" layoutY="80.0" text="Alcohol" />
                         <Label contentDisplay="CENTER" layoutX="50.0" layoutY="120.0" text="Malic acid" />
@@ -65,20 +69,20 @@
                         <Label contentDisplay="CENTER" layoutX="300.0" layoutY="240.0" text="OD280/OD315" />
                         <Label contentDisplay="CENTER" layoutX="300.0" layoutY="320.0" text="Similarity" />
                         <Label contentDisplay="CENTER" layoutX="300.0" layoutY="280.0" text="Proline" />
-                        <TextField fx:id="txAlcoholSim" layoutX="144.0" layoutY="76.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txMalicAcidSim" layoutX="144.0" layoutY="116.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txAshSim" layoutX="144.0" layoutY="156.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txAlcalinityOfAsheSim" layoutX="144.0" layoutY="196.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txMagnesiumSim" layoutX="144.0" layoutY="236.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txTotalPhenolsSim" layoutX="144.0" layoutY="277.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txFlavanoidsSim" layoutX="144.0" layoutY="316.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txNonFlavanoidsSim" layoutX="426.0" layoutY="76.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txProanthocyanisSim" layoutX="426.0" layoutY="116.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txColorIntSim" layoutX="426.0" layoutY="156.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txHueSim" layoutX="426.0" layoutY="196.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txOD280Sim" layoutX="426.0" layoutY="236.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txProlineSim" layoutX="426.0" layoutY="277.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
-                        <TextField fx:id="txWineSim" layoutX="426.0" layoutY="316.0" prefHeight="25.0" prefWidth="55.0" text="2"/>
+                        <TextField fx:id="txAlcoholSim" layoutX="144.0" layoutY="76.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txMalicAcidSim" layoutX="144.0" layoutY="116.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txAshSim" layoutX="144.0" layoutY="156.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txAlcalinityOfAsheSim" layoutX="144.0" layoutY="196.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txMagnesiumSim" layoutX="144.0" layoutY="236.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txTotalPhenolsSim" layoutX="144.0" layoutY="277.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txFlavanoidsSim" layoutX="144.0" layoutY="316.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txNonFlavanoidsSim" layoutX="426.0" layoutY="76.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txProanthocyanisSim" layoutX="426.0" layoutY="116.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txColorIntSim" layoutX="426.0" layoutY="156.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txHueSim" layoutX="426.0" layoutY="196.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txOD280Sim" layoutX="426.0" layoutY="236.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txProlineSim" layoutX="426.0" layoutY="277.0" prefHeight="25.0" prefWidth="55.0" text="2" />
+                        <TextField fx:id="txWineSim" layoutX="426.0" layoutY="316.0" prefHeight="25.0" prefWidth="55.0" text="0.8" />
                      </children></AnchorPane>
             </content>
           </Tab>

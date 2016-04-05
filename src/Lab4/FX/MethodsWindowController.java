@@ -56,6 +56,12 @@ public class MethodsWindowController {
 	@FXML private Label labelIrisMin;
 	@FXML private Label labelIrisMax;
 
+	//############# MIN & MAX ################
+	@FXML private Slider sliderIrisMM;
+	@FXML private ChoiceBox cbIrisMM;
+	@FXML private RadioButton rbIrisMin;
+	@FXML private RadioButton rbIrisMax;
+
 	public TextField getTxLlMinFil() {
 		return txLlMinFil;
 	}
@@ -155,15 +161,19 @@ public class MethodsWindowController {
 		if (lMethod.getText().contains("SIMILARITY")) {
 			setVisibilitySim(true);
 			setVisibilityFilter(false);
+			setVisibilityMinMax(false);
 		} else if (lMethod.getText().contains("FILTER")) {
 			setVisibilitySim(false);
 			setVisibilityFilter(true);
+			setVisibilityMinMax(false);
 		} else if (lMethod.getText().contains("CORRELACTION")) {
 			setVisibilitySim(false);
 			setVisibilityFilter(false);
+			setVisibilityMinMax(false);
 		} else if (lMethod.getText().contains("MIN&MAX")) {
 			setVisibilitySim(false);
 			setVisibilityFilter(false);
+			setVisibilityMinMax(true);
 		}
 	}
 
@@ -201,5 +211,12 @@ public class MethodsWindowController {
 		txPwMaxFil.setVisible(visible);
 		labelIrisMin.setVisible(visible);
 		labelIrisMax.setVisible(visible);
+	}
+
+	private void setVisibilityMinMax(boolean visible) {
+		sliderIrisMM.setVisible(visible);
+		cbIrisMM.setVisible(visible);
+		rbIrisMax.setVisible(visible);
+		rbIrisMin.setVisible(visible);
 	}
 }

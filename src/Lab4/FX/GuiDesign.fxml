@@ -47,7 +47,7 @@
                         </Menu>
                     </menus>
                   </MenuBar>
-                  <Circle centerX="1110.0" centerY="15.0" fill="#1fff2c" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                  <Circle fx:id="circle" centerX="1190.0" centerY="14.0" fill="#ff3c38" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

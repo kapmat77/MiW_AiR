@@ -19,6 +19,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -32,6 +34,7 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
 
 	//#################### MENU ####################
+	@FXML private Circle circle;
 	//Main menu
 	@FXML private Menu menuMain;
 	@FXML private MenuItem miStart;
@@ -226,6 +229,7 @@ public class MainController implements Initializable {
 		if ((rmiSimilarity.isSelected() || rmiCorrelation.isSelected() || rmiFilter.isSelected() || rmiMinMax.isSelected())
 				&& dataReady) {
 			miStart.setDisable(false);
+			circle.setFill(Paint.valueOf("#95ff17"));
 		}
 	}
 
@@ -234,10 +238,10 @@ public class MainController implements Initializable {
 		resultIrisTable.setItems(FXCollections.observableArrayList());
 
 		if (mwController.getLabelMethod().getText().contains("SIMILARITY")) {
-			modelAGDS.setLeafL(Double.valueOf(mwController.getTxLlSim().getText()));
-			modelAGDS.setLeafW(Double.valueOf(mwController.getTxLwSim().getText()));
-			modelAGDS.setPetalL(Double.valueOf(mwController.getTxPlSim().getText()));
-			modelAGDS.setPetalW(Double.valueOf(mwController.getTxPwSim().getText()));
+			modelAGDS.setLeafL(Double.valueOf(mwController.getTxLlSim().getText().replaceAll(",",".")));
+			modelAGDS.setLeafW(Double.valueOf(mwController.getTxLwSim().getText().replaceAll(",",".")));
+			modelAGDS.setPetalL(Double.valueOf(mwController.getTxPlSim().getText().replaceAll(",",".")));
+			modelAGDS.setPetalW(Double.valueOf(mwController.getTxPwSim().getText().replaceAll(",",".")));
 			modelAGDS.setSimilarityThreshold(Double.valueOf(mwController.getTxIrisSimilarity().getText().replaceAll(",",".")));
 			//TODO wine
 			if (rmiGraph.isSelected()) {
@@ -246,14 +250,14 @@ public class MainController implements Initializable {
 				modelAGDS.findPatternsInTableSimilarity();
 			}
 		} else if (mwController.getLabelMethod().getText().contains("FILTER")) {
-			modelAGDS.setLowestLL(Double.valueOf(mwController.getTxLlMinFil().getText()));
-			modelAGDS.setHighestLL(Double.valueOf(mwController.getTxLlMaxFil().getText()));
-			modelAGDS.setLowestLW(Double.valueOf(mwController.getTxLwMinFil().getText()));
-			modelAGDS.setHighestLW(Double.valueOf(mwController.getTxLwMaxFil().getText()));
-			modelAGDS.setLowestPL(Double.valueOf(mwController.getTxPlMinFil().getText()));
-			modelAGDS.setHighestPL(Double.valueOf(mwController.getTxPlMaxFil().getText()));
-			modelAGDS.setLowestPW(Double.valueOf(mwController.getTxPwMinFil().getText()));
-			modelAGDS.setHighestPW(Double.valueOf(mwController.getTxPwMaxFil().getText()));
+			modelAGDS.setLowestLL(Double.valueOf(mwController.getTxLlMinFil().getText().replaceAll(",",".")));
+			modelAGDS.setHighestLL(Double.valueOf(mwController.getTxLlMaxFil().getText().replaceAll(",",".")));
+			modelAGDS.setLowestLW(Double.valueOf(mwController.getTxLwMinFil().getText().replaceAll(",",".")));
+			modelAGDS.setHighestLW(Double.valueOf(mwController.getTxLwMaxFil().getText().replaceAll(",",".")));
+			modelAGDS.setLowestPL(Double.valueOf(mwController.getTxPlMinFil().getText().replaceAll(",",".")));
+			modelAGDS.setHighestPL(Double.valueOf(mwController.getTxPlMaxFil().getText().replaceAll(",",".")));
+			modelAGDS.setLowestPW(Double.valueOf(mwController.getTxPwMinFil().getText().replaceAll(",",".")));
+			modelAGDS.setHighestPW(Double.valueOf(mwController.getTxPwMaxFil().getText().replaceAll(",",".")));
 			//TODO wine
 			if (rmiGraph.isSelected()) {
 				modelAGDS.findPatternsInGraphFilter();
