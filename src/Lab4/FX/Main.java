@@ -14,7 +14,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-//        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("Lab4/FX/GuiDesign.fxml"));
         primaryStage.setTitle("Metody inżynierii wiedzy - Associative Graph Data Structure vs Table");
         primaryStage.setScene(new Scene(root, 1200, 550));

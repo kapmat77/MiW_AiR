@@ -837,7 +837,7 @@ public class ModelAGDS {
 				List<Node> parentsIndex = singleNode.getParents();
 				outputIrisList.add((new Iris((double) parentsIndex.get(0).getValue(), (double) parentsIndex.get(1).getValue(),
 						(double) parentsIndex.get(2).getValue(),(double) parentsIndex.get(3).getValue(),
-						(Iris.IrisType) ((Node) singleNode.getChildren().get(0)).getValue(), roundDouble(singleNode.getFactor(),4), (Integer) singleNode.getValue())));
+						(Iris.IrisType) ((Node) singleNode.getChildren().get(0)).getValue(), 0, (Integer) singleNode.getValue())));
 			}
 		}
 
@@ -915,7 +915,7 @@ public class ModelAGDS {
 
 			if (counter == 5) {
 				outputIrisList.add((new Iris((double) objectsTable[i][1], (double) objectsTable[i][2], (double) objectsTable[i][3],
-						(double)objectsTable[i][4], Iris.getTypeFromString((String)objectsTable[i][5]), (double)objectsTable[i][6], i)));
+						(double)objectsTable[i][4], Iris.getTypeFromString((String)objectsTable[i][5]), 0, i)));
 			}
 			counter = 0;
 		}
@@ -1021,8 +1021,6 @@ public class ModelAGDS {
 	public String getPath() {
 		return dataPath;
 	}
-
-
 
 	private enum DataType {
 		IRIS, WINE
