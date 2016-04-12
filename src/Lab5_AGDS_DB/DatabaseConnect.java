@@ -12,10 +12,12 @@ public class DatabaseConnect {
 	private static final String USR = "kapmat";
 	private static final String PASSWORD = "kapmatphp";
 	private static final Map<String, Map<String, ColumnType>> tableMap =  new HashMap<>();
+	private static final List<String> PRIMARY_KEYS = new ArrayList<>();
+	private static final List<String> FOREIGN_KEYS = new ArrayList<>();
+	private static final List<Key> KEYS = new ArrayList<>();
 
-	private static final String TABLE = "Studenci";
 
-	public static void main(String[] args) {
+	public DatabaseConnect() {
 		Connection connection = null;
 		Statement stmt = null;
 
@@ -36,90 +38,134 @@ public class DatabaseConnect {
 
 			ResultSet resultTable = databaseMetaData.getTables(dbName, schemaPattern, tableName, types);
 
+			ResultSet resultSchema = databaseMetaData.getSchemas();
+
 			String columnNamePattern = null;
 			ColumnType columnType = null;
-
-
-
-
 
 			//Root list
 			List<Node> rootList = new ArrayList<>();
 
-			//Create AGDS from DB
 			while(resultTable.next()) {
 				tableName = resultTable.getString(3);
-
-				DatabaseMetaData metaData = connection.getMetaData();
-				ResultSet foreignKeys = metaData.getImportedKeys(connection.getCatalog(), null, tableName);
-				while (foreignKeys.next()) {
-					String fkTableName = foreignKeys.getString("FKTABLE_NAME");
-					String fkColumnName = foreignKeys.getString("FKCOLUMN_NAME");
-					String pkTableName = foreignKeys.getString("PKTABLE_NAME");
-					String pkColumnName = foreignKeys.getString("PKCOLUMN_NAME");
-					System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
-				}
-
-				//Get primary/foreign(exported) key
-				String   catalog   = null;
-				String   schema    = null;
-
-				ResultSet result = databaseMetaData.getPrimaryKeys(
-						catalog, schema, tableName);
-
-				while(result.next()){
-					String columnName = result.getString(4);
-//					System.out.println(columnName);
-				}
-
-				ResultSet resultColumn = databaseMetaData.getColumns(dbName, schemaPattern, tableName, columnNamePattern);
-				Map<String, ColumnType> columnNames = new HashMap<>();
-				while (resultColumn.next()) {
-					switch (resultColumn.getInt(5)) {
-						case -1:
-							columnType = ColumnType.STRING;
-							break;
-						case -7:
-							columnType = ColumnType.BIT;
-							break;
-						case 4:
-							columnType = ColumnType.INTEGER;
-							break;
-						case 6:
-							columnType = ColumnType.FLOAT;
-							break;
-						case 8:
-							columnType = ColumnType.DOUBLE;
-							break;
-						default:
-							columnType = ColumnType.STRING;
-							break;
-					}
-					columnNames.put(resultColumn.getString(4), columnType);
-				}
-				tableMap.put(tableName, columnNames);
+				readPrimaryKeys(databaseMetaData, tableName);
 			}
 
+			tableName = null;
+			resultTable = databaseMetaData.getTables(dbName, schemaPattern, tableName, types);
 
+			//Create root list
+			while(resultTable.next()) {
+				tableName = resultTable.getString(3);
+				setConnectionsBetweenKeys(databaseMetaData, tableName, connection.getCatalog());
 
-//			System.out.println("Creating statement...");
-//			stmt = conn.createStatement();
-//			String sql = "SELECT * FROM " + TABLE;
-//			ResultSet rs = stmt.executeQuery(sql);
-//			ResultSetMetaData rsmd = rs.getMetaData();
-//			System.out.println("Ilość kolumn: " + rsmd.getColumnCount());
+				ResultSet resultColumn = databaseMetaData.getColumns(dbName, schemaPattern, tableName, columnNamePattern);
+				while (resultColumn.next()) {
+					boolean isPrimary = false;
+					for (Key key : KEYS) {
+						if (key.getColumnName().equals(resultColumn.getString(4)) && key.isPrimary()) {
+							isPrimary = true;
+						}
+					}
+					if (!isPrimary) {
+						Node columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
+						rootList.add(columnName);
+					}
+				}
+			}
+
+			tableName = null;
+			resultTable = databaseMetaData.getTables(dbName, schemaPattern, tableName, types);
+
+			while(resultTable.next()) {
+				tableName = resultTable.getString(3);
+				System.out.println("Creating statement...");
+				stmt = connection.createStatement();
+				String sql = "SELECT * FROM " + tableName;
+				ResultSet rs = stmt.executeQuery(sql);
+				ResultSetMetaData rsmd = rs.getMetaData();
+				System.out.println("Ilość kolumn: " + rsmd.getColumnCount() + " w tabeli " + tableName);
+				System.out.println("Label kolumn: " + rsmd.getColumnLabel(1) + " w tabeli " );
+
+				while (rs.next()) {
+					//TODO Sprawdzenie czy 1 kolumna to primaty key
+					String indexName = tableName + rs.getString(1);
+					Node nodeIndex = new Node(Node.Level.INDEX, indexName);
+
+					for (int i=2; i<rsmd.getColumnCount()+1; i++) {
+						List<Node> indexParents = new ArrayList<>();
+						List<Node> childrenColumn = new ArrayList<>();
+						List<Node> parentValue = new ArrayList<>();
+						List<Node> valuesChildren = new ArrayList<>();
+						for (Node node: rootList) {
+							if (node.getValue().equals(rsmd.getColumnLabel(i))) {
+								String newValue = rs.getString(rsmd.getColumnLabel(i));
+								Node newNode = new Node(Node.Level.VALUE, newValue);
+
+								//Check if node-column children contain new value
+
+								if (!(node.getChildren() == null)) {
+									for (Node children: (List<Node>) node.getChildren()){
+										if (((Node) children).getValue().equals(newValue)) {
+											newNode = children;
+											break;
+										}
+									}
+								}
+								//Set column children
+								childrenColumn.add(newNode);
+								node.setOrExtendChildren(childrenColumn);
+
+								//Set values parents
+								parentValue.add(node);
+								newNode.setOrExtendParents(parentValue);
+
+								//Set index parents
+								indexParents.add(newNode);
+								nodeIndex.setOrExtendParents(indexParents);
+
+								//Set values children
+								valuesChildren.add(nodeIndex);
+								newNode.setOrExtendChildren(valuesChildren);
+
+							}
+						}
+					}
+				}
+
+				//Extract data from result set
+//				while(rs.next()){
+//					//Retrieve by column name
+//					int id  = rs.getInt("ID");
+//					String address = rs.getString("IP_ADDRESS");
 //
-//			//Extract data from result set
-//			while(rs.next()){
-//				//Retrieve by column name
-//				int id  = rs.getInt("ID");
-//				String address = rs.getString("IP_ADDRESS");
+//					//Display values
+//					System.out.print("ID: " + id + "\n");
+//					System.out.print("IP_ADDRESS: " + address + "\n\n");
 //
-//				//Display values
-//				System.out.print("ID: " + id + "\n");
-//				System.out.print("IP_ADDRESS: " + address + "\n\n");
-//
-//			}
+//				}
+			}
+
+//					switch (resultColumn.getInt(5)) {
+//						case -1:
+//							columnType = ColumnType.STRING;
+//							break;
+//						case -7:
+//							columnType = ColumnType.BIT;
+//							break;
+//						case 4:
+//							columnType = ColumnType.INTEGER;
+//							break;
+//						case 6:
+//							columnType = ColumnType.FLOAT;
+//							break;
+//						case 8:
+//							columnType = ColumnType.DOUBLE;
+//							break;
+//						default:
+//							columnType = ColumnType.STRING;
+//							break;
+//					}
 //
 //			//Clean-up environment
 //			rs.close();
@@ -128,6 +174,59 @@ public class DatabaseConnect {
 
 		} catch (ClassNotFoundException|SQLException ex) {
 			ex.printStackTrace();
+		}
+	}
+
+	private void readPrimaryKeys(DatabaseMetaData databaseMetaData, String tableName) throws SQLException {
+		String catalog = null;
+		String schema = null;
+
+		ResultSet resultPrKeys = databaseMetaData.getPrimaryKeys(catalog, schema, tableName);
+
+		while(resultPrKeys.next()){
+			KEYS.add(new Key(tableName, resultPrKeys.getString(4), Key.KeyType.PRIMARY, KEYS.size()));
+		}
+	}
+
+//	private void readForeignKeys(DatabaseMetaData databaseMetaData, String tableName) throws SQLException {
+//		String catalog = null;
+//		String schema = null;
+//		ResultSet resultForKeys = databaseMetaData.getExportedKeys(catalog, schema, tableName);
+//
+//		while(resultForKeys.next()){
+//			System.out.println(resultForKeys.getString(4));
+//			KEYS.add(new Key(tableName, resultForKeys.getString(4), Key.KeyType.FOREIGN, KEYS.size()));
+//		}
+//	}
+
+	private void setConnectionsBetweenKeys(DatabaseMetaData databaseMetaData, String tableName, String catalog) throws SQLException {
+		ResultSet connectedKeys = databaseMetaData.getImportedKeys(catalog, null, tableName);
+		while (connectedKeys.next()) {
+			String fkTableName = connectedKeys.getString("FKTABLE_NAME");
+			String fkColumnName = connectedKeys.getString("FKCOLUMN_NAME");
+			String pkTableName = connectedKeys.getString("PKTABLE_NAME");
+			String pkColumnName = connectedKeys.getString("PKCOLUMN_NAME");
+
+			Key primaryKey = null;
+			for(Key key: KEYS) {
+				if (key.getTableName().equals(pkTableName) && key.getColumnName().equals(pkColumnName)) {
+					primaryKey = key;
+				}
+			}
+
+			boolean exist = false;
+			for(Key key: KEYS) {
+				if (key.getTableName().equals(fkTableName) && key.getColumnName().equals(fkColumnName)) {
+					exist = true;
+				}
+			}
+
+			if(!exist) {
+				KEYS.add(new Key(fkTableName, fkColumnName, Key.KeyType.FOREIGN, KEYS.size(), primaryKey));
+				primaryKey.setConnectWith(KEYS.get(KEYS.size()-1));
+			}
+
+			System.out.println(fkTableName + "." + fkColumnName + " -> " + pkTableName + "." + pkColumnName);
 		}
 	}
 

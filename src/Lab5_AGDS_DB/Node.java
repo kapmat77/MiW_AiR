@@ -12,8 +12,8 @@ public class Node<T> implements Comparable<T>{
 	private Level level;
 	private T value;
 
-	private List<Node> children;
-	private List<Node> parents;
+	private List<Node> children = null;
+	private List<Node> parents = null;
 
 	//Only for KIND_OF_PARAM nodes
 	private double minValue = 0.0;
@@ -55,6 +55,48 @@ public class Node<T> implements Comparable<T>{
 
 	public void setParents(List<Node> parents) {
 		this.parents = parents;
+	}
+
+	public void setOrExtendChildren(List<Node> chil) {
+		if (this.children == null) {
+			setChildren(chil);
+		} else {
+			int sizeChil = chil.size();
+			int sizeChildren = children.size();
+			boolean extend = true;
+			for (int i=0; i<sizeChil; i++) {
+				extend = true;
+				for (int j=0; j<sizeChildren; j++) {
+					if (children.get(j).getValue().equals(chil.get(i).getValue())) {
+						extend = false;
+					}
+				}
+				if (extend) {
+					this.children.add(chil.get(i));
+				}
+			}
+		}
+	}
+
+	public void setOrExtendParents(List<Node> par) {
+		if (this.parents == null) {
+			setParents(par);
+		} else {
+			int sizePar = par.size();
+			int sizeParents = parents.size();
+			boolean extend = true;
+			for (int i=0; i<sizePar; i++) {
+				extend = true;
+				for (int j=0; j<sizeParents; j++) {
+					if (parents.get(j).getValue().equals(par.get(i).getValue())) {
+						extend = false;
+					}
+				}
+				if (extend) {
+					this.parents.add(par.get(i));
+				}
+			}
+		}
 	}
 
 	public double getMinValue() {
