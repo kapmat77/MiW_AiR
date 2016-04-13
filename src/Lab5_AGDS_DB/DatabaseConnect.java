@@ -46,6 +46,7 @@ public class DatabaseConnect {
 
 			//Root list
 			List<Node> rootList = new ArrayList<>();
+			List<Node> fKeyList = new ArrayList<>();
 
 			while(resultTable.next()) {
 				tableName = resultTable.getString(3);
@@ -61,15 +62,20 @@ public class DatabaseConnect {
 				setConnectionsBetweenKeys(databaseMetaData, tableName, connection.getCatalog());
 
 				ResultSet resultColumn = databaseMetaData.getColumns(dbName, schemaPattern, tableName, columnNamePattern);
+				Node columnName;
 				while (resultColumn.next()) {
 					boolean isPrimary = false;
 					for (Key key : KEYS) {
-						if (key.getColumnName().equals(resultColumn.getString(4)) && key.isPrimary()) {
+						if (key.getColumnName().equals(resultColumn.getString(4)) && key.getTableName().equals(resultTable.getString(3))) {
 							isPrimary = true;
+							columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
+							if (key.getKeyType().equals(Key.KeyType.FOREIGN)) {
+								fKeyList.add(columnName);
+							}
 						}
 					}
 					if (!isPrimary) {
-						Node columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
+						columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
 						rootList.add(columnName);
 					}
 				}
@@ -97,13 +103,13 @@ public class DatabaseConnect {
 						List<Node> childrenColumn = new ArrayList<>();
 						List<Node> parentValue = new ArrayList<>();
 						List<Node> valuesChildren = new ArrayList<>();
+						List<Node> indexChildren = new ArrayList<>();
 						for (Node node : rootList) {
 							if (node.getValue().equals(rsmd.getColumnLabel(i))) {
 								String newValue = rs.getString(rsmd.getColumnLabel(i));
 								Node newNode = new Node(Node.Level.VALUE, newValue);
 
 								//Check if node-column children contain new value
-
 								if (!(node.getChildren() == null)) {
 									for (Node children : (List<Node>) node.getChildren()) {
 										if (((Node) children).getValue().equals(newValue)) {
@@ -127,40 +133,35 @@ public class DatabaseConnect {
 								//Set values children
 								valuesChildren.add(nodeIndex);
 								newNode.setOrExtendChildren(valuesChildren);
+
+								//Set index children
+
+							}
+						}
+						boolean endLoop = false;
+						for (Node node: fKeyList) {
+							if (node.getValue().equals(rsmd.getColumnLabel(i))) {
+								String newValue = rs.getString(rsmd.getColumnLabel(i));
+								for (Key key: KEYS) {
+									if (key.getTableName().equals(tableName) && key.getColumnName().equals(rsmd.getColumnLabel(i)) && !endLoop) {
+//										Node newNode = new Node(Node.Level.VALUE, key.getConnectWith().getTableName()+newValue);
+										for (Node indexNode: INDEXES) {
+											if (indexNode.getValue().equals(key.getConnectWith().getTableName()+newValue)) {
+												indexParents.add(indexNode);
+												nodeIndex.setOrExtendParents(indexParents);
+												indexChildren.add(nodeIndex);
+												indexNode.setOrExtendChildren(indexChildren);
+												endLoop = true;
+												break;
+											}
+										}
+									}
+								}
 							}
 						}
 					}
 				}
 			}
-
-			tableName = null;
-			resultTable = databaseMetaData.getTables(dbName, schemaPattern, tableName, types);
-
-
-			//łączenie poszczególnych grafów w jeden AGDS za pomocą kluczy
-			while(resultTable.next()) {
-				tableName = resultTable.getString(3);
-				stmt = connection.createStatement();
-				String sql = "SELECT * FROM " + tableName;
-				ResultSet rs = stmt.executeQuery(sql);
-				ResultSetMetaData rsmd = rs.getMetaData();
-				while (rs.next()) {
-					for (Key key: KEYS) {
-						if (!key.isPrimary()) {
-							System.out.println("FK: " + key.getColumnName() + " in " +key.getTableName());
-//							if (key.getColumnName().equals(rsmd.getColumnLabel()))
-							for(Node index: INDEXES) {
-//						for (int i = 0; i< ; i++) {
-
-//						}
-							}
-						}
-					}
-				}
-			}
-
-
-
 //			//Clean-up environment
 //			rs.close();
 //			stmt.close();

@@ -72,6 +72,10 @@ public class Key {
 	}
 
 	public boolean isPrimary() {
+//		if (tableN.equals(this.tableName)) {
+//			return this.type.equals(KeyType.PRIMARY);
+//		}
+//		return false;
 		return this.type.equals(KeyType.PRIMARY);
 	}
 }
