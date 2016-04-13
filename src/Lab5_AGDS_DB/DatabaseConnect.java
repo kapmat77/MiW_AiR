@@ -15,6 +15,7 @@ public class DatabaseConnect {
 	private static final List<String> PRIMARY_KEYS = new ArrayList<>();
 	private static final List<String> FOREIGN_KEYS = new ArrayList<>();
 	private static final List<Key> KEYS = new ArrayList<>();
+	private static final List<Node> INDEXES = new ArrayList<>();
 
 
 	public DatabaseConnect() {
@@ -77,27 +78,26 @@ public class DatabaseConnect {
 			tableName = null;
 			resultTable = databaseMetaData.getTables(dbName, schemaPattern, tableName, types);
 
+			//Create AGDS without connection between data from different tables
 			while(resultTable.next()) {
 				tableName = resultTable.getString(3);
-				System.out.println("Creating statement...");
 				stmt = connection.createStatement();
 				String sql = "SELECT * FROM " + tableName;
 				ResultSet rs = stmt.executeQuery(sql);
 				ResultSetMetaData rsmd = rs.getMetaData();
-				System.out.println("Ilość kolumn: " + rsmd.getColumnCount() + " w tabeli " + tableName);
-				System.out.println("Label kolumn: " + rsmd.getColumnLabel(1) + " w tabeli " );
 
 				while (rs.next()) {
 					//TODO Sprawdzenie czy 1 kolumna to primaty key
 					String indexName = tableName + rs.getString(1);
 					Node nodeIndex = new Node(Node.Level.INDEX, indexName);
+					INDEXES.add(nodeIndex);
 
-					for (int i=2; i<rsmd.getColumnCount()+1; i++) {
+					for (int i = 2; i < rsmd.getColumnCount() + 1; i++) {
 						List<Node> indexParents = new ArrayList<>();
 						List<Node> childrenColumn = new ArrayList<>();
 						List<Node> parentValue = new ArrayList<>();
 						List<Node> valuesChildren = new ArrayList<>();
-						for (Node node: rootList) {
+						for (Node node : rootList) {
 							if (node.getValue().equals(rsmd.getColumnLabel(i))) {
 								String newValue = rs.getString(rsmd.getColumnLabel(i));
 								Node newNode = new Node(Node.Level.VALUE, newValue);
@@ -105,7 +105,7 @@ public class DatabaseConnect {
 								//Check if node-column children contain new value
 
 								if (!(node.getChildren() == null)) {
-									for (Node children: (List<Node>) node.getChildren()){
+									for (Node children : (List<Node>) node.getChildren()) {
 										if (((Node) children).getValue().equals(newValue)) {
 											newNode = children;
 											break;
@@ -127,46 +127,40 @@ public class DatabaseConnect {
 								//Set values children
 								valuesChildren.add(nodeIndex);
 								newNode.setOrExtendChildren(valuesChildren);
-
 							}
 						}
 					}
 				}
-
-				//Extract data from result set
-//				while(rs.next()){
-//					//Retrieve by column name
-//					int id  = rs.getInt("ID");
-//					String address = rs.getString("IP_ADDRESS");
-//
-//					//Display values
-//					System.out.print("ID: " + id + "\n");
-//					System.out.print("IP_ADDRESS: " + address + "\n\n");
-//
-//				}
 			}
 
-//					switch (resultColumn.getInt(5)) {
-//						case -1:
-//							columnType = ColumnType.STRING;
-//							break;
-//						case -7:
-//							columnType = ColumnType.BIT;
-//							break;
-//						case 4:
-//							columnType = ColumnType.INTEGER;
-//							break;
-//						case 6:
-//							columnType = ColumnType.FLOAT;
-//							break;
-//						case 8:
-//							columnType = ColumnType.DOUBLE;
-//							break;
-//						default:
-//							columnType = ColumnType.STRING;
-//							break;
-//					}
-//
+			tableName = null;
+			resultTable = databaseMetaData.getTables(dbName, schemaPattern, tableName, types);
+
+
+			//łączenie poszczególnych grafów w jeden AGDS za pomocą kluczy
+			while(resultTable.next()) {
+				tableName = resultTable.getString(3);
+				stmt = connection.createStatement();
+				String sql = "SELECT * FROM " + tableName;
+				ResultSet rs = stmt.executeQuery(sql);
+				ResultSetMetaData rsmd = rs.getMetaData();
+				while (rs.next()) {
+					for (Key key: KEYS) {
+						if (!key.isPrimary()) {
+							System.out.println("FK: " + key.getColumnName() + " in " +key.getTableName());
+//							if (key.getColumnName().equals(rsmd.getColumnLabel()))
+							for(Node index: INDEXES) {
+//						for (int i = 0; i< ; i++) {
+
+//						}
+							}
+						}
+					}
+				}
+			}
+
+
+
 //			//Clean-up environment
 //			rs.close();
 //			stmt.close();
