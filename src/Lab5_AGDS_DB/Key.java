@@ -70,12 +70,4 @@ public class Key {
 	public void setIndex(int index) {
 		this.index = index;
 	}
-
-	public boolean isPrimary() {
-//		if (tableN.equals(this.tableName)) {
-//			return this.type.equals(KeyType.PRIMARY);
-//		}
-//		return false;
-		return this.type.equals(KeyType.PRIMARY);
-	}
 }
