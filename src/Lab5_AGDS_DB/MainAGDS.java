@@ -15,9 +15,11 @@ public class MainAGDS {
 		DatabaseConnect dbConnect = new DatabaseConnect();
 		List<Node> root = dbConnect.rootList;
 
-		findStudentsByParam(root);
+		findStudentsByParamGraph(root);
 		addStudentToGraph(root);
-		addStudentToDataBase();
+		deleteStudentFromGraph(root);
+		addStudentToDatabase();
+		deleteStudentFromDatabase();
 	}
 
 	private static void addStudentToGraph(List<Node> root) {
@@ -54,12 +56,8 @@ public class MainAGDS {
 		List<Node> kierunekChild = new ArrayList<>();
 		kierunekChild.add(studentNode);
 
-//		studentNode.setOrExtendParents(studentParents);
-//		addressNode.setOrExtendChildren(addressChild);
-//		kierunekNode.setOrExtendChildren(kierunekChild);
-
 		/**
-			Add missing value nodes
+		 Add missing value nodes
 		 */
 		for (Node attribute: root) {
 			List<Node> attributeChildren = attribute.getChildren();
@@ -71,17 +69,10 @@ public class MainAGDS {
 						List<Node> parenList = new ArrayList<>();
 						parenList.add(attNode);
 						addressNode.setOrExtendParents(parenList);
-//						List<Node> childrenList = new ArrayList<>();
-//						childrenList.add(addressNode);
-//						attNode.setOrExtendChildren(childrenList);
 					} else if (attribute.getValue().equals("Nazwa kierunku")) {
 						List<Node> parenList = new ArrayList<>();
 						parenList.add(attNode);
 						kierunekNode.setOrExtendParents(parenList);
-//						List<Node> childrenList = new ArrayList<>();
-//						childrenList.add(kierunekNode);
-//						List<Node> attChildren = attNode.getChildren();
-//						attNode.setOrExtendChildren(childrenList);
 					} else {
 						List<Node> parenList = new ArrayList<>();
 						parenList.add(attNode);
@@ -104,16 +95,10 @@ public class MainAGDS {
 					List<Node> parenList = new ArrayList<>();
 					parenList.add(newNode);
 					addressNode.setOrExtendParents(parenList);
-//					List<Node> childrenList = new ArrayList<>();
-//					childrenList.add(addressNode);
-//					newNode.setOrExtendChildren(childrenList);
 				} else if (attribute.getValue().equals("Nazwa kierunku")) {
 					List<Node> parenList = new ArrayList<>();
 					parenList.add(newNode);
 					kierunekNode.setOrExtendParents(parenList);
-//					List<Node> childrenList = new ArrayList<>();
-//					childrenList.add(kierunekNode);
-//					newNode.setOrExtendChildren(childrenList);
 				} else {
 					List<Node> parenList = new ArrayList<>();
 					parenList.add(newNode);
@@ -125,7 +110,7 @@ public class MainAGDS {
 			}
 		}
 		/**
-		    Check if new address-index-node exist
+		 Check if new address-index-node exist
 		 */
 		List<Node> addressList = new ArrayList<>();
 		addressList.add(addressNode);
@@ -143,6 +128,7 @@ public class MainAGDS {
 			}
 		}
 		if (!exist) {
+			DatabaseConnect.INDEXES.add(addressNode);
 			List<Node> address = new ArrayList<>();
 			address.add(addressNode);
 			studentNode.setOrExtendParents(address);
@@ -170,6 +156,7 @@ public class MainAGDS {
 			}
 		}
 		if (!exist) {
+			DatabaseConnect.INDEXES.add(kierunekNode);
 			List<Node> kierunek = new ArrayList<>();
 			kierunek.add(addressNode);
 			studentNode.setOrExtendParents(kierunek);
@@ -181,11 +168,12 @@ public class MainAGDS {
 		}
 	}
 
-	private static void addStudentToDataBase() {
+	private static void deleteStudentFromGraph(List<Node> root) {
+		String index = "Studenci10";
 
 	}
 
-	private static void findStudentsByParam(List<Node> root) {
+	private static void findStudentsByParamGraph(List<Node> root) {
 
 		List<String> inputAttributesList = new ArrayList<>();
 		List<String> inputValuesList = new ArrayList<>();
@@ -281,5 +269,11 @@ public class MainAGDS {
 		if (bestOfTheBestStudent.isEmpty() && inputAttributesList.size()>1) {
 			System.out.println("Brak w bazie studenta o podanych parametrach");
 		}
+	}
+
+	private static void addStudentToDatabase() {
+	}
+
+	private static void deleteStudentFromDatabase() {
 	}
 }
