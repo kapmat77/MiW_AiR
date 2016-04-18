@@ -13,10 +13,11 @@ public class DatabaseConnect {
 	private static final String PASSWORD = "kapmatphp";
 	private static final List<Key> KEYS = new ArrayList<>();
 	private static final List<Node> INDEXES = new ArrayList<>();
+	public static final List<Node> MAIN_INDEXES = new ArrayList<>();
+	public static final String MAIN_TABLE = "Studenci";
 
-	private List<Node> rootList = new ArrayList<>();
+	public List<Node> rootList = new ArrayList<>();
 	private List<Node> fKeyList = new ArrayList<>();
-
 
 	/**
 	 * Constructor load data from DB and create AGDS
@@ -62,7 +63,7 @@ public class DatabaseConnect {
 			createAGDS(resultTable, connection, stmt, tableName);
 
 //			//Clean-up environment
-//			rs.close();
+			resultTable.close();
 //			stmt.close();
 			connection.close();
 
@@ -87,6 +88,9 @@ public class DatabaseConnect {
 				String indexName = tableName + rs.getString(1);
 				Node nodeIndex = new Node(Node.Level.INDEX, indexName);
 				INDEXES.add(nodeIndex);
+				if (tableName.equals(MAIN_TABLE)) {
+					MAIN_INDEXES .add(nodeIndex);
+				}
 
 				for (int i = 2; i < rsmd.getColumnCount() + 1; i++) {
 					createPartPrimitiveAGDS(rsmd.getColumnLabel(i), rs, nodeIndex);
