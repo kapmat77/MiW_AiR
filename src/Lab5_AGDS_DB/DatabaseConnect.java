@@ -12,7 +12,7 @@ public class DatabaseConnect {
 	private static final String USR = "kapmat";
 	private static final String PASSWORD = "kapmatphp";
 	private static final List<Key> KEYS = new ArrayList<>();
-	private static final List<Node> INDEXES = new ArrayList<>();
+	public static final List<Node> INDEXES = new ArrayList<>();
 	public static final List<Node> MAIN_INDEXES = new ArrayList<>();
 	public static final String MAIN_TABLE = "Studenci";
 
@@ -47,7 +47,10 @@ public class DatabaseConnect {
 
 			while(resultTable.next()) {
 				tableName = resultTable.getString(3);
-				readPrimaryKeys(databaseMetaData, tableName);
+				//TODO tymczasowo
+				if (!tableName.equals("USER_DATA")) {
+					readPrimaryKeys(databaseMetaData, tableName);
+				}
 			}
 
 			tableName = null;
@@ -78,23 +81,25 @@ public class DatabaseConnect {
 	private void createAGDS(ResultSet resultTable, Connection connection, Statement stmt, String tableName) throws SQLException {
 		while(resultTable.next()) {
 			tableName = resultTable.getString(3);
-			stmt = connection.createStatement();
-			String sql = "SELECT * FROM " + tableName;
-			ResultSet rs = stmt.executeQuery(sql);
-			ResultSetMetaData rsmd = rs.getMetaData();
+			if (!tableName.equals("USER_DATA")) {
+				stmt = connection.createStatement();
+				String sql = "SELECT * FROM " + tableName;
+				ResultSet rs = stmt.executeQuery(sql);
+				ResultSetMetaData rsmd = rs.getMetaData();
 
-			while (rs.next()) {
-				//TODO Sprawdzenie czy 1 kolumna to primaty key
-				String indexName = tableName + rs.getString(1);
-				Node nodeIndex = new Node(Node.Level.INDEX, indexName);
-				INDEXES.add(nodeIndex);
-				if (tableName.equals(MAIN_TABLE)) {
-					MAIN_INDEXES .add(nodeIndex);
-				}
+				while (rs.next()) {
+					//TODO Sprawdzenie czy 1 kolumna to primaty key
+					String indexName = tableName + rs.getString(1);
+					Node nodeIndex = new Node(Node.Level.INDEX, indexName);
+					INDEXES.add(nodeIndex);
+					if (tableName.equals(MAIN_TABLE)) {
+						MAIN_INDEXES .add(nodeIndex);
+					}
 
-				for (int i = 2; i < rsmd.getColumnCount() + 1; i++) {
-					createPartPrimitiveAGDS(rsmd.getColumnLabel(i), rs, nodeIndex);
-					connectIndexNodes(rsmd.getColumnLabel(i), rs, tableName, nodeIndex);
+					for (int i = 2; i < rsmd.getColumnCount() + 1; i++) {
+						createPartPrimitiveAGDS(rsmd.getColumnLabel(i), rs, nodeIndex);
+						connectIndexNodes(rsmd.getColumnLabel(i), rs, tableName, nodeIndex);
+					}
 				}
 			}
 		}
@@ -107,24 +112,26 @@ public class DatabaseConnect {
 		String tableName;
 		while(resultTable.next()) {
 			tableName = resultTable.getString(3);
-			setConnectionsBetweenKeys(databaseMetaData, tableName, connection.getCatalog());
+			if (!tableName.equals("USER_DATA")) {
+				setConnectionsBetweenKeys(databaseMetaData, tableName, connection.getCatalog());
 
-			ResultSet resultColumn = databaseMetaData.getColumns(dbName, schemaPattern, tableName, columnNamePattern);
-			Node columnName;
-			while (resultColumn.next()) {
-				boolean isPrimary = false;
-				for (Key key : KEYS) {
-					if (key.getColumnName().equals(resultColumn.getString(4)) && key.getTableName().equals(resultTable.getString(3))) {
-						isPrimary = true;
-						columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
-						if (key.getKeyType().equals(Key.KeyType.FOREIGN)) {
-							fKeyList.add(columnName);
+				ResultSet resultColumn = databaseMetaData.getColumns(dbName, schemaPattern, tableName, columnNamePattern);
+				Node columnName;
+				while (resultColumn.next()) {
+					boolean isPrimary = false;
+					for (Key key : KEYS) {
+						if (key.getColumnName().equals(resultColumn.getString(4)) && key.getTableName().equals(resultTable.getString(3))) {
+							isPrimary = true;
+							columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
+							if (key.getKeyType().equals(Key.KeyType.FOREIGN)) {
+								fKeyList.add(columnName);
+							}
 						}
 					}
-				}
-				if (!isPrimary) {
-					columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
-					rootList.add(columnName);
+					if (!isPrimary) {
+						columnName = new Node(Node.Level.COLUMN, resultColumn.getString(4));
+						rootList.add(columnName);
+					}
 				}
 			}
 		}
