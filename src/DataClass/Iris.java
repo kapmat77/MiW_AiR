@@ -65,7 +65,7 @@ public class Iris implements InputData {
 		this.petalWidth = 0;
 		this.type = IrisType.NONE;
 	}
-	
+
 	public Iris(double leafLength, double leafWidth, double petalLength, double petalWidth, IrisType type) {
 		this.leafLength = leafLength;
 		this.leafWidth = leafWidth;
@@ -98,6 +98,22 @@ public class Iris implements InputData {
 		this.petalLength = anotherIris.petalLength;
 		this.petalWidth = anotherIris.petalWidth;
 		this.type = anotherIris.type;
+	}
+
+	public void setLeafLength(double leafLength) {
+		this.leafLength = leafLength;
+	}
+
+	public void setLeafWidth(double leafWidth) {
+		this.leafWidth = leafWidth;
+	}
+
+	public void setPetalLength(double petalLength) {
+		this.petalLength = petalLength;
+	}
+
+	public void setPetalWidth(double petalWidth) {
+		this.petalWidth = petalWidth;
 	}
 
 	public double getSimilarity() {

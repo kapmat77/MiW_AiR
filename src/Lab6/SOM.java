@@ -28,9 +28,16 @@ public class SOM {
 	private static final double MAX_PW = 2.5;
 	private static final double MIN_PW = 0.1;
 
+	private static final double WINNER = 0.1;
+	private static final double SECOND_WINNER = 0.02;
+	private static final double THIRD_WINNER = 0.005;
+
+
 	public static void main(String[] args) throws FileNotFoundException {
 		createNetwork();
 		System.out.println(countSingleDistance(listOfIrises.get(0), neuronTable[7][7]));
+
+
 	}
 
 	public static double countDistance() {
@@ -53,6 +60,51 @@ public class SOM {
 		}
 	}
 
+	private static void changeAttributes(Iris inputNeuron, Iris neuron, double valueToChange) {
+		//LL
+		if (Math.abs(inputNeuron.getLeafLength()-neuron.getLeafLength())>=valueToChange) {
+			if (inputNeuron.getLeafLength()>neuron.getLeafLength()) {
+				neuron.setLeafLength(neuron.getLeafLength() - valueToChange);
+			} else {
+				neuron.setLeafLength(neuron.getLeafLength() + valueToChange);
+			}
+		} else {
+			neuron.setLeafLength(inputNeuron.getLeafLength());
+		}
+
+		//LW
+		if (Math.abs(inputNeuron.getLeafWidth()-neuron.getLeafWidth())>=valueToChange) {
+			if (inputNeuron.getLeafWidth()>neuron.getLeafWidth()) {
+				neuron.setLeafWidth(neuron.getLeafWidth() - valueToChange);
+			} else {
+				neuron.setLeafWidth(neuron.getLeafWidth() + valueToChange);
+			}
+		} else {
+			neuron.setLeafWidth(inputNeuron.getLeafWidth());
+		}
+
+		//PL
+		if (Math.abs(inputNeuron.getPetalLength()-neuron.getPetalLength())>=valueToChange) {
+			if (inputNeuron.getPetalLength()>neuron.getPetalLength()) {
+				neuron.setPetalLength(neuron.getPetalLength() - valueToChange);
+			} else {
+				neuron.setPetalLength(neuron.getPetalLength() + valueToChange);
+			}
+		} else {
+			neuron.setPetalLength(inputNeuron.getPetalLength());
+		}
+
+		//PW
+		if (Math.abs(inputNeuron.getPetalWidth()-neuron.getPetalWidth())>=valueToChange) {
+			if (inputNeuron.getPetalWidth()>neuron.getPetalWidth()) {
+				neuron.setPetalWidth(neuron.getPetalWidth() - valueToChange);
+			} else {
+				neuron.setPetalWidth(neuron.getPetalWidth() + valueToChange);
+			}
+		} else {
+			neuron.setPetalWidth(inputNeuron.getPetalWidth());
+		}
+	}
 
 
 	private static <T extends InputData> double countSingleDistance(T inputObject, T singleObject) {
