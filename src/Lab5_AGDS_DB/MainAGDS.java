@@ -5,21 +5,111 @@
 package Lab5_AGDS_DB;
 
 import javax.xml.crypto.Data;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.SQLException;
+import java.util.*;
 
 public class MainAGDS {
-	public static void main(String[] args) {
-		DatabaseConnect dbConnect = new DatabaseConnect();
+
+	public static List<String> inputAttributesList = new ArrayList<>();
+	public static List<String> inputValuesList = new ArrayList<>();
+	static DatabaseConnect dbConnect;
+
+	public static void main(String[] args) throws SQLException {
+		dbConnect = new DatabaseConnect();
 		List<Node> root = dbConnect.rootList;
 
-		findStudentsByParamGraph(root);
-		addStudentToGraph(root);
-		deleteStudentFromGraph(root);
-		addStudentToDatabase();
-		deleteStudentFromDatabase();
+		while(true) {
+			System.out.println("\n******************************");
+			System.out.println(inputAttributesList.toString());
+			System.out.println(inputValuesList.toString());
+			System.out.println("1.Dodaj parametr do wyszukania");
+			System.out.println("2.Szukaj");
+			System.out.println("3.Exit");
+			Scanner input = new Scanner(System.in);
+			switch (input.nextLine()) {
+				case "1":
+					System.out.println("1.Imie");
+					System.out.println("2.Nazwisko");
+					System.out.println("3.Stypendium");
+					System.out.println("4.Rok studiów");
+					System.out.println("5.Kierunek");
+					System.out.println("6.Miasto");
+					System.out.println("7.Ulica");
+					System.out.println("8.Numer domu");
+					Scanner param = new Scanner(System.in);
+					Scanner str;
+					switch (param.nextLine()) {
+					case "1":
+						inputAttributesList.add("Imie");
+						System.out.println("Podaj imie:");
+						str = new Scanner(System.in);
+						inputValuesList.add(str.nextLine());
+						break;
+					case "2":
+							inputAttributesList.add("Nazwisko");
+							System.out.println("Podaj nazwisko:");
+							str = new Scanner(System.in);
+							inputValuesList.add(str.nextLine());
+							break;
+						case "3":
+							inputAttributesList.add("Stypendium");
+							System.out.println("Podaj stypendium:");
+							str = new Scanner(System.in);
+							inputValuesList.add(str.nextLine());
+							break;
+						case "4":
+							inputAttributesList.add("Rok studiów");
+							System.out.println("Podaj rok studiów:");
+							str = new Scanner(System.in);
+							inputValuesList.add(str.nextLine());
+							break;
+						case "5":
+							inputAttributesList.add("Nazwa kierunku");
+							System.out.println("Podaj kierunek:");
+							str = new Scanner(System.in);
+							inputValuesList.add(str.nextLine());
+							break;
+						case "6":
+							inputAttributesList.add("Miasto");
+							System.out.println("Podaj miasto:");
+							str = new Scanner(System.in);
+							inputValuesList.add(str.nextLine());
+							break;
+						case "7":
+							inputAttributesList.add("Ulica");
+							System.out.println("Podaj ulice:");
+							str = new Scanner(System.in);
+							inputValuesList.add(str.nextLine());
+							break;
+						case "8":
+							inputAttributesList.add("Numer");
+							System.out.println("Podaj numer domu:");
+							str = new Scanner(System.in);
+							inputValuesList.add(str.nextLine());
+							break;
+					}
+					break;
+				case "2":
+					if (inputAttributesList.size()>0) {
+						findStudentsByParamGraph(root);
+						inputValuesList.clear();
+						inputAttributesList.clear();
+					} else {
+						System.out.println("Wprowadz parametry !!");
+					}
+					break;
+				case "3":
+					dbConnect.closeConnections();
+					System.exit(0);
+		}
+
+
+//		addStudentToGraph(root);
+//		deleteStudentFromGraph(root);
+//		addStudentToDatabase();
+//		deleteStudentFromDatabase();
+		}
+
 	}
 
 	private static void addStudentToGraph(List<Node> root) {
@@ -169,20 +259,24 @@ public class MainAGDS {
 	}
 
 	private static void deleteStudentFromGraph(List<Node> root) {
-		String index = "Studenci10";
+//		String index = "Studenci10";
 
 	}
 
-	private static void findStudentsByParamGraph(List<Node> root) {
+	private static void findStudentsByParamGraph(List<Node> root) throws SQLException {
 
-		List<String> inputAttributesList = new ArrayList<>();
-		List<String> inputValuesList = new ArrayList<>();
+//		List<String> inputAttributesList = new ArrayList<>();
+//		List<String> inputValuesList = new ArrayList<>();
 		List<Node> studentList = new ArrayList<>();
 
-		inputAttributesList.add("Ulica");
-		inputValuesList.add("Piastowska");
-		inputAttributesList.add("Nazwa kierunku");
-		inputValuesList.add("Automatyka i Robotyka");
+
+//
+//		inputAttributesList.add("Rok studiów");
+//		inputValuesList.add("4");
+//		inputAttributesList.add("Nazwa kierunku");
+//		inputValuesList.add("Automatyka i Robotyka");
+
+		long timeStart = System.nanoTime();
 
 		for (Node attribute: root) {
 			if (attribute.getValue().equals(inputAttributesList.get(0))) {
@@ -191,7 +285,6 @@ public class MainAGDS {
 					if (secondAttribute.getValue().equals(inputValuesList.get(0))) {
 						List<Node> objectIdList = secondAttribute.getChildren();
 
-						//TODO tylko dla studenckiej tablicy
 						if (!objectIdList.get(0).getValue().toString().contains(DatabaseConnect.MAIN_TABLE)) {
 							for (Node object: objectIdList) {
 								studentList.addAll(object.getChildren());
@@ -258,16 +351,30 @@ public class MainAGDS {
 		} else {
 			for (Node student: studentList) {
 				System.out.println(student.getValue() + ". " + ((Node)student.getParents().get(0)).getValue() + " " +
-						((Node)student.getParents().get(1)).getValue());
+						((Node)student.getParents().get(1)).getValue() +" Stypendium:" + ((Node)student.getParents().get(2)).getValue()
+						+" Rok:" + ((Node)student.getParents().get(3)).getValue());
 			}
 		}
 
 		for (Node student: bestOfTheBestStudent) {
 			System.out.println(student.getValue() + ". " + ((Node)student.getParents().get(0)).getValue() + " " +
-					((Node)student.getParents().get(1)).getValue());
+					((Node)student.getParents().get(1)).getValue()+" Stypendium:" + ((Node)student.getParents().get(2)).getValue()
+					+" Rok:" + ((Node)student.getParents().get(3)).getValue());
 		}
 		if (bestOfTheBestStudent.isEmpty() && inputAttributesList.size()>1) {
 			System.out.println("Brak w bazie studenta o podanych parametrach");
+		}
+
+		long grapgT = (System.nanoTime()-timeStart);
+		System.out.println("Czas szukania w grafie: " + grapgT + "ns");
+
+		if (inputAttributesList.size()==1) {
+			timeStart = System.nanoTime();
+			dbConnect.findStudentInDB(inputAttributesList, inputValuesList);
+
+			long dbT = (System.nanoTime() - timeStart);
+			System.out.println("Czas szukania w bazie danych: " + dbT+ "ns");
+			System.out.println("Różnica: " + (dbT - grapgT) + "ns");
 		}
 	}
 

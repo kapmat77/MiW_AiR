@@ -18,8 +18,8 @@
                         <items>
                           <MenuItem fx:id="miStart" mnemonicParsing="false" onAction="#startAction" text="Start" />
                           <MenuItem fx:id="miLoadData" mnemonicParsing="false" onAction="#loadDataAction" text="Load data" />
-                          <MenuItem fx:id="miSaveOutput" mnemonicParsing="false" onAction="#saveOutputAction" text="Save output" />
-                          <MenuItem fx:id="miOption" mnemonicParsing="false" onAction="#optionAction" text="Options" />
+                          <!--<MenuItem fx:id="miSaveOutput" mnemonicParsing="false" onAction="#saveOutputAction" text="Save output" />-->
+                          <!--<MenuItem fx:id="miOption" mnemonicParsing="false" onAction="#optionAction" text="Options" />-->
                             <MenuItem fx:id="menuAbout" onAction="#aboutAction" text="About" />
                           <MenuItem fx:id="miExit" mnemonicParsing="false" onAction="#exitAction" text="Exit" />
                         </items>
@@ -34,17 +34,17 @@
                            <items>
                                <RadioMenuItem fx:id="rmiSimilarity" mnemonicParsing="false" onAction="#methodsChangeAction" text="Similarity" />
                                <RadioMenuItem fx:id="rmiFilter" mnemonicParsing="false" onAction="#methodsChangeAction" text="Filter" />
-                               <RadioMenuItem fx:id="rmiMinMax" mnemonicParsing="false" onAction="#methodsChangeAction" text="Min &amp; Max" />
-                               <RadioMenuItem fx:id="rmiCorrelation" mnemonicParsing="false" onAction="#methodsChangeAction" text="Correlation" />
+                               <!--<RadioMenuItem fx:id="rmiMinMax" mnemonicParsing="false" onAction="#methodsChangeAction" text="Min &amp; Max" />-->
+                               <!--<RadioMenuItem fx:id="rmiCorrelation" mnemonicParsing="false" onAction="#methodsChangeAction" text="Correlation" />-->
                            </items>
                       </Menu>
-                        <Menu fx:id="menuGraphic" text="Generate graphic">
-                           <items>
-                              <MenuItem fx:id="miSimilarityGraphic" mnemonicParsing="false" onAction="#generateSimilarityGraphicAction" text="Similarity table" />
-                              <MenuItem fx:id="miCorrelationGraphic" mnemonicParsing="false" onAction="#generateCorrelationGraphicAction" text="Correlation table" />
-                              <MenuItem fx:id="miAgdsGraphic" mnemonicParsing="false" onAction="#generateAgdsGraphicAction" text="AGDS" />
-                           </items>
-                        </Menu>
+                        <!--<Menu fx:id="menuGraphic" text="Generate graphic">-->
+                           <!--<items>-->
+                              <!--<MenuItem fx:id="miSimilarityGraphic" mnemonicParsing="false" onAction="#generateSimilarityGraphicAction" text="Similarity table" />-->
+                              <!--<MenuItem fx:id="miCorrelationGraphic" mnemonicParsing="false" onAction="#generateCorrelationGraphicAction" text="Correlation table" />-->
+                              <!--<MenuItem fx:id="miAgdsGraphic" mnemonicParsing="false" onAction="#generateAgdsGraphicAction" text="AGDS" />-->
+                           <!--</items>-->
+                        <!--</Menu>-->
                     </menus>
                   </MenuBar>
                   <Circle fx:id="circle" centerX="1190.0" centerY="14.0" fill="#ff3c38" radius="10.0" stroke="BLACK" strokeType="INSIDE" />

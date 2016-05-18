@@ -50,13 +50,13 @@ public class MainController implements Initializable {
 	@FXML private Menu menuMethods;
 	@FXML private RadioMenuItem rmiSimilarity;
 	@FXML private RadioMenuItem rmiFilter;
-	@FXML private RadioMenuItem rmiMinMax;
-	@FXML private RadioMenuItem rmiCorrelation;
+//	@FXML private RadioMenuItem rmiMinMax;
+//	@FXML private RadioMenuItem rmiCorrelation;
 	//Generate graphic
-	@FXML private Menu menuGraphic;
-	@FXML private MenuItem miSimilarityGraphic;
-	@FXML private MenuItem miCorrelationGraphic;
-	@FXML private MenuItem miAgdsGraphic;
+//	@FXML private Menu menuGraphic;
+//	@FXML private MenuItem miSimilarityGraphic;
+//	@FXML private MenuItem miCorrelationGraphic;
+//	@FXML private MenuItem miAgdsGraphic;
 
 	//#################### TABLE VIEW ####################
 	@FXML private AnchorPane resultAnchorPane;
@@ -164,8 +164,8 @@ public class MainController implements Initializable {
 	private void disableRimMethods() {
 		rmiSimilarity.setSelected(false);
 		rmiFilter.setSelected(false);
-		rmiCorrelation.setSelected(false);
-		rmiMinMax.setSelected(false);
+//		rmiCorrelation.setSelected(false);
+//		rmiMinMax.setSelected(false);
 	}
 
 	public void saveOutputAction(ActionEvent event) {
@@ -183,14 +183,14 @@ public class MainController implements Initializable {
 			rmiFilter.setSelected(true);
 			mwController.setLabelMethod("Method: FILTER");
 			mwController.setVisibility();
-		} else  if (rmi.getId().equals(rmiCorrelation.getId())) {
-			rmiCorrelation.setSelected(true);
-			mwController.setLabelMethod("Method: CORRELACTION");
-			mwController.setVisibility();
-		} else if (rmi.getId().equals(rmiMinMax.getId())) {
-			rmiMinMax.setSelected(true);
-			mwController.setLabelMethod("Method: MIN&MAX");
-			mwController.setVisibility();
+//		} else  if (rmi.getId().equals(rmiCorrelation.getId())) {
+//			rmiCorrelation.setSelected(true);
+//			mwController.setLabelMethod("Method: CORRELACTION");
+//			mwController.setVisibility();
+//		} else if (rmi.getId().equals(rmiMinMax.getId())) {
+//			rmiMinMax.setSelected(true);
+//			mwController.setLabelMethod("Method: MIN&MAX");
+//			mwController.setVisibility();
 		}
 		mStage.show();
 		checkAndSetIfReady();
@@ -226,7 +226,8 @@ public class MainController implements Initializable {
 	}
 
 	private void checkAndSetIfReady() {
-		if ((rmiSimilarity.isSelected() || rmiCorrelation.isSelected() || rmiFilter.isSelected() || rmiMinMax.isSelected())
+//		if ((rmiSimilarity.isSelected() || rmiCorrelation.isSelected() || rmiFilter.isSelected() || rmiMinMax.isSelected())
+		if ((rmiSimilarity.isSelected() || rmiFilter.isSelected())
 				&& dataReady) {
 			miStart.setDisable(false);
 			circle.setFill(Paint.valueOf("#95ff17"));

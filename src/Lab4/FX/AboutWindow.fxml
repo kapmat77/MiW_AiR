@@ -7,7 +7,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="125.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Lab4.FX.AboutController">
    <children>
-      <Label layoutX="34.0" layoutY="14.0" text="Projekt zaliczeniowy z przedmiotu:" />
+      <!--<Label layoutX="34.0" layoutY="14.0" text="" />-->
       <Label layoutX="48.0" layoutY="38.0" text="&quot;Metody inżynierii wiedzy&quot;">
          <font>
             <Font name="System Bold" size="12.0" />

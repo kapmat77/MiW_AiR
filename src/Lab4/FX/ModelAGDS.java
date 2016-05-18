@@ -735,7 +735,7 @@ public class ModelAGDS {
 
 		//		showPatternsFromNodes(showList, ShowType.WITH_SIMILARITY, dType);
 				graphTime = (int) time/1000;
-				System.out.println("Execution time for graph: " + time/1000 + " microseconds");
+//				System.out.println("Execution time for graph: " + time/1000 + " microseconds");
 
 				break;
 
@@ -794,7 +794,7 @@ public class ModelAGDS {
 
 		//		showPatternsFromNodes(showList, ShowType.WITH_SIMILARITY, dType);
 				graphTime = (int) time/1000;
-				System.out.println("Execution time for graph: " + time/1000 + " microseconds");
+//				System.out.println("Execution time for graph: " + time/1000 + " microseconds");
 		}
 
 
@@ -847,7 +847,7 @@ public class ModelAGDS {
 
 		graphTime = (int) (time/1000);
 //		showPatternsFromNodes(fitNodes, ShowType.WITH_SIMILARITY, dType);
-		System.out.println("Execution time for graph: " + time/1000 + " microseconds");
+//		System.out.println("Execution time for graph: " + time/1000 + " microseconds");
 
 	}
 
@@ -884,7 +884,7 @@ public class ModelAGDS {
 		long endTime = System.nanoTime();
 		long time = endTime-startTime;
 		tableTime = (int) time/1000 + (int) time/10000;
-		System.out.println("Execution time for table: " + time/1000 + " microseconds");
+//		System.out.println("Execution time for table: " + time/1000 + " microseconds");
 	}
 
 	public void findPatternsInTableFilter() {
@@ -923,7 +923,7 @@ public class ModelAGDS {
 		long endTime = System.nanoTime();
 		long time = endTime-startTime;
 		tableTime = (int) time/1000 + (int) time/10000;
-		System.out.println("Execution time for table: " + (endTime-startTime)/1000 + " microseconds");
+//		System.out.println("Execution time for table: " + (endTime-startTime)/1000 + " microseconds");
 	}
 
 	private static double getMinFromTable(Object[][] objectsTable, int col) {

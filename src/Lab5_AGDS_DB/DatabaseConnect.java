@@ -19,11 +19,14 @@ public class DatabaseConnect {
 	public List<Node> rootList = new ArrayList<>();
 	private List<Node> fKeyList = new ArrayList<>();
 
+	private Connection connection;
+	private Statement st;
+
 	/**
 	 * Constructor load data from DB and create AGDS
 	 */
 	public DatabaseConnect() {
-		Connection connection = null;
+//		Connection connection = null;
 		Statement stmt = null;
 
 		try {
@@ -68,11 +71,28 @@ public class DatabaseConnect {
 //			//Clean-up environment
 			resultTable.close();
 //			stmt.close();
-			connection.close();
+
 
 		} catch (ClassNotFoundException|SQLException ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	public void closeConnections() throws SQLException {
+		connection.close();
+	}
+
+	public void findStudentInDB(List<String> inputAttributesList, List<String> inputValuesList) throws SQLException {
+		String sql = "";
+		if (inputAttributesList.size()==1) {
+			sql = "SELECT " + inputAttributesList.get(0) + " FROM Studenci WHERE " + inputAttributesList.get(0) + "='" + inputValuesList.get(0)+"';";
+//		} else if (inputAttributesList.size()==2) {
+////			sql = "SELECT * FROM Studenci WHERE " + inputAttributesList.get(0) + "='" + inputValuesList.get(0) + "' " +
+////					"AND " + inputAttributesList.get(1) + "='" + inputValuesList.get(1)+"';";
+		}
+
+		ResultSet rs = connection.createStatement().executeQuery(sql);
+		ResultSetMetaData rsmd = rs.getMetaData();
 	}
 
 	/**
