@@ -35,6 +35,11 @@ public class SOM {
 
 	public static void main(String[] args) throws FileNotFoundException {
 
+		start();
+
+	}
+
+	private static void start() throws FileNotFoundException {
 		createNetwork();
 
 		//Show input objects
@@ -84,7 +89,6 @@ public class SOM {
 		}
 
 		System.out.println("ITERACJE: " + iter);
-
 	}
 
 	private static void updateMap(List<Double> bestNeighbParam, int index) {
@@ -113,7 +117,7 @@ public class SOM {
 					sum = Math.pow(difX,2) + Math.pow(difY,2);
 					result = Math.sqrt(sum);
 
-					changeAttributes(randomListOfIrises.get(index), neuronTable[i][j], WINNER/(4*result));
+					changeAttributes(randomListOfIrises.get(index), neuronTable[i][j], WINNER*Math.exp(-(Math.pow(result, 2))/2));
 				}
 			}
 		}
