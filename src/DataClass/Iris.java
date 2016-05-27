@@ -22,9 +22,19 @@ public class Iris implements InputData {
 
 	private Integer index = 0;
 
+	private boolean active = false;
+
 	private boolean isValidation  = false;
 
 	private double similarity;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean wasActive) {
+		this.active = wasActive;
+	}
 
 	public Integer getIndex() {
 		return index;
@@ -203,6 +213,8 @@ public class Iris implements InputData {
 	public IrisType getType() {
 		return type;
 	}
+
+	public void setType(IrisType type) { this.type = type;}
 
 	public double getParameterByEnum(KindOfParam kind) {
 		switch (kind) {
