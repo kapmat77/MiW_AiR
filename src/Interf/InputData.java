@@ -4,6 +4,10 @@
 
 package Interf;
 
+import DataClass.Iris;
+
+import java.util.Date;
+
 public interface  InputData<T> {
 
 	double getParameterById(int id);
@@ -28,19 +32,5 @@ public interface  InputData<T> {
 		LEAF_WIDTH,
 		PETAL_LENGTH,
 		PETAL_WIDTH,
-		ALCOHOL,
-		MALIC_ACID,
-		ASH,
-		ALCALINITY_OF_ASHE,
-		MAGNESIUM,
-		TOTAL_PHENOLS,
-		FLAVANOIDS,
-		NONFLAVANOID_PHENOLS,
-		PROANTHOCYANINS,
-		COLOR_INTENSITY,
-		HUE,
-		OD280OD315_OF_DILUTED_WINES,
-		PROFLINE
-		//TODO dodac parametry WINE. Zmienić nazwę na atrybut
 	}
 }

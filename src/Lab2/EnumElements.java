@@ -7,7 +7,7 @@ package Lab2;
 public class EnumElements {
 
 	public enum Element {
-		KAWA, MLEKO, CUKIER, ORZESZKI, JAJKA, CHLEB, MASLO, SER, PLATKI, MIOD, NONE
+		KAWA, MLEKO, CUKIER, ORZESZKI, JAJKA, CHLEB, MASLO, SER, PLATKI, MIOD, NONE, HUEHUE
 	}
 
 	public static Element getEnumValue(String singleElement) {
@@ -32,7 +32,7 @@ public class EnumElements {
 		} else if (singleElement.equalsIgnoreCase(String.valueOf(Element.MIOD))) {
 			return Element.MIOD;
 		} else {
-			return Element.NONE;
+			return Element.HUEHUE;
 		}
 	}
 }
