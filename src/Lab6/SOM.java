@@ -132,7 +132,6 @@ public class SOM {
 			for (int j = 0; j < SIZE; j++) {
 				if (i != bestX && j != bestY) {
 
-
 					difX = i - bestX;
 					difY = j - bestY;
 					sum = Math.pow(difX,2) + Math.pow(difY,2);
