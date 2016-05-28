@@ -247,16 +247,16 @@ public class EksploracjaDanych {
 				line = replacePolishCharacters(in.nextLine());
 				parts = line.split("\t");
 				for(int i=1; i<parts.length; i++) {
-					if (parts[i].contains("mi")) {
-						parts[i] = "miod";
-					} else if (parts[i].contains("atki")) {
-						parts[i] = "platki";
-					} else if (parts[i].contains("mas")) {
-						parts[i] = "maslo";
-					}
-					if(!(parts[i].isEmpty())) {
+//					if (parts[i].contains("mi")) {
+//						parts[i] = "miod";
+//					} else if (parts[i].contains("atki")) {
+//						parts[i] = "platki";
+//					} else if (parts[i].contains("mas")) {
+//						parts[i] = "maslo";
+//					}
+//					if(!(parts[i].isEmpty())) {
 						elem.add(EnumElements.getEnumValue(parts[i]));
-					}
+//					}
 				}
 				singleTransaction = new Transaction(elem);
 				elem.clear();

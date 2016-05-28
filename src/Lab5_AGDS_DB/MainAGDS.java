@@ -365,8 +365,8 @@ public class MainAGDS {
 			System.out.println("Brak w bazie studenta o podanych parametrach");
 		}
 
-		long grapgT = (System.nanoTime()-timeStart);
-		System.out.println("Czas szukania w grafie: " + grapgT + "ns");
+		long graphTime = (System.nanoTime()-timeStart);
+		System.out.println("Czas szukania w grafie: " + graphTime + "ns");
 
 		if (inputAttributesList.size()==1) {
 			timeStart = System.nanoTime();
@@ -374,7 +374,7 @@ public class MainAGDS {
 
 			long dbT = (System.nanoTime() - timeStart);
 			System.out.println("Czas szukania w bazie danych: " + dbT+ "ns");
-			System.out.println("Różnica: " + (dbT - grapgT) + "ns");
+			System.out.println("Różnica: " + (dbT - graphTime) + "ns");
 		}
 	}
 

@@ -88,7 +88,28 @@ public class SOM {
 			}
 		}
 
-		System.out.println("ITERACJE: " + iter);
+		System.out.println("ITERACJE: " + iter +"\n");
+
+		System.out.println("1 - VIRGINICA");
+		System.out.println("2 - VERSICOLOR");
+		System.out.println("3 - SETOSA");
+
+		String type;
+		for (int i = 0; i<SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				if (neuronTable[i][j].getType()== Iris.IrisType.VIRGINICA) {
+					type = "1";
+				} else if (neuronTable[i][j].getType()== Iris.IrisType.VERSICOLOR) {
+					type = "2";
+				} else if (neuronTable[i][j].getType()== Iris.IrisType.SETOSA) {
+					type = "3";
+				} else {
+					type = "4";
+				}
+				System.out.print("["+type+"]");
+			}
+			System.out.println();
+		}
 	}
 
 	private static void updateMap(List<Double> bestNeighbParam, int index) {

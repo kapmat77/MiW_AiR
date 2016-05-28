@@ -1,1 +1,0 @@
-W przypadku problemu z połączeniem z DB należy zaimportować odpowiednią bibliotekę mysql-connector
