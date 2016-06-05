@@ -9,13 +9,16 @@ import DataClass.Iris;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+
 import Interf.InputData;
 
 public class SOM {
 
-	private static final int SIZE = 4;
+	private static final int SIZE = 5;
 
 	private static Iris[][] neuronTable = new Iris[SIZE][SIZE];
+	private static Iris[][] prevNeuronTable = new Iris[SIZE][SIZE];
 	private static List<Iris> listOfIrises = new ArrayList<>();
 	private static List<Iris> randomListOfIrises = new ArrayList<>();
 
@@ -28,9 +31,12 @@ public class SOM {
 	private static final double MAX_PW = 2.5;
 	private static final double MIN_PW = 0.1;
 
-	private static final double WINNER = 0.005;
+	private static final double WINNER = 0.0001;
 
-	private static final double THRESHOLD = 1;
+//	private static final double THRESHOLD = 1000;
+	private static final double REAL_TRESHOLD = 0.001;
+
+	private static boolean tooLargeDistance = true;
 
 
 	public static void main(String[] args) throws FileNotFoundException {
@@ -49,9 +55,11 @@ public class SOM {
 			}
 		}
 
+		copyArray();
+
 		List<Double> bestNeighbParam = new ArrayList<>();
 		//Main loop
-		boolean tooLargeDistance = true;
+//		boolean tooLargeDistance = true;
 		int counter;
 		int iter = 0;
 		while(tooLargeDistance) {
@@ -70,13 +78,23 @@ public class SOM {
 				}
 			}
 			if (counter>=(SIZE*SIZE)) {
-				tooLargeDistance = false;
+//				tooLargeDistance = false;
 			} else {
 				for (int i = 0; i<SIZE; i++) {
 					for (int j = 0; j < SIZE; j++) {
 						neuronTable[i][j].setActive(false);
-						neuronTable[i][j].setType(Iris.IrisType.NONE);
+//						neuronTable[i][j].setType(Iris.IrisType.NONE);
 					}
+				}
+			}
+			checkStopCondition();
+			copyArray();
+		}
+
+		for (int i = 0; i<SIZE; i++) {
+			for (int j = 0; j < SIZE; j++) {
+				if (neuronTable[i][j].getType().equals(Iris.IrisType.NONE)) {
+					neuronTable[i][j].setType(Iris.IrisType.VIRGINICA);
 				}
 			}
 		}
@@ -104,7 +122,7 @@ public class SOM {
 				} else if (neuronTable[i][j].getType()== Iris.IrisType.SETOSA) {
 					type = "3";
 				} else {
-					type = "4";
+					type = "3";
 				}
 				System.out.print("["+type+"]");
 			}
@@ -193,10 +211,10 @@ public class SOM {
 			}
 		}
 
-		if (bestDistance<THRESHOLD) {
-			neuronTable[bestX][bestY].setActive(true);
+//		if (bestDistance<THRESHOLD) {
+//			neuronTable[bestX][bestY].setActive(true);
 			neuronTable[bestX][bestY].setType(input.getType());
-		}
+//		}
 
 		List<Double> bestNeuronParam = new ArrayList<>();
 		bestNeuronParam.add(bestDistance);
@@ -273,5 +291,31 @@ public class SOM {
 		int valueInt = (int)((((Math.random() * range) + min))*10);
 		double valueDouble = (double)valueInt/10;
 		return valueDouble;
+	}
+
+	private static void checkStopCondition() {
+		tooLargeDistance = false;
+		for (int i = 0; i<neuronTable.length; i++) {
+			for (int j = 0; j < neuronTable.length; j++) {
+				if (Math.abs(prevNeuronTable[i][j].getLeafLength()-neuronTable[i][j].getLeafLength()) > REAL_TRESHOLD ||
+						Math.abs(prevNeuronTable[i][j].getLeafWidth()-neuronTable[i][j].getLeafWidth()) > REAL_TRESHOLD ||
+						Math.abs(prevNeuronTable[i][j].getPetalLength()-neuronTable[i][j].getPetalLength()) > REAL_TRESHOLD ||
+						Math.abs(prevNeuronTable[i][j].getPetalWidth()-neuronTable[i][j].getPetalWidth()) > REAL_TRESHOLD) {
+					tooLargeDistance = true;
+				}
+			}
+		}
+	}
+
+	private static void copyArray() {
+		for (int i = 0; i<neuronTable.length; i++) {
+			for (int j = 0; j<neuronTable.length; j++) {
+				prevNeuronTable[i][j] = new Iris();
+				prevNeuronTable[i][j].setLeafLength(neuronTable[i][j].getLeafLength());
+				prevNeuronTable[i][j].setLeafWidth(neuronTable[i][j].getLeafWidth());
+				prevNeuronTable[i][j].setPetalLength(neuronTable[i][j].getPetalLength());
+				prevNeuronTable[i][j].setPetalWidth(neuronTable[i][j].getPetalWidth());
+			}
+		}
 	}
 }

@@ -21,7 +21,7 @@ public class EksploracjaDanych {
 	public static void main(String[] args) {
 		//Wczytanie danych z pliku
 		System.out.println("Dane wczytywane są z pliku Resources/dane_lab2.txt");
-		readDataFromFile("src/Lab2/dane_prezentacja_lab2.txt");
+		readDataFromFile("src/Lab2/dane_lab2.txt");
 //		readDataFromFile("Resources/dane_lab2.txt");
 
 		countFrequentData();
@@ -247,16 +247,16 @@ public class EksploracjaDanych {
 				line = replacePolishCharacters(in.nextLine());
 				parts = line.split("\t");
 				for(int i=1; i<parts.length; i++) {
-//					if (parts[i].contains("mi")) {
-//						parts[i] = "miod";
-//					} else if (parts[i].contains("atki")) {
-//						parts[i] = "platki";
-//					} else if (parts[i].contains("mas")) {
-//						parts[i] = "maslo";
-//					}
-//					if(!(parts[i].isEmpty())) {
+					if (parts[i].contains("mi")) {
+						parts[i] = "miod";
+					} else if (parts[i].contains("atki")) {
+						parts[i] = "platki";
+					} else if (parts[i].contains("mas")) {
+						parts[i] = "maslo";
+					}
+					if(!(parts[i].isEmpty())) {
 						elem.add(EnumElements.getEnumValue(parts[i]));
-//					}
+					}
 				}
 				singleTransaction = new Transaction(elem);
 				elem.clear();

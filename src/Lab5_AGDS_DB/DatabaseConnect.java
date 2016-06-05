@@ -82,14 +82,14 @@ public class DatabaseConnect {
 		connection.close();
 	}
 
-	public void findStudentInDB(List<String> inputAttributesList, List<String> inputValuesList) throws SQLException {
+	public void findStudentInDB(String inputAttribute, List<String> inputValuesList) throws SQLException {
 		String sql = "";
-		if (inputAttributesList.size()==1) {
-			sql = "SELECT " + inputAttributesList.get(0) + " FROM Studenci WHERE " + inputAttributesList.get(0) + "='" + inputValuesList.get(0)+"';";
+//		if (inputAttributesList.size()==1) {
+			sql = "SELECT " + inputAttribute + " FROM Studenci WHERE " + inputAttribute  + "='" + inputValuesList.get(0)+"';";
 //		} else if (inputAttributesList.size()==2) {
 ////			sql = "SELECT * FROM Studenci WHERE " + inputAttributesList.get(0) + "='" + inputValuesList.get(0) + "' " +
 ////					"AND " + inputAttributesList.get(1) + "='" + inputValuesList.get(1)+"';";
-		}
+//		}
 
 		ResultSet rs = connection.createStatement().executeQuery(sql);
 		ResultSetMetaData rsmd = rs.getMetaData();

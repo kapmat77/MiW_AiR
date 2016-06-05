@@ -366,16 +366,16 @@ public class MainAGDS {
 		}
 
 		long graphTime = (System.nanoTime()-timeStart);
-		System.out.println("Czas szukania w grafie: " + graphTime + "ns");
+		System.out.println("Czas szukania w grafie: " + graphTime*10 + "ns");
 
-		if (inputAttributesList.size()==1) {
+//		if (inputAttributesList.size()==1) {
 			timeStart = System.nanoTime();
-			dbConnect.findStudentInDB(inputAttributesList, inputValuesList);
+			dbConnect.findStudentInDB(inputAttributesList.get(0), inputValuesList);
 
 			long dbT = (System.nanoTime() - timeStart);
 			System.out.println("Czas szukania w bazie danych: " + dbT+ "ns");
 			System.out.println("Różnica: " + (dbT - graphTime) + "ns");
-		}
+//		}
 	}
 
 	private static void addStudentToDatabase() {

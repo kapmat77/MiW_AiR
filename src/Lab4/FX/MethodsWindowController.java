@@ -62,6 +62,15 @@ public class MethodsWindowController {
 	@FXML private RadioButton rbIrisMin;
 	@FXML private RadioButton rbIrisMax;
 
+//	private MainController mainControoler = new MainController();
+
+	public MethodsWindowController() {
+	}
+
+//	public MethodsWindowController(MainController mc) {
+//		mainControoler = mc;
+//	}
+
 	public TextField getTxLlMinFil() {
 		return txLlMinFil;
 	}
@@ -149,6 +158,8 @@ public class MethodsWindowController {
 
 	@FXML
 	public void okButtonAction(ActionEvent event) {
+
+		MainControllerHandler.getHandler().test();
 
 		if (tabIris.isSelected()) {
 			((Stage) okIrisButton.getScene().getWindow()).close();

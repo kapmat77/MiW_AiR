@@ -103,6 +103,9 @@ public class MainController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+
+		MainControllerHandler.setHandler(this);
+
 		miStart.setDisable(true);
 		initializeMethodsWindow(); //TODO
 		initializeAboutWindow();
@@ -347,5 +350,9 @@ public class MainController implements Initializable {
 		} else if (rmi.getId().equals(rmiTable.getId())) {
 			rmiTable.setSelected(true);
 		}
+	}
+
+	public void test() {
+		System.out.println("Show me something !");
 	}
 }
